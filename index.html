@@ -1,1 +1,835 @@
-hello
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BendMaster Pro | Regolo di Piegatura Lamiera, Sviluppo CAD & Fattore K</title>
+    <meta name="description" content="Calcolatore professionale per piegatura lamiera: forza di piega, scelta cava V, raggio interno reale, WingBend, ritiro di piega (Bend Deduction) e confronto sviluppo CAD vs Officina.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- JSON-LD Schema.org per SEO e Google Rich Snippets -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "Perché lo sviluppo lamiera calcolato dal CAD è diverso da quello reale in officina?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "I software CAD utilizzano spesso un raggio interno fisso di default (es. 1 mm) e un Fattore K statico. Nella piegatura in aria, invece, il raggio interno reale dipende direttamente dall'apertura della matrice V (circa V/6 per l'acciaio al carbonio) e dall'elasticità del materiale. Se il raggio nel CAD non coincide con il raggio generato dalla cava V scelta in macchina, il ritiro di piega (Bend Deduction) risulterà errato."
+        }
+      }, {
+        "@type": "Question",
+        "name": "Come funzionano le matrici rotanti tipo WingBend o Rolla-V rispetto alle matrici tradizionali?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Nelle matrici con ali rotanti (WingBend / Rolla-V) la lamiera poggia su inserti mobili che ruotano accompagnando il movimento del punzone. Questo elimina l'attrito di strisciamento, evita segni superficiali, riduce il bordo minimo piegabile fino a 0.45xV e mantiene il raggio interno molto vicino al raggio della punta del punzone."
+        }
+      }, {
+        "@type": "Question",
+        "name": "Come si sceglie l'apertura della cava V in base allo spessore?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Per l'acciaio al carbonio (Fe360/S235) la regola standard prevede V = 6÷8 volte lo spessore per lamiere fino a 3 mm, e V = 8÷10 volte per spessori superiori. Per l'acciaio Inox si utilizza V = 8÷10 volte lo spessore per compensare l'elevata resistenza a trazione, mentre per l'alluminio si può scendere a V = 6 volte lo spessore."
+        }
+      }]
+    }
+    </script>
+
+    <style>
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            opacity: 1;
+        }
+        .tab-active {
+            border-bottom: 3px solid #2563eb;
+            color: #1d4ed8;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+    <!-- Header -->
+    <header class="bg-slate-900 text-white border-b border-slate-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-600 text-white font-black px-3 py-1.5 rounded text-lg tracking-wider">BM</div>
+                <div>
+                    <h1 class="text-lg md:text-xl font-bold leading-tight">BendMaster Pro</h1>
+                    <p class="text-xs text-slate-400">Regolo Tecnico di Piegatura & Verifica Sviluppo CAD</p>
+                </div>
+            </div>
+            <nav class="flex space-x-4 text-sm">
+                <a href="#calcolatore" class="hover:text-blue-400 transition">Calcolatore</a>
+                <a href="#tabella" class="hover:text-blue-400 transition">Tabella Cave</a>
+                <a href="#guida" class="hover:text-blue-400 transition">Teoria & Formule</a>
+                <a href="#faq" class="hover:text-blue-400 transition">FAQ</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Spazio Banner AdSense Top (Placeholder) -->
+    <div class="max-w-7xl mx-auto px-4 mt-4">
+        <div class="bg-slate-200/70 border border-dashed border-slate-300 rounded text-center py-3 text-xs text-slate-500">
+            [ Spazio Pubblicitario Google AdSense - Leaderboard 728x90 / Responsive ]
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-6 space-y-12" id="calcolatore">
+
+        <!-- Navigazione Schede Strumento -->
+        <div class="flex border-b border-slate-300 bg-white rounded-t-xl px-4 pt-2 shadow-sm">
+            <button onclick="switchTab('main')" id="tab-btn-main" class="px-6 py-3 text-sm md:text-base tab-active transition">
+                1. Regolo Piegatura & Sviluppo Reale (Unificato)
+            </button>
+            <button onclick="switchTab('matrix')" id="tab-btn-matrix" class="px-6 py-3 text-sm md:text-base text-slate-600 hover:text-slate-900 transition">
+                2. Tabella Rapida Matrici (Tonnellaggio/metro)
+            </button>
+        </div>
+
+        <!-- TAB 1: CALCOLATORE UNIFICATO (OFFICINA + CAD) -->
+        <section id="tab-main" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+            <!-- COLONNA SINISTRA: INPUT PARAMETRI (5 Colonne) -->
+            <div class="lg:col-span-5 bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6">
+                <div class="border-b pb-3">
+                    <h2 class="text-lg font-bold text-slate-900">1. Parametri Macchina & Materiale</h2>
+                    <p class="text-xs text-slate-500">Imposta le condizioni reali di piegatura in officina</p>
+                </div>
+
+                <!-- Metodo di Piegatura -->
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Metodo di Piegatura</label>
+                    <select id="bendMethod" onchange="onMethodOrMaterialChange()" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm bg-slate-50 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <option value="air">Piegatura in Aria (Matrice a V standard)</option>
+                        <option value="wing">Tangenziale a Matrice Rotante (WingBend / Rolla-V)</option>
+                        <option value="coining">Coniatura / Fondo Cava (Bottoming)</option>
+                        <option value="panel">Pannellatrice / Bordatura a sbalzo (Wiping)</option>
+                    </select>
+                    <p id="methodHint" class="mt-1.5 text-xs text-blue-700 bg-blue-50 p-2 rounded border border-blue-100"></p>
+                </div>
+
+                <!-- Materiale -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Materiale</label>
+                        <select id="material" onchange="onMaterialPresetChange()" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm bg-slate-50 focus:ring-2 focus:ring-blue-500">
+                            <option value="420">Acciaio Dolce (S235 / Fe360)</option>
+                            <option value="520">Acciaio S355 (Fe510)</option>
+                            <option value="700">Acciaio Inox (AISI 304 / 316)</option>
+                            <option value="220">Alluminio (Peralluman / Serie 5000)</option>
+                            <option value="1100">Altoresistenziale / Hardox</option>
+                            <option value="custom">Personalizzato (Inserisci Rm)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Carico Rottura $R_m$ (N/mm²)</label>
+                        <input type="number" id="rmValue" value="420" min="50" max="2500" step="10" oninput="calculateAll()" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm font-mono">
+                    </div>
+                </div>
+
+                <!-- Spessore, Lunghezza, Angolo -->
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Spessore $s$ (mm)</label>
+                        <input type="number" id="thickness" value="2.0" min="0.4" max="30" step="0.1" oninput="onThicknessChange()" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm font-mono font-bold text-blue-900 bg-blue-50/40">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Lunghezza $L$ (mm)</label>
+                        <input type="number" id="length" value="1000" min="10" max="12000" step="50" oninput="calculateAll()" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Angolo $\alpha$ (°)</label>
+                        <input type="number" id="angle" value="90" min="15" max="175" step="1" oninput="calculateAll()" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm font-mono">
+                    </div>
+                </div>
+
+                <!-- Utensili: Cava V e Raggio Punzone -->
+                <div class="bg-slate-100 p-4 rounded-lg border border-slate-200 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold uppercase text-slate-700">Utensileria Montata</span>
+                        <button type="button" onclick="resetOptimalV()" class="text-xs text-blue-600 hover:underline font-medium">Ripristina Cava Ottimale</button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1" id="labelV">Apertura Cava $V$ (mm)</label>
+                            <input type="number" id="dieV" value="16" min="2" max="300" step="1" oninput="calculateAll()" class="w-full rounded-lg border-slate-300 border p-2 text-sm font-mono bg-white">
+                            <span id="vRatioBadge" class="inline-block mt-1 text-[11px] text-slate-500">Rapporto V/s: 8.0x</span>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Raggio Punzone $R_p$ (mm)</label>
+                            <input type="number" id="punchR" value="1.0" min="0.2" max="50" step="0.1" oninput="calculateAll()" class="w-full rounded-lg border-slate-300 border p-2 text-sm font-mono bg-white">
+                            <span class="inline-block mt-1 text-[11px] text-slate-500">Punta utensile superiore</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Parametri Geometrici e Confronto CAD -->
+                <div class="border-t pt-4 space-y-4">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900">2. Quote Pezzo & Parametri CAD Teorici</h3>
+                        <p class="text-xs text-slate-500">Per calcolare lo sviluppo piano e lo scostamento rispetto all'ufficio tecnico</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Flangia Esterna A (mm)</label>
+                            <input type="number" id="flangeA" value="50.0" min="1" max="5000" step="1" oninput="calculateAll()" class="w-full rounded-lg border-slate-300 border p-2 text-sm font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Flangia Esterna B (mm)</label>
+                            <input type="number" id="flangeB" value="50.0" min="1" max="5000" step="1" oninput="calculateAll()" class="w-full rounded-lg border-slate-300 border p-2 text-sm font-mono">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 bg-amber-50/70 p-3 rounded-lg border border-amber-200">
+                        <div>
+                            <label class="block text-xs font-semibold text-amber-900 mb-1">Raggio Interno nel CAD (mm)</label>
+                            <input type="number" id="cadRadius" value="1.0" min="0.1" max="50" step="0.1" oninput="calculateAll()" class="w-full rounded border-amber-300 border p-1.5 text-sm font-mono bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-amber-900 mb-1">Fattore K nel CAD</label>
+                            <input type="number" id="cadK" value="0.33" min="0.1" max="0.5" step="0.01" oninput="calculateAll()" class="w-full rounded border-amber-300 border p-1.5 text-sm font-mono bg-white">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLONNA DESTRA: RISULTATI REALI & CONFRONTO CAD (7 Colonne) -->
+            <div class="lg:col-span-7 space-y-6">
+
+                <!-- Box Alert Sicurezza / Utensili -->
+                <div id="warningBox" class="hidden p-4 rounded-xl border bg-red-50 border-red-300 text-red-900 text-sm"></div>
+
+                <!-- Card 1: Risultati Meccanici Officina -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-center border-b pb-3 mb-4">
+                        <h2 class="text-lg font-bold text-slate-900">Risultati Fisici in Macchina</h2>
+                        <span id="activeMethodTag" class="text-xs font-bold uppercase px-2.5 py-1 rounded bg-blue-100 text-blue-800">Aria</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <!-- Forza Richiesta -->
+                        <div class="bg-slate-900 text-white p-4 rounded-xl">
+                            <span class="text-xs text-slate-400 uppercase font-semibold block">Forza Totale</span>
+                            <div class="text-2xl font-black font-mono mt-1 text-blue-400" id="resTon">0.0 t</div>
+                            <span class="text-xs text-slate-300 font-mono" id="resKn">0 kN</span>
+                        </div>
+
+                        <!-- Raggio Interno Reale -->
+                        <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl">
+                            <span class="text-xs text-blue-800 uppercase font-semibold block">Raggio Reale ($r_i$)</span>
+                            <div class="text-2xl font-black font-mono mt-1 text-blue-950" id="resRealRi">0.00 mm</div>
+                            <span class="text-[11px] text-blue-700 block mt-0.5" id="resRiSource">Da cava V</span>
+                        </div>
+
+                        <!-- Bordo Minimo -->
+                        <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                            <span class="text-xs text-slate-600 uppercase font-semibold block">Bordo Min. ($b_{min}$)</span>
+                            <div class="text-2xl font-black font-mono mt-1 text-slate-900" id="resMinFlange">0.0 mm</div>
+                            <span class="text-[11px] text-slate-500 block mt-0.5">Quota esterna min.</span>
+                        </div>
+
+                        <!-- Ritorno Elastico Stimato -->
+                        <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                            <span class="text-xs text-slate-600 uppercase font-semibold block">Springback ($\Delta \alpha$)</span>
+                            <div class="text-2xl font-black font-mono mt-1 text-slate-900" id="resSpringback">0.0°</div>
+                            <span class="text-[11px] text-slate-500 block mt-0.5">Compensazione stima</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Sviluppo Lamiera & Ritiro Reale -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-5">
+                    <div class="border-b pb-3 flex justify-between items-center">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Sviluppo Lamiera & Parametri Reali</h2>
+                            <p class="text-xs text-slate-500">Calcolati automaticamente dal raggio reale generato dalla matrice</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-4 rounded-lg bg-slate-50 border border-slate-200">
+                            <span class="text-xs text-slate-500 font-bold uppercase">Fattore K Reale</span>
+                            <div class="text-xl font-bold font-mono text-slate-900 mt-1" id="resRealK">0.42</div>
+                            <p class="text-[11px] text-slate-500 mt-1">Calcolato sul rapporto $r_i / s$</p>
+                        </div>
+                        <div class="p-4 rounded-lg bg-slate-50 border border-slate-200">
+                            <span class="text-xs text-slate-500 font-bold uppercase">Bend Allowance ($BA$)</span>
+                            <div class="text-xl font-bold font-mono text-slate-900 mt-1" id="resRealBA">0.00 mm</div>
+                            <p class="text-[11px] text-slate-500 mt-1">Sviluppo dell'arco neutro</p>
+                        </div>
+                        <div class="p-4 rounded-lg bg-emerald-50 border border-emerald-200">
+                            <span class="text-xs text-emerald-800 font-bold uppercase">Ritiro di Piega ($BD$)</span>
+                            <div class="text-xl font-black font-mono text-emerald-950 mt-1" id="resRealBD">0.00 mm</div>
+                            <p class="text-[11px] text-emerald-700 mt-1">Valore da sottrarre ($A + B - BD$)</p>
+                        </div>
+                    </div>
+
+                    <!-- Sviluppo Finale Pezzo Piano -->
+                    <div class="bg-slate-900 text-white p-5 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <span class="text-xs uppercase tracking-wider text-slate-400 font-bold">Misura Taglio Laser Reale (Sviluppo Piano)</span>
+                            <p class="text-xs text-slate-300 mt-0.5">Per ottenere flange finite di <span id="lblFlanges">50 + 50 mm</span></p>
+                        </div>
+                        <div class="text-3xl font-black font-mono text-emerald-400" id="resFlatLength">96.40 mm</div>
+                    </div>
+                </div>
+
+                <!-- Card 3: CAD REALITY CHECK (Il differenziale tra Ufficio Tecnico e Officina) -->
+                <div class="bg-amber-50/90 p-6 rounded-xl shadow-sm border-2 border-amber-300 space-y-4">
+                    <div class="flex items-start justify-between gap-2">
+                        <div>
+                            <span class="bg-amber-800 text-white text-[10px] font-bold uppercase px-2 py-0.5 rounded tracking-wider">Diagnostica CAD vs Officina</span>
+                            <h3 class="text-base font-bold text-amber-950 mt-1">Verifica Scostamento Disegno Tecnico</h3>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs text-amber-800 block">Errore di Sviluppo sul Pezzo</span>
+                            <span id="cadDeltaBadge" class="text-lg font-black font-mono text-red-600">+0.00 mm</span>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs md:text-sm border-collapse">
+                            <thead>
+                                <tr class="border-b border-amber-300 text-amber-900">
+                                    <th class="py-2">Parametro</th>
+                                    <th class="py-2 font-mono">Impostato in CAD</th>
+                                    <th class="py-2 font-mono">Realtà in Pressa</th>
+                                    <th class="py-2">Impatto Pratico</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-amber-200/70 text-slate-800">
+                                <tr>
+                                    <td class="py-2 font-semibold">Raggio Interno ($r_i$)</td>
+                                    <td class="py-2 font-mono" id="tblCadRi">1.00 mm</td>
+                                    <td class="py-2 font-mono font-bold text-blue-900" id="tblRealRi">2.60 mm</td>
+                                    <td class="py-2 text-xs" id="tblRiComment">La cava genera un raggio più ampio</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 font-semibold">Fattore K</td>
+                                    <td class="py-2 font-mono" id="tblCadK">0.33</td>
+                                    <td class="py-2 font-mono font-bold text-blue-900" id="tblRealK">0.42</td>
+                                    <td class="py-2 text-xs">Spostamento fibra neutra</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 font-semibold">Ritiro Piega ($BD$)</td>
+                                    <td class="py-2 font-mono" id="tblCadBD">3.45 mm</td>
+                                    <td class="py-2 font-mono font-bold text-emerald-800" id="tblRealBD">3.82 mm</td>
+                                    <td class="py-2 text-xs" id="tblBdComment">Differenza ritiro effettivo</td>
+                                </tr>
+                                <tr class="bg-amber-100/70 font-semibold">
+                                    <td class="py-2.5">Sviluppo Taglio Laser</td>
+                                    <td class="py-2.5 font-mono" id="tblCadFlat">96.55 mm</td>
+                                    <td class="py-2.5 font-mono text-emerald-950 font-black" id="tblRealFlat">96.18 mm</td>
+                                    <td class="py-2.5 text-xs font-bold" id="tblFinalVerdict">Pezzo fuori tolleranza</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="bg-white/80 p-3 rounded-lg border border-amber-200 text-xs text-slate-700">
+                        <strong>Consiglio per l'Ufficio Tecnico:</strong> Per ottenere quote piegate corrette al primo colpo senza modificare il raggio di disegno nel modello 3D, inserisci nella tabella di piegatura del CAD un <strong>Ritiro (Bend Deduction) pari a <span id="adviceBD" class="font-mono font-bold text-slate-900">0.00 mm</span></strong>, oppure imposta direttamente nel CAD $r_i =$ <span id="adviceRi" class="font-mono font-bold">0.00 mm</span> e $K =$ <span id="adviceK" class="font-mono font-bold">0.00</span>.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 2: TABELLA INTERATTIVA MATRICI -->
+        <section id="tab-matrix" class="hidden bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Tabella Regolo di Piegatura in Aria (1 Metro Lineare)</h2>
+                    <p class="text-xs text-slate-500">Clicca su una riga per evidenziare lo spessore. I valori mostrano: <strong>Tonnellate/metro</strong> | Raggio interno ($r_i$) | Bordo minimo ($b_{min}$).</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <label class="text-xs font-bold uppercase text-slate-600">Materiale Tabella:</label>
+                    <select id="tableMaterial" onchange="renderMatrixTable()" class="rounded-lg border border-slate-300 p-2 text-sm bg-slate-50 font-semibold">
+                        <option value="420">Acciaio S235 / Ferro (Rm 420)</option>
+                        <option value="700">Acciaio Inox AISI 304 (Rm 700)</option>
+                        <option value="220">Alluminio (Rm 220)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-center text-xs border-collapse" id="interactiveMatrix">
+                    <!-- Generata dinamicamente via JS -->
+                </table>
+            </div>
+            <div class="flex flex-wrap gap-4 text-xs text-slate-600 pt-2">
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 inline-block bg-emerald-100 border border-emerald-400 rounded"></span> Scelta Cava Ottimale ($V \approx 6 \div 10 \times s$)</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 inline-block bg-slate-100 border border-slate-300 rounded"></span> Utilizzabile con attenzione</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 inline-block bg-slate-50 text-slate-300 border border-slate-200 rounded"></span> Cava sconsigliata / incompatibile</span>
+            </div>
+        </section>
+
+        <!-- Spazio Banner AdSense In-Content -->
+        <div class="bg-slate-200/70 border border-dashed border-slate-300 rounded text-center py-4 text-xs text-slate-500">
+            [ Spazio Pubblicitario Google AdSense - In-Article / Multiplex ]
+        </div>
+
+        <!-- SEZIONE GUIDA TECNICA E FORMULE (Fondamentale per SEO e AdSense) -->
+        <section id="guida" class="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-200 space-y-6">
+            <h2 class="text-2xl font-bold text-slate-900 border-b pb-3">Guida Tecnica: Meccanica della Piegatura e Calcolo dello Sviluppo</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-slate-700 leading-relaxed">
+                <div class="space-y-3">
+                    <h3 class="text-base font-bold text-slate-900">1. Piegatura in Aria vs Coniatura vs Matrici Rotanti (WingBend)</h3>
+                    <p>
+                        Nella <strong>piegatura in aria</strong> tradizionale la lamiera tocca unicamente in 3 punti: la punta del punzone e i due spigoli d'ingresso della matrice a V. Di conseguenza, il raggio interno ($r_i$) non dipende dal raggio del punzone (a meno che quest'ultimo non sia superiore al raggio naturale), ma si forma liberamente in proporzione all'apertura della cava $V$:
+                    </p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Acciaio al carbonio:</strong> $r_i \approx 0.16 \times V$ (circa $V/6$)</li>
+                        <li><strong>Acciaio Inox:</strong> $r_i \approx 0.20 \times V$ (circa $V/5$, per via del maggiore ritorno elastico)</li>
+                        <li><strong>Alluminio tenero/medio:</strong> $r_i \approx 0.14 \times V$ (circa $V/7$)</li>
+                    </ul>
+                    <p>
+                        Nelle <strong>matrici tangenziali ad ali rotanti (tipo WingBend o Rolla-V)</strong>, le spalle della matrice sono sostituite da inserti semirotondi che ruotano sincronizzati con la discesa del punzone. Questo riduce il braccio di leva necessario al bordo minimo (fino a $0.45 \times V$), elimina le marcature sull'estetica (ideale per Inox satinato o preverniciato) e costringe la lamiera a copiare fedelmente il raggio del punzone ($r_i \approx R_p$).
+                    </p>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="text-base font-bold text-slate-900">2. Perché il CAD sbaglia lo sviluppo lamiera?</h3>
+                    <p>
+                        La maggior parte dei progettisti modella in 3D lasciando i parametri di default del software (es. $r_i = 1.0\text{ mm}$ e $K = 0.33$ o $0.44$). Quando il pezzo passa in officina, l'operatore sceglie la matrice in base allo spessore: ad esempio, per uno spessore $3\text{ mm}$ utilizzerà una cava $V=24\text{ mm}$.
+                    </p>
+                    <p>
+                        Con una cava da $24\text{ mm}$, il raggio interno reale sarà circa $4.0\text{ mm}$, non $1.0\text{ mm}$! Un raggio maggiore comporta un ritiro di piega (<em>Bend Deduction</em>) sensibilmente più alto. Se il taglio laser è stato generato con i parametri teorici del CAD, il pezzo piegato risulterà più lungo della quota a disegno su ogni singola piega.
+                    </p>
+                    <div class="bg-slate-100 p-3 rounded font-mono text-xs text-slate-800">
+                        Formula Forza (Aria): F [t] = (1.42 × Rm × L × s²) / (1000 × V)<br>
+                        Bend Allowance (BA): π × (α / 180) × (ri + K × s)<br>
+                        Outside Setback (OSSB): tan(α / 2) × (ri + s)<br>
+                        Bend Deduction (BD): 2 × OSSB - BA
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEZIONE FAQ -->
+        <section id="faq" class="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-200 space-y-4">
+            <h2 class="text-xl font-bold text-slate-900 border-b pb-3">Domande Frequenti (FAQ)</h2>
+            <div class="space-y-4 text-sm text-slate-700">
+                <div>
+                    <h4 class="font-bold text-slate-900">Quando si verifica l'effetto "spigolatura" con un punzone troppo acuto?</h4>
+                    <p class="mt-1">Quando il raggio del punzone ($R_p$) è inferiore a circa il 63% dello spessore della lamiera ($R_p < 0.63 \times s$), la punta tende a incidere e solcare la fibra interna del metallo anzichéaccompagnarla in flessione, alterando il Fattore K e aumentando il rischio di cricche sull'esterno piega.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-slate-900">Come influisce il senso di laminazione sulla piegatura?</h4>
+                    <p class="mt-1">Piegare perpendicolarmente alla fibra di laminazione richiede una forza leggermente superiore ma garantisce la massima resistenza alle fessurazioni, permettendo raggi più stretti. Piegando parallelamente alla vena di laminazione il ritorno elastico è inferiore, ma su acciai ad alta resistenza o alluminio serie 6000 aumenta il rischio di rottura superficiale.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-slate-900">Qual è la differenza tra Bend Allowance (BA) e Bend Deduction (BD)?</h4>
+                    <p class="mt-1">La <em>Bend Allowance</em> rappresenta la lunghezza effettiva dell'arco lungo l'asse neutro nella zona piegata (si somma alle lunghezze piane prima dell'inizio del raggio). La <em>Bend Deduction</em> (o ritiro di piega) è invece il valore totale da sottrarre alla somma delle quote esterne a spigolo vivo ($L = A + B - BD$).</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer & Note Legali (Requisito AdSense) -->
+    <footer class="bg-slate-900 text-slate-400 text-xs mt-16 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 py-8 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <h5 class="text-white font-bold uppercase mb-2">BendMaster Pro</h5>
+                    <p>Strumento di calcolo tecnico per operatori di presse piegatrici, pannellatrici, progettisti CAD di carpenteria metallica e uffici tecnici.</p>
+                </div>
+                <div>
+                    <h5 class="text-white font-bold uppercase mb-2">Disclaimer Tecnico</h5>
+                    <p>I valori calcolati derivano da modelli empirici e fisici standardizzati. Tolleranze sullo spessore della colata, verso di laminazione, stato di usura degli utensili e geometria delle spalle matrice possono generare variazioni. Eseguire sempre un provino di piega prima della produzione in serie.</p>
+                </div>
+                <div>
+                    <h5 class="text-white font-bold uppercase mb-2">Informazioni Legali & Contatti</h5>
+                    <ul class="space-y-1">
+                        <li><button onclick="openModal('privacy')" class="hover:text-white underline">Privacy & Cookie Policy</button></li>
+                        <li><button onclick="openModal('terms')" class="hover:text-white underline">Termini di Utilizzo</button></li>
+                        <li>Contatto tecnico: <span class="text-slate-300">info@tuodominio.com</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-slate-800 pt-4 text-center">
+                &copy; 2026 BendMaster Pro. Tutti i diritti riservati.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal per Privacy & Termini -->
+    <div id="legalModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl max-w-2xl w-full p-6 max-h-[80vh] overflow-y-auto space-y-4 text-sm text-slate-700">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 id="modalTitle" class="text-lg font-bold text-slate-900">Informativa</h3>
+                <button onclick="closeModal()" class="text-slate-500 hover:text-slate-900 font-bold text-lg">&times;</button>
+            </div>
+            <div id="modalBody" class="space-y-3 leading-relaxed"></div>
+        </div>
+    </div>
+
+    <!-- LOGICA JAVASCRIPT -->
+    <script>
+        // Costanti e configurazioni metodi
+        const METHOD_INFO = {
+            air: {
+                tag: "Piegatura in Aria",
+                hint: "Il raggio interno (ri) dipende dall'apertura della cava V. Forza contenuta e massima flessibilità sugli angoli.",
+                labelV: "Apertura Cava V (mm)"
+            },
+            wing: {
+                tag: "Matrice Rotante (WingBend)",
+                hint: "Le ali rotanti accompagnano la lamiera: zero strisciamento, bordo minimo ridotto (~0.45×V) e raggio interno guidato dal punzone.",
+                labelV: "Apertura Equivalente / Luce Ali (mm)"
+            },
+            coining: {
+                tag: "Coniatura a Fondo Cava",
+                hint: "La lamiera viene stampata a fondo matrice: il raggio interno è imposto dal punzone (ri = Rp), ritorno elastico quasi nullo ma richiede 3.5×–5× la forza dell'aria.",
+                labelV: "Apertura Cava V (mm)"
+            },
+            panel: {
+                tag: "Pannellatrice (Tangenziale)",
+                hint: "Lavorazione per flessione a sbalzo: la lama piega il lembo sporgente dal premilamiera. Ideale per scatolati e profili complessi.",
+                labelV: "Braccio di Leva / Gioco Lama (mm)"
+            }
+        };
+
+        // Cambio scheda
+        function switchTab(tab) {
+            document.getElementById('tab-main').classList.toggle('hidden', tab !== 'main');
+            document.getElementById('tab-matrix').classList.toggle('hidden', tab !== 'matrix');
+            document.getElementById('tab-btn-main').classList.toggle('tab-active', tab === 'main');
+            document.getElementById('tab-btn-matrix').classList.toggle('tab-active', tab === 'matrix');
+            if (tab === 'matrix') renderMatrixTable();
+        }
+
+        // Gestione cambio materiale predefinito
+        function onMaterialPresetChange() {
+            const matSelect = document.getElementById('material').value;
+            const rmInput = document.getElementById('rmValue');
+            if (matSelect !== 'custom') {
+                rmInput.value = matSelect;
+            }
+            resetOptimalV();
+        }
+
+        // Gestione cambio spessore: aggiorna automaticamente la cava ottimale
+        function onThicknessChange() {
+            resetOptimalV();
+        }
+
+        function onMethodOrMaterialChange() {
+            resetOptimalV();
+        }
+
+        // Calcola cava standard da officina in base allo spessore e al metodo
+        function resetOptimalV() {
+            const s = parseFloat(document.getElementById('thickness').value) || 2;
+            const rm = parseFloat(document.getElementById('rmValue').value) || 420;
+            const method = document.getElementById('bendMethod').value;
+
+            let multiplier = 8;
+            if (method === 'coining') {
+                multiplier = 6;
+            } else if (method === 'wing') {
+                multiplier = 6;
+            } else if (method === 'panel') {
+                multiplier = 3; // Braccio di flessione
+            } else {
+                // Air bending standard
+                if (rm >= 650) multiplier = 10; // Inox o altoresistenziale
+                else if (s <= 2.5) multiplier = 6;
+                else if (s <= 8) multiplier = 8;
+                else multiplier = 10;
+            }
+
+            // Arrotonda alle cave commerciali più comuni se in aria/coniatura
+            const standardDies = [4, 6, 8, 10, 12, 16, 20, 24, 32, 40, 50, 63, 80, 100, 125, 160, 200];
+            let targetV = s * multiplier;
+            if (method === 'air' || method === 'coining') {
+                let closest = standardDies.reduce((prev, curr) => 
+                    Math.abs(curr - targetV) < Math.abs(prev - targetV) ? curr : prev
+                );
+                document.getElementById('dieV').value = closest;
+            } else {
+                document.getElementById('dieV').value = Math.max(2, Math.round(targetV));
+            }
+            calculateAll();
+        }
+
+        // Funzione per calcolare BA, OSSB e BD dati: s, angolo di piega (es. 90°), ri, K
+        function computeSheetDevelopment(s, angleDeg, ri, k) {
+            // Angolo complementare di flessione interna (per 90° di angolo pezzo, la deviazione è 90°;
+            // se l'utente imposta 135° interni, la lamiera piega di 45°)
+            // Convenzione officina: 90° = angolo retto; consideriamo bendAngle = 180 - angleDeg per angoli ottusi,
+            // ma se angleDeg == 90 -> 90°. Usiamo la convenzione diretta: deviazione angolare = 180 - angleDeg
+            // Per evitare ambiguità: se l'utente scrive 90°, la deviazione è 90°.
+            const bendSupplement = 180 - angleDeg; 
+            const rad = (bendSupplement * Math.PI) / 180;
+
+            const ba = rad * (ri + k * s);
+            const ossb = Math.tan(rad / 2) * (ri + s);
+            const bd = (2 * ossb) - ba;
+            return { ba, ossb, bd };
+        }
+
+        // Motore di calcolo principale
+        function calculateAll() {
+            const method = document.getElementById('bendMethod').value;
+            const rm = parseFloat(document.getElementById('rmValue').value) || 420;
+            const s = parseFloat(document.getElementById('thickness').value) || 1;
+            const L = parseFloat(document.getElementById('length').value) || 1000;
+            const angle = parseFloat(document.getElementById('angle').value) || 90;
+            const V = parseFloat(document.getElementById('dieV').value) || 16;
+            const rp = parseFloat(document.getElementById('punchR').value) || 1.0;
+
+            const flangeA = parseFloat(document.getElementById('flangeA').value) || 50;
+            const flangeB = parseFloat(document.getElementById('flangeB').value) || 50;
+            const cadRi = parseFloat(document.getElementById('cadRadius').value) || 1.0;
+            const cadK = parseFloat(document.getElementById('cadK').value) || 0.33;
+
+            // Aggiorna testi UI metodo
+            document.getElementById('methodHint').textContent = METHOD_INFO[method].hint;
+            document.getElementById('activeMethodTag').textContent = METHOD_INFO[method].tag;
+            document.getElementById('labelV').textContent = METHOD_INFO[method].labelV;
+            document.getElementById('vRatioBadge').textContent = `Rapporto V/s: ${(V / s).toFixed(1)}x`;
+
+            // 1. Calcolo Forza (Tonnellate) e Raggio Interno Reale (ri) in base al metodo
+            let forceTons = 0;
+            let realRi = 1.0;
+            let riSourceText = "";
+            let minFlange = 0;
+            let springbackDeg = 0;
+
+            // Coefficiente correzione V/s per forza in aria
+            const baseAirTons = (1.42 * rm * (L / 1000) * Math.pow(s, 2)) / V;
+
+            if (method === 'air') {
+                forceTons = baseAirTons;
+                // Raggio naturale in aria: dipende da V e dal carico di rottura Rm
+                let vFactor = 0.16; // Default Fe360 (~V/6.25)
+                if (rm >= 650) vFactor = 0.20; // Inox (~V/5)
+                else if (rm <= 280) vFactor = 0.14; // Alluminio (~V/7)
+
+                let naturalRi = V * vFactor;
+                if (rp > naturalRi) {
+                    realRi = rp;
+                    riSourceText = "Imposto da Raggio Punzone (Rp > V/6)";
+                } else {
+                    realRi = naturalRi;
+                    riSourceText = `Generato da Cava V (${(vFactor*100).toFixed(0)}% di V)`;
+                }
+                minFlange = 0.7 * V;
+                springbackDeg = (rm / 400) * (1.2 + 0.12 * (V / s));
+
+            } else if (method === 'wing') {
+                // Matrici rotanti WingBend / Rolla-V:
+                // Riduzione attrito (~12% meno forza rispetto a cava equivalente), raggio molto prossimo al punzone
+                forceTons = baseAirTons * 0.88;
+                realRi = Math.max(rp, s * 0.65);
+                // Piccola espansione elastica se il materiale è tenace
+                if (rm >= 650) realRi *= 1.12;
+                riSourceText = "Guidato da Punzone + Ali Rotanti";
+                minFlange = 0.45 * V; // Punto di forza WingBend: flange cortissime
+                springbackDeg = (rm / 400) * 1.4;
+
+            } else if (method === 'coining') {
+                // Coniatura a fondo cava
+                forceTons = baseAirTons * 4.0;
+                realRi = rp;
+                riSourceText = "Stampato da Punta Punzone (Fondo Cava)";
+                minFlange = 0.65 * V;
+                springbackDeg = 0.3; // Ritorno elastico quasi azzerato
+
+            } else if (method === 'panel') {
+                // Pannellatrice / Wiping
+                const leverArm = Math.max(V, s * 1.5);
+                forceTons = (0.65 * rm * (L / 1000) * Math.pow(s, 2)) / leverArm;
+                realRi = Math.max(rp, s * 0.8);
+                riSourceText = "Generato da Raggio Utensile / Premilamiera";
+                minFlange = s * 2.5;
+                springbackDeg = (rm / 400) * 1.8;
+            }
+
+            // 2. Calcolo Dinamico del Fattore K Reale in base al rapporto (realRi / s) e al metodo
+            let ratioRiS = realRi / s;
+            let realK = 0.42;
+
+            if (method === 'coining') {
+                realK = 0.46; // Schiacciamento plastico della fibra
+            } else if (method === 'panel') {
+                realK = Math.min(0.42, 0.28 + 0.04 * ratioRiS);
+            } else {
+                // Formula logaritmica/continua usata nei CAM lamiera per piegatura in aria e matrici rotanti
+                if (ratioRiS < 0.65) {
+                    realK = 0.32;
+                } else if (ratioRiS <= 4.0) {
+                    realK = 0.33 + 0.045 * Math.log2(ratioRiS + 0.5);
+                } else {
+                    realK = 0.48;
+                }
+                realK = Math.min(0.50, Math.max(0.30, realK));
+            }
+
+            // 3. Calcolo Sviluppo Reale vs Sviluppo CAD
+            const realDev = computeSheetDevelopment(s, angle, realRi, realK);
+            const cadDev = computeSheetDevelopment(s, angle, cadRi, cadK);
+
+            const realFlatLength = flangeA + flangeB - realDev.bd;
+            const cadFlatLength = flangeA + flangeB - cadDev.bd;
+            const deltaFlat = cadFlatLength - realFlatLength; // Se positivo, il CAD taglia il pezzo più lungo del dovuto
+
+            // 4. Gestione Avvisi Tecnici (Warning Box)
+            const warnings = [];
+            if (V < s * 4 && method !== 'panel') {
+                warnings.push(`⚠️ <strong>Cava V troppo stretta (${V} mm per spessore ${s} mm):</strong> Rischio critico di sovraccarico e rottura matrice.`);
+            }
+            if (rp < s * 0.63 && method !== 'panel') {
+                warnings.push(`ℹ️ <strong>Effetto Spigolatura (Punzone Acuto):</strong> Il raggio punzone (${rp} mm) è inferiore a 0.63×s (${(s*0.63).toFixed(2)} mm). La punta inciderà l'interno piega.`);
+            }
+            if (flangeA < minFlange || flangeB < minFlange) {
+                warnings.push(`⚠️ <strong>Flangia inferiore al Bordo Minimo (${minFlange.toFixed(1)} mm):</strong> Il lembo rischia di scivolare dentro la matrice durante la discesa.`);
+            }
+
+            const warningBox = document.getElementById('warningBox');
+            if (warnings.length > 0) {
+                warningBox.innerHTML = warnings.join('<br>');
+                warningBox.classList.remove('hidden');
+            } else {
+                warningBox.classList.add('hidden');
+            }
+
+            // 5. Popolamento UI Risultati
+            document.getElementById('resTon').textContent = `${forceTons.toFixed(1)} t`;
+            document.getElementById('resKn').textContent = `${(forceTons * 9.81).toFixed(0)} kN (${(forceTons / (L/1000)).toFixed(1)} t/m)`;
+            document.getElementById('resRealRi').textContent = `${realRi.toFixed(2)} mm`;
+            document.getElementById('resRiSource').textContent = riSourceText;
+            document.getElementById('resMinFlange').textContent = `${minFlange.toFixed(1)} mm`;
+            document.getElementById('resSpringback').textContent = `~${springbackDeg.toFixed(1)}°`;
+
+            document.getElementById('resRealK').textContent = realK.toFixed(3);
+            document.getElementById('resRealBA').textContent = `${realDev.ba.toFixed(2)} mm`;
+            document.getElementById('resRealBD').textContent = `${realDev.bd.toFixed(2)} mm`;
+            document.getElementById('lblFlanges').textContent = `${flangeA} + ${flangeB} mm (a ${angle}°)`;
+            document.getElementById('resFlatLength').textContent = `${realFlatLength.toFixed(2)} mm`;
+
+            // 6. Popolamento Tabella Diagnostica CAD vs Officina
+            document.getElementById('tblCadRi').textContent = `${cadRi.toFixed(2)} mm`;
+            document.getElementById('tblRealRi').textContent = `${realRi.toFixed(2)} mm`;
+            document.getElementById('tblCadK').textContent = cadK.toFixed(2);
+            document.getElementById('tblRealK').textContent = realK.toFixed(3);
+            document.getElementById('tblCadBD').textContent = `${cadDev.bd.toFixed(2)} mm`;
+            document.getElementById('tblRealBD').textContent = `${realDev.bd.toFixed(2)} mm`;
+            document.getElementById('tblCadFlat').textContent = `${cadFlatLength.toFixed(2)} mm`;
+            document.getElementById('tblRealFlat').textContent = `${realFlatLength.toFixed(2)} mm`;
+
+            const absDelta = Math.abs(deltaFlat);
+            const sign = deltaFlat >= 0 ? "+" : "";
+            const badge = document.getElementById('cadDeltaBadge');
+            badge.textContent = `${sign}${deltaFlat.toFixed(2)} mm`;
+            badge.className = absDelta > 0.25 
+                ? "text-lg font-black font-mono text-red-600" 
+                : "text-lg font-black font-mono text-emerald-700";
+
+            document.getElementById('tblRiComment').textContent = Math.abs(realRi - cadRi) > 0.3
+                ? `Scarto raggio di ${(realRi - cadRi).toFixed(2)} mm`
+                : "Raggio allineato al CAD";
+
+            const verdictEl = document.getElementById('tblFinalVerdict');
+            if (absDelta <= 0.15) {
+                verdictEl.textContent = "✅ Sviluppo CAD conforme";
+                verdictEl.className = "py-2.5 text-xs font-bold text-emerald-800";
+            } else if (deltaFlat > 0) {
+                verdictEl.textContent = `⚠️ Il CAD taglia ${absDelta.toFixed(2)} mm più LUNGO`;
+                verdictEl.className = "py-2.5 text-xs font-bold text-red-700";
+            } else {
+                verdictEl.textContent = `⚠️ Il CAD taglia ${absDelta.toFixed(2)} mm più CORTO`;
+                verdictEl.className = "py-2.5 text-xs font-bold text-red-700";
+            }
+
+            document.getElementById('adviceBD').textContent = `${realDev.bd.toFixed(2)} mm`;
+            document.getElementById('adviceRi').textContent = `${realRi.toFixed(2)} mm`;
+            document.getElementById('adviceK').textContent = realK.toFixed(3);
+        }
+
+        // Generazione Tabella Interattiva Regolo (Tab 2)
+        function renderMatrixTable() {
+            const rm = parseFloat(document.getElementById('tableMaterial').value) || 420;
+            const thicknesses = [0.8, 1.0, 1.2, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0];
+            const dies = [6, 8, 10, 12, 16, 20, 24, 32, 40, 50, 63, 80];
+
+            let vFactor = rm >= 650 ? 0.20 : (rm <= 280 ? 0.14 : 0.16);
+
+            let html = `<thead><tr class="bg-slate-900 text-white">
+                <th class="p-2.5 border border-slate-700 sticky left-0 bg-slate-900">Spessore s \\ Cava V</th>`;
+            dies.forEach(v => {
+                html += `<th class="p-2.5 border border-slate-700 font-mono">V = ${v} mm</th>`;
+            });
+            html += `</tr></thead><tbody>`;
+
+            thicknesses.forEach(s => {
+                html += `<tr onclick="this.classList.toggle('ring-2'); this.classList.toggle('ring-blue-600')" class="cursor-pointer hover:bg-blue-50/40 transition">
+                    <td class="p-2.5 border border-slate-300 font-bold font-mono bg-slate-100 sticky left-0">${s.toFixed(1)} mm</td>`;
+
+                dies.forEach(v => {
+                    const ratio = v / s;
+                    if (ratio < 4.5 || ratio > 18) {
+                        html += `<td class="p-2 border border-slate-200 bg-slate-50 text-slate-300">—</td>`;
+                    } else {
+                        const tons = (1.42 * rm * 1.0 * Math.pow(s, 2)) / v;
+                        const ri = v * vFactor;
+                        const bmin = 0.7 * v;
+                        const isOptimal = (rm >= 650) ? (ratio >= 7.5 && ratio <= 12) : (ratio >= 5.5 && ratio <= 9.5);
+                        const cellBg = isOptimal ? "bg-emerald-50/90 border-emerald-300" : "bg-white border-slate-200";
+
+                        html += `<td class="p-2 border ${cellBg}">
+                            <div class="font-bold font-mono text-slate-900">${tons.toFixed(1)} t/m</div>
+                            <div class="text-[10px] text-slate-500 font-mono">ri:${ri.toFixed(1)} | b:${bmin.toFixed(1)}</div>
+                        </td>`;
+                    }
+                });
+                html += `</tr>`;
+            });
+
+            html += `</tbody>`;
+            document.getElementById('interactiveMatrix').innerHTML = html;
+        }
+
+        // Gestione Modal Privacy & Termini
+        function openModal(type) {
+            const modal = document.getElementById('legalModal');
+            const title = document.getElementById('modalTitle');
+            const body = document.getElementById('modalBody');
+
+            if (type === 'privacy') {
+                title.textContent = "Privacy & Cookie Policy";
+                body.innerHTML = `
+                    <p><strong>1. Trattamento dei dati:</strong> Tutti i calcoli eseguiti su questo sito avvengono localmente nel browser dell'utente. Nessun disegno tecnico o parametro di lavorazione viene salvato su server esterni.</p>
+                    <p><strong>2. Cookie e Google AdSense:</strong> Questo sito utilizza fornitori di terze parti, tra cui Google, che impiegano cookie per pubblicare annunci in base alle precedenti visite dell'utente su questo o altri siti web.</p>
+                    <p>L'utilizzo dei cookie per la pubblicità consente a Google e ai suoi partner di pubblicare annunci per gli utenti in base alla loro visita a questo sito. Gli utenti possono scegliere di disattivare la pubblicità personalizzata visitando la pagina Impostazioni annunci di Google.</p>
+                `;
+            } else {
+                title.textContent = "Termini di Utilizzo e Limitazione di Responsabilità";
+                body.innerHTML = `
+                    <p>I risultati forniti da BendMaster Pro (forze di piegatura, raggi interni, fattori K e sviluppi lamiera) costituiscono stime tecniche basate su formule empiriche di settore.</p>
+                    <p>L'utente è tenuto a verificare sempre la compatibilità con i limiti di carico massimo dei propri utensili (punzoni e matrici) e della propria pressa piegatrice, effettuando campionature prima della lavorazione di lotti produttivi.</p>
+                `;
+            }
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('legalModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Avvio iniziale
+        window.addEventListener('DOMContentLoaded', () => {
+            resetOptimalV();
+        });
+    </script>
+</body>
+</html>
+
