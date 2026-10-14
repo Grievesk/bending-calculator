@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BendMaster Pro | Regolo di Piegatura Lamiera, Sviluppo CAD & Fattore K</title>
-    <meta name="description" content="Calcolatore professionale per piegatura lamiera: forza di piega, scelta cava V, raggio interno reale, WingBend, ritiro di piega (Bend Deduction), schema SVG dinamico e confronto sviluppo CAD vs Officina.">
+    <title>Grievesk Bend | Regolo di Piegatura Lamiera, Sviluppo CAD & Fattore K</title>
+    <meta name="description" content="Grievesk Bend: calcolatore tecnico per piegatura lamiera. Forza di piega, scelta cava V, raggio interno reale, WingBend, ritiro di piega (Bend Deduction) e confronto sviluppo CAD vs Officina.">
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- JSON-LD Schema.org per SEO e Google Rich Snippets -->
@@ -55,9 +55,9 @@
     <header class="bg-slate-900 text-white border-b border-slate-700 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
             <div class="flex items-center space-x-3">
-                <div class="bg-blue-600 text-white font-black px-3 py-1.5 rounded text-lg tracking-wider">BM</div>
+                <div class="bg-blue-600 text-white font-black px-3 py-1.5 rounded text-lg tracking-wider shadow-inner">GB</div>
                 <div>
-                    <h1 class="text-lg md:text-xl font-bold leading-tight">BendMaster Pro</h1>
+                    <h1 class="text-lg md:text-xl font-bold leading-tight">Grievesk Bend</h1>
                     <p class="text-xs text-slate-400">Regolo Tecnico di Piegatura &amp; Verifica Sviluppo CAD</p>
                 </div>
             </div>
@@ -277,15 +277,12 @@
                     <!-- Riquadro Schema Tecnico SVG -->
                     <div class="bg-slate-900 rounded-xl p-4 border border-slate-800 flex flex-col items-center justify-center relative overflow-hidden">
                         <svg id="bendSvg" viewBox="0 0 520 220" class="w-full max-w-[520px] h-auto select-none">
-                            <!-- Griglia tecnica di sfondo -->
                             <defs>
                                 <pattern id="techGrid" width="20" height="20" patternUnits="userSpaceOnUse">
                                     <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1e293b" stroke-width="1"/>
                                 </pattern>
                             </defs>
                             <rect width="520" height="220" fill="url(#techGrid)" />
-
-                            <!-- Gruppi disegnati dinamicamente via JS -->
                             <g id="svgGeometryGroup"></g>
                         </svg>
                         <div class="w-full flex flex-wrap justify-between items-center text-[11px] text-slate-400 border-t border-slate-800 pt-2 mt-2 px-2 gap-2">
@@ -323,7 +320,7 @@
                     </div>
                 </div>
 
-                <!-- Card 3: CAD REALITY CHECK (Il differenziale tra Ufficio Tecnico e Officina) -->
+                <!-- Card 3: CAD REALITY CHECK -->
                 <div class="bg-amber-50/90 p-6 rounded-xl shadow-sm border-2 border-amber-300 space-y-4">
                     <div class="flex flex-wrap items-start justify-between gap-2">
                         <div>
@@ -481,34 +478,40 @@
 
     </main>
 
-    <!-- Footer & Note Legali (Requisito AdSense) -->
+    <!-- Footer & Note Legali (Ottimizzato per Requisiti E-E-A-T Google AdSense) -->
     <footer class="bg-slate-900 text-slate-400 text-xs mt-16 border-t border-slate-800">
         <div class="max-w-7xl mx-auto px-4 py-8 space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                    <h5 class="text-white font-bold uppercase mb-2">BendMaster Pro</h5>
-                    <p>Strumento di calcolo tecnico per operatori di presse piegatrici, pannellatrici, progettisti CAD di carpenteria metallica e uffici tecnici.</p>
+                    <h5 class="text-white font-bold uppercase mb-2">Grievesk Bend</h5>
+                    <p class="leading-relaxed">
+                        Progetto sviluppato da <strong>Grievesk</strong> a partire da oltre 25 anni di esperienza diretta in reparto piegatura lamiera, gestione utensileria per presse piegatrici e modellazione CAD/CAM industriale.
+                    </p>
                 </div>
                 <div>
                     <h5 class="text-white font-bold uppercase mb-2">Disclaimer Tecnico</h5>
-                    <p>I valori calcolati derivano da modelli empirici e fisici standardizzati. Tolleranze sullo spessore della colata, verso di laminazione, stato di usura degli utensili e geometria delle spalle matrice possono generare variazioni. Eseguire sempre un provino di piega prima della produzione in serie.</p>
+                    <p class="leading-relaxed">
+                        I valori calcolati derivano da modelli empirici e fisici standardizzati. Tolleranze sullo spessore della colata, verso di laminazione, stato di usura degli utensili e geometria delle spalle matrice possono generare variazioni. Eseguire sempre un provino di piega prima della produzione in serie.
+                    </p>
                 </div>
                 <div>
                     <h5 class="text-white font-bold uppercase mb-2">Informazioni Legali &amp; Contatti</h5>
-                    <ul class="space-y-1">
+                    <ul class="space-y-1.5">
+                        <li><button onclick="openModal('about')" class="hover:text-white underline">Chi Siamo / Il Progetto</button></li>
                         <li><button onclick="openModal('privacy')" class="hover:text-white underline">Privacy &amp; Cookie Policy</button></li>
                         <li><button onclick="openModal('terms')" class="hover:text-white underline">Termini di Utilizzo</button></li>
-                        <li>Contatto tecnico: <span class="text-slate-300">info@tuodominio.com</span></li>
+                        <li class="pt-1">Contatto diretto: <a id="protectedEmail" href="#" class="text-blue-400 hover:underline font-mono">Caricamento contatto...</a></li>
+                        <li>GitHub: <a href="https://github.com/Grievesk" target="_blank" rel="noopener" class="text-slate-300 hover:text-white underline">github.com/Grievesk</a></li>
                     </ul>
                 </div>
             </div>
             <div class="border-t border-slate-800 pt-4 text-center">
-                &copy; 2026 BendMaster Pro. Tutti i diritti riservati.
+                &copy; 2026 Grievesk Bend. Tutti i diritti riservati.
             </div>
         </div>
     </footer>
 
-    <!-- Modal per Privacy & Termini -->
+    <!-- Modal per Privacy, Termini e Chi Siamo -->
     <div id="legalModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl max-w-2xl w-full p-6 max-h-[80vh] overflow-y-auto space-y-4 text-sm text-slate-700">
             <div class="flex justify-between items-center border-b pb-2">
@@ -521,6 +524,23 @@
 
     <!-- LOGICA JAVASCRIPT -->
     <script>
+        // =========================================================================
+        // CONFIGURAZIONE CONTATTO EMAIL PROTETTO DA SPAM BOT
+        // Se attivi Cloudflare Email Routing sul tuo dominio, lascia 'info' e il tuo dominio.
+        // Se usi Gmail col "+", metti 'tuamail+bend' in EMAIL_USER e 'gmail.com' in EMAIL_DOMAIN.
+        // =========================================================================
+        const EMAIL_USER = 'info'; 
+        const EMAIL_DOMAIN = 'grieveskbend.com';
+
+        function initProtectedEmail() {
+            const emailLink = document.getElementById('protectedEmail');
+            if (emailLink) {
+                const fullAddress = `${EMAIL_USER}@${EMAIL_DOMAIN}`;
+                emailLink.href = `mailto:${fullAddress}`;
+                emailLink.textContent = fullAddress;
+            }
+        }
+
         const METHOD_INFO = {
             air: {
                 tag: "Piegatura in Aria",
@@ -599,7 +619,6 @@
             calculateAll();
         }
 
-        // Calcolo BA, OSSB e BD basato sull'angolo di deviazione effettivo (deflectionDeg)
         function computeSheetDevelopment(s, deflectionDeg, ri, k) {
             const safeDeflection = Math.min(170, Math.max(5, deflectionDeg));
             const rad = (safeDeflection * Math.PI) / 180;
@@ -610,7 +629,6 @@
             return { ba, ossb, bd };
         }
 
-        // Disegno Tecnico SVG Dinamico
         function updateTechnicalSvg(params) {
             const { s, realRi, realK, internalAngle, deflectionAngle, flangeA, flangeB, realBD, bendCount } = params;
             const group = document.getElementById('svgGeometryGroup');
@@ -619,27 +637,18 @@
             document.getElementById('svgLegendK').textContent = realK.toFixed(2);
             document.getElementById('svgAngleLabel').textContent = `Angolo Interno: ${internalAngle.toFixed(0)}° | Deviazione: ${deflectionAngle.toFixed(0)}°`;
 
-            // Coordinate base nel canvas 520x220
             const cx = 230;
             const cy = 125;
 
-            // Spessore e raggio scalati visivamente per essere sempre leggibili nel disegno
             const visT = Math.min(28, Math.max(12, s * 4.5));
             const visRi = Math.min(55, Math.max(14, realRi * 5.5));
             const visRo = visRi + visT;
             const visRn = visRi + visT * realK;
             const armLen = 115;
 
-            // Angolo interno convertito in radianti per orientare il secondo lembo
-            // Il lembo A va orizzontalmente a sinistra (angolo PI).
-            // Il lembo B parte dal centro curvatura e sale secondo l'angolo interno.
             const alphaRad = (Math.min(165, Math.max(25, internalAngle)) * Math.PI) / 180;
+            const bendRad = Math.PI - alphaRad;
 
-            // Normale al lembo A (che va a sinistra) punta verso il basso: (0, 1)
-            // Normale al lembo B: ruotata di (PI - alphaRad)
-            const bendRad = Math.PI - alphaRad; // Angolo di deviazione in radianti
-
-            // Punto inizio arco (fine tratto piano A, in basso)
             const pA_in_x = cx;
             const pA_in_y = cy + visRi;
             const pA_out_x = cx;
@@ -647,7 +656,6 @@
             const pA_neu_x = cx;
             const pA_neu_y = cy + visRn;
 
-            // Estremo sinistro lembo A
             const endA_in_x = pA_in_x - armLen;
             const endA_in_y = pA_in_y;
             const endA_out_x = pA_out_x - armLen;
@@ -655,11 +663,8 @@
             const endA_neu_x = pA_neu_x - armLen;
             const endA_neu_y = pA_neu_y;
 
-            // Punto fine arco (inizio tratto piano B)
-            // La normale al punto finale dell'arco forma un angolo bendRad rispetto a (0, 1) -> (sin(bendRad), cos(bendRad))
             const nx = Math.sin(bendRad);
             const ny = Math.cos(bendRad);
-            // Direzione tangente lungo il lembo B: (cos(bendRad), -sin(bendRad))
             const tx = Math.cos(bendRad);
             const ty = -Math.sin(bendRad);
 
@@ -670,7 +675,6 @@
             const pB_neu_x = cx + visRn * nx;
             const pB_neu_y = cy + visRn * ny;
 
-            // Estremo lembo B
             const endB_in_x = pB_in_x + armLen * tx;
             const endB_in_y = pB_in_y + armLen * ty;
             const endB_out_x = pB_out_x + armLen * tx;
@@ -680,7 +684,6 @@
 
             const largeArc = bendRad > Math.PI ? 1 : 0;
 
-            // Path corpo lamiera
             const sheetPath = [
                 `M ${endA_in_x} ${endA_in_y}`,
                 `L ${pA_in_x} ${pA_in_y}`,
@@ -693,7 +696,6 @@
                 `Z`
             ].join(' ');
 
-            // Path fibra neutra
             const neutralPath = [
                 `M ${endA_neu_x} ${endA_neu_y}`,
                 `L ${pA_neu_x} ${pA_neu_y}`,
@@ -701,37 +703,25 @@
                 `L ${endB_neu_x} ${endB_neu_y}`
             ].join(' ');
 
-            // Punto medio dell'arco interno per indicare ri
             const midRad = bendRad / 2;
             const mid_in_x = cx + visRi * Math.sin(midRad);
             const mid_in_y = cy + visRi * Math.cos(midRad);
 
             group.innerHTML = `
-                <!-- Corpo Lamiera Piegata -->
                 <path d="${sheetPath}" fill="#1e3a8a" fill-opacity="0.55" stroke="#60a5fa" stroke-width="2.5" stroke-linejoin="round" />
-
-                <!-- Fibra Neutra (Asse K) -->
                 <path d="${neutralPath}" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-dasharray="5,4" />
-
-                <!-- Centro e Freccia Raggio Interno ri -->
                 <circle cx="${cx}" cy="${cy}" r="3" fill="#34d399" />
                 <line x1="${cx}" y1="${cy}" x2="${mid_in_x}" y2="${mid_in_y}" stroke="#34d399" stroke-width="1.5" />
                 <circle cx="${mid_in_x}" cy="${mid_in_y}" r="3.5" fill="#34d399" />
                 <text x="${cx - 10}" y="${cy - 10}" fill="#34d399" font-family="monospace" font-size="12" font-weight="bold">
                     ri = ${realRi.toFixed(2)} mm
                 </text>
-
-                <!-- Etichetta Flangia A -->
                 <text x="${endA_out_x + 10}" y="${endA_out_y + 18}" fill="#e2e8f0" font-family="monospace" font-size="12" font-weight="bold">
                     A = ${flangeA} mm
                 </text>
-
-                <!-- Etichetta Flangia B -->
                 <text x="${endB_out_x - 35}" y="${Math.max(22, endB_out_y - 10)}" fill="#e2e8f0" font-family="monospace" font-size="12" font-weight="bold">
                     B = ${flangeB} mm
                 </text>
-
-                <!-- Riquadro Riepilogo Destro nello Schema -->
                 <rect x="365" y="18" width="142" height="92" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
                 <text x="375" y="38" fill="#94a3b8" font-family="sans-serif" font-size="10" font-weight="bold">DATI PIEGA ATTIVI</text>
                 <text x="375" y="56" fill="#38bdf8" font-family="monospace" font-size="11">Spessore: ${s} mm</text>
@@ -756,7 +746,6 @@
             const cadRi = parseFloat(document.getElementById('cadRadius').value) || 1.0;
             const cadK = parseFloat(document.getElementById('cadK').value) || 0.33;
 
-            // Determinazione univoca di Angolo Interno e Angolo di Deviazione
             let internalAngle = 90;
             let deflectionAngle = 90;
             if (angleMode === 'internal') {
@@ -767,13 +756,11 @@
                 internalAngle = 180 - deflectionAngle;
             }
 
-            // Aggiorna testi UI metodo
             document.getElementById('methodHint').textContent = METHOD_INFO[method].hint;
             document.getElementById('activeMethodTag').textContent = METHOD_INFO[method].tag;
             document.getElementById('labelV').textContent = METHOD_INFO[method].labelV;
             document.getElementById('vRatioBadge').textContent = `Rapporto V/s: ${(V / s).toFixed(1)}x`;
 
-            // 1. Calcolo Forza e Raggio Interno Reale (ri)
             let forceTons = 0;
             let realRi = 1.0;
             let riSourceText = "";
@@ -823,7 +810,6 @@
                 springbackDeg = (rm / 400) * 1.8;
             }
 
-            // 2. Calcolo Dinamico del Fattore K Reale
             let ratioRiS = realRi / s;
             let realK = 0.42;
 
@@ -842,7 +828,6 @@
                 realK = Math.min(0.50, Math.max(0.30, realK));
             }
 
-            // 3. Calcolo Sviluppo Reale vs Sviluppo CAD (moltiplicato per N pieghe)
             const realDev = computeSheetDevelopment(s, deflectionAngle, realRi, realK);
             const cadDev = computeSheetDevelopment(s, deflectionAngle, cadRi, cadK);
 
@@ -853,7 +838,6 @@
             const cadFlatLength = flangeA + flangeB - totalCadBD;
             const deltaFlat = cadFlatLength - realFlatLength;
 
-            // 4. Gestione Avvisi Tecnici
             const warnings = [];
             if (V < s * 4 && method !== 'panel') {
                 warnings.push(`⚠️ <strong>Cava V troppo stretta (${V} mm per spessore ${s} mm):</strong> Rischio critico di sovraccarico e rottura matrice.`);
@@ -873,7 +857,6 @@
                 warningBox.classList.add('hidden');
             }
 
-            // 5. Popolamento UI Risultati
             document.getElementById('resTon').textContent = `${forceTons.toFixed(1)} t`;
             document.getElementById('resKn').textContent = `${(forceTons * 9.81).toFixed(0)} kN (${(forceTons / (L/1000)).toFixed(1)} t/m)`;
             document.getElementById('resRealRi').textContent = `${realRi.toFixed(2)} mm`;
@@ -890,7 +873,6 @@
             document.getElementById('lblFlanges').textContent = `${flangeA} + ${flangeB} - (${bendCount} × ${realDev.bd.toFixed(2)}) mm`;
             document.getElementById('resFlatLength').textContent = `${realFlatLength.toFixed(2)} mm`;
 
-            // 6. Aggiornamento Disegno SVG Dinamico
             updateTechnicalSvg({
                 s,
                 realRi,
@@ -903,7 +885,6 @@
                 bendCount
             });
 
-            // 7. Popolamento Tabella Diagnostica CAD vs Officina
             document.getElementById('lblDiagnosticBends').textContent = bendCount > 1 ? `su ${bendCount} pieghe` : `su 1 piega`;
             document.getElementById('tblBdCountLabel').textContent = `${bendCount}×`;
             document.getElementById('tblCadRi').textContent = `${cadRi.toFixed(2)} mm`;
@@ -944,7 +925,6 @@
             document.getElementById('adviceK').textContent = realK.toFixed(3);
         }
 
-        // Condivisione parametri tramite URL Query String
         function copyShareLink() {
             const params = new URLSearchParams({
                 m: document.getElementById('bendMethod').value,
@@ -971,7 +951,6 @@
             });
         }
 
-        // Caricamento parametri da URL se presenti
         function loadFromUrlParams() {
             const p = new URLSearchParams(window.location.search);
             if (!p.has('s')) {
@@ -998,7 +977,6 @@
             calculateAll();
         }
 
-        // Generazione Tabella Interattiva Regolo (Tab 2)
         function renderMatrixTable() {
             const rm = parseFloat(document.getElementById('tableMaterial').value) || 420;
             const thicknesses = [0.8, 1.0, 1.2, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0];
@@ -1046,17 +1024,24 @@
             const title = document.getElementById('modalTitle');
             const body = document.getElementById('modalBody');
 
-            if (type === 'privacy') {
+            if (type === 'about') {
+                title.textContent = "Chi Siamo — Il Progetto Grievesk Bend";
+                body.innerHTML = `
+                    <p><strong>Grievesk Bend</strong> nasce dall'esperienza pratica di oltre 25 anni nella gestione del reparto di piegatura lamiera, attrezzaggio di presse piegatrici industriali e programmazione CAD/CAM.</p>
+                    <p>L'obiettivo dello strumento è colmare il divario storico tra <strong>Ufficio Tecnico (progettazione 3D)</strong> e <strong>Officina (realtà fisica in macchina)</strong>: troppo spesso gli sviluppi piano generati dai software CAD con parametri statici non tengono conto del raggio reale imposto dall'apertura della matrice V o dalle matrici rotanti tangenziali.</p>
+                    <p>Tutti gli algoritmi sono progettati per offrire a piegatori, attrezzisti e disegnatori un riscontro immediato, gratuito e privo di registrazioni obbligatorie.</p>
+                `;
+            } else if (type === 'privacy') {
                 title.textContent = "Privacy & Cookie Policy";
                 body.innerHTML = `
-                    <p><strong>1. Trattamento dei dati:</strong> Tutti i calcoli eseguiti su questo sito avvengono localmente nel browser dell'utente. Nessun disegno tecnico o parametro di lavorazione viene salvato su server esterni.</p>
+                    <p><strong>1. Trattamento dei dati:</strong> Tutti i calcoli eseguiti su Grievesk Bend avvengono localmente nel browser dell'utente. Nessun disegno tecnico o parametro di lavorazione viene salvato su server esterni.</p>
                     <p><strong>2. Cookie e Google AdSense:</strong> Questo sito utilizza fornitori di terze parti, tra cui Google, che impiegano cookie per pubblicare annunci in base alle precedenti visite dell'utente su questo o altri siti web.</p>
                     <p>L'utilizzo dei cookie per la pubblicità consente a Google e ai suoi partner di pubblicare annunci per gli utenti in base alla loro visita a questo sito. Gli utenti possono scegliere di disattivare la pubblicità personalizzata visitando la pagina Impostazioni annunci di Google.</p>
                 `;
             } else {
                 title.textContent = "Termini di Utilizzo e Limitazione di Responsabilità";
                 body.innerHTML = `
-                    <p>I risultati forniti da BendMaster Pro (forze di piegatura, raggi interni, fattori K e sviluppi lamiera) costituiscono stime tecniche basate su formule empiriche di settore.</p>
+                    <p>I risultati forniti da Grievesk Bend (forze di piegatura, raggi interni, fattori K e sviluppi lamiera) costituiscono stime tecniche basate su formule empiriche di settore.</p>
                     <p>L'utente è tenuto a verificare sempre la compatibilità con i limiti di carico massimo dei propri utensili (punzoni e matrici) e della propria pressa piegatrice, effettuando campionature prima della lavorazione di lotti produttivi.</p>
                 `;
             }
@@ -1071,6 +1056,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            initProtectedEmail();
             loadFromUrlParams();
         });
     </script>
