@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grievesk Bend | Regolo di Piegatura Lamiera, Sviluppo CAD & Fattore K</title>
-    <meta name="description" content="Grievesk Bend: calcolatore tecnico per piegatura lamiera. Forza di piega, scelta cava V, raggio interno reale, WingBend, ritiro di piega (Bend Deduction) e confronto sviluppo CAD vs Officina.">
+    <meta name="description" content="Grievesk Bend: calcolatore tecnico per piegatura lamiera. Forza di piega, scelta cava V, raggio interno reale, WingBend, ritiro di piega (Bend Deduction) e condivisione di configurazioni e consultazione dei riferimenti S/V/F.">
     <link rel="canonical" href="https://grieveskbend.com/" />
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -47,7 +47,11 @@
             border-bottom: 3px solid #2563eb;
             color: #1d4ed8;
             font-weight: 700;
+            background: #eff6ff;
         }
+        [role="tab"] { min-height: 52px; line-height: 1.25; }
+        input, select { min-height: 42px; }
+        @media (max-width: 420px) { [role="tab"] { font-size: 0.68rem; padding-left: 0.25rem; padding-right: 0.25rem; } }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased">
@@ -59,7 +63,7 @@
                 <div class="bg-blue-600 text-white font-black px-3 py-1.5 rounded text-lg tracking-wider shadow-inner">GB</div>
                 <div>
                     <h1 class="text-lg md:text-xl font-bold leading-tight">Grievesk Bend</h1>
-                    <p class="text-xs text-slate-400">Regolo Tecnico di Piegatura &amp; Verifica Sviluppo CAD</p>
+                    <p class="text-xs text-slate-400">Calcolo del fattore K e sviluppo lamiera</p>
                 </div>
             </div>
             <div class="flex items-center space-x-4">
@@ -79,335 +83,69 @@
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 py-6 space-y-12" id="calcolatore">
 
-        <!-- Navigazione Schede Strumento -->
-        <div class="flex border-b border-slate-300 bg-white rounded-t-xl px-4 pt-2 shadow-sm">
-            <button onclick="switchTab('main')" id="tab-btn-main" class="px-6 py-3 text-sm md:text-base tab-active transition">
-                1. Regolo Piegatura &amp; Sviluppo Reale (Unificato)
-            </button>
-            <button onclick="switchTab('matrix')" id="tab-btn-matrix" class="px-6 py-3 text-sm md:text-base text-slate-600 hover:text-slate-900 transition">
-                2. Tabella Rapida Matrici (Tonnellaggio/metro)
-            </button>
+        <!-- Navigazione principale: i contenuti editoriali sottostanti restano statici -->
+        <div class="sticky top-[68px] z-40 -mx-1 bg-slate-50/95 pt-1 backdrop-blur">
+          <div class="grid grid-cols-3 border-b border-slate-300 bg-white rounded-t-xl shadow-sm overflow-hidden" role="tablist" aria-label="Calcolatori Grievesk Bend">
+            <button type="button" role="tab" aria-selected="true" onclick="switchTab('sample')" id="tab-btn-sample" class="tab-active px-2 sm:px-5 py-3 text-xs sm:text-sm font-semibold transition">1. Calcola K dal campione</button>
+            <button type="button" role="tab" aria-selected="false" onclick="switchTab('development')" id="tab-btn-development" class="px-2 sm:px-5 py-3 text-xs sm:text-sm text-slate-600 transition">2. Calcola sviluppo</button>
+            <button type="button" role="tab" aria-selected="false" onclick="switchTab('matrix')" id="tab-btn-matrix" class="px-2 sm:px-5 py-3 text-xs sm:text-sm text-slate-600 transition">Tabella S/V/F</button>
+          </div>
         </div>
 
-        <!-- TAB 1: CALCOLATORE UNIFICATO (OFFICINA + CAD) -->
-        <section id="tab-main" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-
-            <!-- COLONNA SINISTRA: INPUT PARAMETRI (5 Colonne) -->
-            <div class="lg:col-span-5 bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6">
-                <div class="border-b pb-3">
-                    <h2 class="text-lg font-bold text-slate-900">1. Parametri Macchina &amp; Materiale</h2>
-                    <p class="text-xs text-slate-500">Imposta le condizioni reali di piegatura in officina</p>
-                </div>
-
-                <!-- Metodo di Piegatura -->
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-2">Metodo di Piegatura</label>
-                    <select id="bendMethod" onchange="onMethodOrMaterialChange()" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm bg-slate-50 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                        <option value="air">Piegatura in Aria (Matrice a V standard)</option>
-                        <option value="wing">Tangenziale a Matrice Rotante (WingBend / Rolla-V)</option>
-                        <option value="coining">Coniatura / Fondo Cava (Bottoming)</option>
-                        <option value="panel">Pannellatrice / Bordatura a sbalzo (Wiping)</option>
-                    </select>
-                    <p id="methodHint" class="mt-1.5 text-xs text-blue-700 bg-blue-50 p-2 rounded border border-blue-100"></p>
-                </div>
-
-                <!-- Materiale -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Materiale</label>
-                        <select id="material" onchange="onMaterialPresetChange()" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm bg-slate-50 focus:ring-2 focus:ring-blue-500">
-                            <option value="420">Acciaio Dolce (S235 / Fe360)</option>
-                            <option value="520">Acciaio S355 (Fe510)</option>
-                            <option value="700">Acciaio Inox (AISI 304 / 316)</option>
-                            <option value="220">Alluminio (Peralluman / Serie 5000)</option>
-                            <option value="1100">Altoresistenziale / Hardox</option>
-                            <option value="custom">Personalizzato (Inserisci Rm)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Carico Rottura R<sub>m</sub> (N/mm²)</label>
-                        <input type="number" id="rmValue" value="420" min="50" max="2500" step="10" inputmode="decimal" onfocus="this.select()" oninput="calculateAll()" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm font-mono">
-                    </div>
-                </div>
-
-                <!-- Spessore, Lunghezza, Angolo -->
-                <div class="grid grid-cols-3 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Spessore s (mm)</label>
-                        <input type="number" id="thickness" value="2.0" min="0.4" max="30" step="0.1" inputmode="decimal" onfocus="this.select()" oninput="onThicknessChange()" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm font-mono font-bold text-blue-900 bg-blue-50/40">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Lunghezza L (mm)</label>
-                        <input type="number" id="length" value="1000" min="10" max="12000" step="50" inputmode="decimal" onfocus="this.select()" oninput="calculateAll()" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm font-mono">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Angolo &alpha; (&deg;)</label>
-                        <input type="number" id="angle" value="90" min="15" max="175" step="1" inputmode="decimal" onfocus="this.select()" oninput="calculateAll()" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm font-mono">
-                    </div>
-                </div>
-
-                <!-- Selettore Convenzione Angolo -->
-                <div class="bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <span class="text-[11px] font-bold uppercase text-slate-600">Convenzione Angolo &alpha;:</span>
-                    <select id="angleMode" onchange="calculateAll()" class="text-xs bg-white border border-slate-300 rounded px-2 py-1 font-medium text-slate-800">
-                        <option value="internal">Angolo Interno tra le facce (es. 135&deg; = piega aperta)</option>
-                        <option value="deflection">Deviazione Lamiera da piano (es. 45&deg; = piega aperta)</option>
-                    </select>
-                </div>
-
-                <!-- Utensili: Cava V e Raggio Punzone -->
-                <div class="bg-slate-100 p-4 rounded-lg border border-slate-200 space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-bold uppercase text-slate-700">Utensileria Montata</span>
-                        <button type="button" onclick="resetOptimalV()" class="text-xs text-blue-600 hover:underline font-medium">Ripristina Cava Ottimale</button>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1" id="labelV">Apertura Cava V (mm)</label>
-                            <input type="number" id="dieV" value="16" min="2" max="300" step="1" inputmode="decimal" onfocus="this.select()" oninput="calculateAll()" class="w-full rounded-lg border-slate-300 border p-2 text-sm font-mono bg-white">
-                            <span id="vRatioBadge" class="inline-block mt-1 text-[11px] text-slate-500">Rapporto V/s: 8.0x</span>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Raggio Punzone R<sub>p</sub> (mm)</label>
-                            <input type="number" id="punchR" value="1.0" min="0.2" max="50" step="0.1" inputmode="decimal" onfocus="this.select()" oninput="calculateAll()" class="w-full rounded-lg border-slate-300 border p-2 text-sm font-mono bg-white">
-                            <span class="inline-block mt-1 text-[11px] text-slate-500">Punta utensile superiore</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Parametri Geometrici, Multi-Piega e Confronto CAD -->
-                <div class="border-t pt-4 space-y-4">
-                    <div>
-                        <h3 class="text-sm font-bold text-slate-900">2. Quote Pezzo, Multi-Piega &amp; Parametri CAD</h3>
-                        <p class="text-xs text-slate-500">Imposta le quote esterne e il numero di pieghe per calcolare lo sviluppo totale</p>
-                    </div>
-                    <div class="grid grid-cols-3 gap-3">
-                        <div>
-                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Flangia A (mm)</label>
-                            <input type="number" id="flangeA" value="50.0" min="1" max="5000" step="1" inputmode="decimal" onfocus="this.select()" oninput="calculateAll()" class="w-full rounded-lg border-slate-300 border p-2 text-sm font-mono">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Flangia B / Altre (mm)</label>
-                            <input type="number" id="flangeB" value="50.0" min="1" max="5000" step="1" inputmode="decimal" onfocus="this.select()" oninput="calculateAll()" class="w-full rounded-lg border-slate-300 border p-2 text-sm font-mono">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold uppercase text-blue-800 mb-1">N&deg; Pieghe (N)</label>
-                            <input type="number" id="bendCount" value="1" min="1" max="20" step="1" inputmode="numeric" onfocus="this.select()" oninput="calculateAll()" class="w-full rounded-lg border-blue-300 border p-2 text-sm font-mono font-bold bg-blue-50/50 text-blue-950" title="Numero di pieghe con queste caratteristiche sul profilo">
-                        </div>
-                    </div>
-                    <p class="text-[11px] text-slate-500 leading-tight">
-                        💡 <em>Per profili a U, Z o scatolati (N &gt; 1): inserisci in Flangia A e B la somma di tutti i lati esterni del profilo; il calcolatore sottrarrà <strong>N &times; BD</strong>.</em>
-                    </p>
-
-                    <div class="grid grid-cols-2 gap-3 bg-amber-50/70 p-3 rounded-lg border border-amber-200">
-                        <div>
-                            <label class="block text-xs font-semibold text-amber-900 mb-1">Raggio Interno nel CAD (mm)</label>
-                            <input type="number" id="cadRadius" value="1.0" min="0.1" max="50" step="0.1" inputmode="decimal" onfocus="this.select()" oninput="calculateAll()" class="w-full rounded border-amber-300 border p-1.5 text-sm font-mono bg-white">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-amber-900 mb-1">Fattore K nel CAD</label>
-                            <input type="number" id="cadK" value="0.33" min="0.1" max="0.5" step="0.01" inputmode="decimal" onfocus="this.select()" oninput="calculateAll()" class="w-full rounded border-amber-300 border p-1.5 text-sm font-mono bg-white">
-                        </div>
-                    </div>
-                </div>
+        <section id="tab-sample" role="tabpanel" class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+          <div class="lg:col-span-7 bg-white p-5 sm:p-6 rounded-xl shadow-sm border border-slate-200 space-y-5">
+            <div class="border-b pb-3"><h2 class="text-xl font-bold text-slate-900">Calcola il fattore K dal campione</h2><p class="text-sm text-slate-600 mt-1">Inserisci le quote misurate su un pezzo già piegato. Il K viene ricavato dalla geometria rilevata, non letto da una tabella.</p></div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div><label for="skMaterial" class="block text-xs font-bold uppercase text-slate-600 mb-1">Materiale</label><select id="skMaterial" onchange="onSampleMaterialChange()" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm bg-slate-50"><option value="420">Acciaio dolce (Rm 420)</option><option value="520">Acciaio S355 (Rm 520)</option><option value="700">Acciaio inox (Rm 700)</option><option value="220">Alluminio (Rm 220)</option><option value="1100">Acciaio altoresistenziale (Rm 1100)</option><option value="custom">Personalizzato</option></select></div>
+              <div><label for="skRm" class="block text-xs font-bold uppercase text-slate-600 mb-1">Rm noto (N/mm²)</label><input id="skRm" type="number" min="50" max="2500" step="10" value="420" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="skThickness" class="block text-xs font-bold uppercase text-slate-600 mb-1">Spessore s (mm)</label><input id="skThickness" type="number" min="0.3" max="30" step="0.1" value="2" inputmode="decimal" oninput="updateSampleVOptions(); calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="skMethod" class="block text-xs font-bold uppercase text-slate-600 mb-1">Metodo di piega</label><select id="skMethod" onchange="updateSampleVOptions(); calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-slate-50"><option value="air">Piegatura in aria</option><option value="wing">Tangenziale / WingBend</option><option value="coining">Fondo cava / coniatura</option><option value="panel">Pannellatrice / wiping</option></select></div>
+              <div><label for="skV" class="block text-xs font-bold uppercase text-slate-600 mb-1">V / V equivalente (mm)</label><select id="skV" onchange="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-white"></select><p class="text-[11px] text-slate-500 mt-1">Misura selezionabile dall’elenco disponibile; verifica la compatibilità con l’utensile installato.</p></div>
+              <div><label for="skAngle" class="block text-xs font-bold uppercase text-slate-600 mb-1">Angolo interno dopo piega (°)</label><input id="skAngle" type="number" min="10" max="175" step="1" value="90" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="skRi" class="block text-xs font-bold uppercase text-slate-600 mb-1">Raggio interno misurato Ri (mm)</label><input id="skRi" type="number" min="0.05" max="100" step="0.1" value="2" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="skFlat" class="block text-xs font-bold uppercase text-slate-600 mb-1">Lunghezza piana iniziale (mm)</label><input id="skFlat" type="number" min="1" max="12000" step="0.1" value="96.5" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="skFlangeA" class="block text-xs font-bold uppercase text-slate-600 mb-1">Flangia esterna A (mm)</label><input id="skFlangeA" type="number" min="1" max="12000" step="0.1" value="50" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="skFlangeB" class="block text-xs font-bold uppercase text-slate-600 mb-1">Flangia esterna B (mm)</label><input id="skFlangeB" type="number" min="1" max="12000" step="0.1" value="50" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
             </div>
-
-            <!-- COLONNA DESTRA: RISULTATI REALI, SCHEMA SVG & CONFRONTO CAD (7 Colonne) -->
-            <div class="lg:col-span-7 space-y-6">
-
-                <!-- Box Alert Sicurezza / Utensili -->
-                <div id="warningBox" class="hidden p-4 rounded-xl border bg-red-50 border-red-300 text-red-900 text-sm"></div>
-
-                <!-- Card 1: Risultati Meccanici Officina -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <div class="flex justify-between items-center border-b pb-3 mb-4">
-                        <h2 class="text-lg font-bold text-slate-900">Risultati Fisici in Macchina</h2>
-                        <span id="activeMethodTag" class="text-xs font-bold uppercase px-2.5 py-1 rounded bg-blue-100 text-blue-800">Aria</span>
-                    </div>
-
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                        <!-- Forza Richiesta -->
-                        <div class="bg-slate-900 text-white p-4 rounded-xl">
-                            <span class="text-xs text-slate-400 uppercase font-semibold block">Forza Totale</span>
-                            <div class="text-2xl font-black font-mono mt-1 text-blue-400" id="resTon">0.0 t</div>
-                            <span class="text-xs text-slate-300 font-mono" id="resKn">0 kN</span>
-                        </div>
-
-                        <!-- Raggio Interno Reale -->
-                        <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl">
-                            <span class="text-xs text-blue-800 uppercase font-semibold block">Raggio Reale (r<sub>i</sub>)</span>
-                            <div class="text-2xl font-black font-mono mt-1 text-blue-950" id="resRealRi">0.00 mm</div>
-                            <span class="text-[11px] text-blue-700 block mt-0.5" id="resRiSource">Da cava V</span>
-                        </div>
-
-                        <!-- Bordo Minimo -->
-                        <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
-                            <span class="text-xs text-slate-600 uppercase font-semibold block">Bordo Min. (b<sub>min</sub>)</span>
-                            <div class="text-2xl font-black font-mono mt-1 text-slate-900" id="resMinFlange">0.0 mm</div>
-                            <span class="text-[11px] text-slate-500 block mt-0.5">Quota esterna min.</span>
-                        </div>
-
-                        <!-- Ritorno Elastico Stimato -->
-                        <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
-                            <span class="text-xs text-slate-600 uppercase font-semibold block">Springback (&Delta;&alpha;)</span>
-                            <div class="text-2xl font-black font-mono mt-1 text-slate-900" id="resSpringback">0.0&deg;</div>
-                            <span class="text-[11px] text-slate-500 block mt-0.5">Compensazione stima</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2: SCHEMA TECNICO SVG DINAMICO + SVILUPPO LAMIERA -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-5">
-                    <div class="border-b pb-3 flex flex-wrap justify-between items-center gap-2">
-                        <div>
-                            <h2 class="text-lg font-bold text-slate-900">Geometria Reale &amp; Sviluppo Lamiera</h2>
-                            <p class="text-xs text-slate-500">Rappresentazione vettoriale dinamica e parametri di sviluppo su fibra neutra</p>
-                        </div>
-                        <span id="svgAngleLabel" class="text-xs font-mono bg-slate-100 text-slate-700 px-2.5 py-1 rounded border border-slate-300">
-                            Angolo Interno: 90&deg; | Deviazione: 90&deg;
-                        </span>
-                    </div>
-
-                    <!-- Riquadro Schema Tecnico SVG -->
-                    <div class="bg-slate-900 rounded-xl p-4 border border-slate-800 flex flex-col items-center justify-center relative overflow-hidden">
-                        <svg id="bendSvg" viewBox="0 0 520 220" class="w-full max-w-[520px] h-auto select-none">
-                            <defs>
-                                <pattern id="techGrid" width="20" height="20" patternUnits="userSpaceOnUse">
-                                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1e293b" stroke-width="1"/>
-                                </pattern>
-                            </defs>
-                            <rect width="520" height="220" fill="url(#techGrid)" />
-                            <g id="svgGeometryGroup"></g>
-                        </svg>
-                        <div class="w-full flex flex-wrap justify-between items-center text-[11px] text-slate-400 border-t border-slate-800 pt-2 mt-2 px-2 gap-2">
-                            <span class="flex items-center gap-1.5"><span class="w-3 h-1 bg-blue-400 inline-block"></span> Profilo Lamiera (s = <span id="svgLegendS">2.0</span> mm)</span>
-                            <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 border-b border-dashed border-amber-400 inline-block"></span> Fibra Neutra (K = <span id="svgLegendK">0.42</span>)</span>
-                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block"></span> Raggio Interno Reale r<sub>i</sub></span>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="p-4 rounded-lg bg-slate-50 border border-slate-200">
-                            <span class="text-xs text-slate-500 font-bold uppercase">Fattore K Reale</span>
-                            <div class="text-xl font-bold font-mono text-slate-900 mt-1" id="resRealK">0.42</div>
-                            <p class="text-[11px] text-slate-500 mt-1">Calcolato sul rapporto r<sub>i</sub> / s</p>
-                        </div>
-                        <div class="p-4 rounded-lg bg-slate-50 border border-slate-200">
-                            <span class="text-xs text-slate-500 font-bold uppercase">Bend Allowance (1 Piega)</span>
-                            <div class="text-xl font-bold font-mono text-slate-900 mt-1" id="resRealBA">0.00 mm</div>
-                            <p class="text-[11px] text-slate-500 mt-1">Sviluppo dell'arco neutro</p>
-                        </div>
-                        <div class="p-4 rounded-lg bg-emerald-50 border border-emerald-200">
-                            <span class="text-xs text-emerald-800 font-bold uppercase">Ritiro di Piega (BD Unitario)</span>
-                            <div class="text-xl font-black font-mono text-emerald-950 mt-1" id="resRealBD">0.00 mm</div>
-                            <p class="text-[11px] text-emerald-700 mt-1" id="resTotalBDText">Totale su 1 piega: 0.00 mm</p>
-                        </div>
-                    </div>
-
-                    <!-- Sviluppo Finale Pezzo Piano -->
-                    <div class="bg-slate-900 text-white p-5 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                        <div>
-                            <span class="text-xs uppercase tracking-wider text-slate-400 font-bold">Misura Taglio Laser Reale (Sviluppo Piano Totale)</span>
-                            <p class="text-xs text-slate-300 mt-0.5">Formula applicata: <span id="lblFlanges" class="font-mono text-emerald-300">50 + 50 - (1 × BD)</span></p>
-                        </div>
-                        <div class="text-3xl font-black font-mono text-emerald-400" id="resFlatLength">96.40 mm</div>
-                    </div>
-                </div>
-
-                <!-- Card 3: CAD REALITY CHECK -->
-                <div class="bg-amber-50/90 p-6 rounded-xl shadow-sm border-2 border-amber-300 space-y-4">
-                    <div class="flex flex-wrap items-start justify-between gap-2">
-                        <div>
-                            <span class="bg-amber-800 text-white text-[10px] font-bold uppercase px-2 py-0.5 rounded tracking-wider">Diagnostica CAD vs Officina</span>
-                            <h3 class="text-base font-bold text-amber-950 mt-1">Verifica Scostamento Disegno Tecnico (<span id="lblDiagnosticBends">su 1 piega</span>)</h3>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-xs text-amber-800 block">Errore Totale Sviluppo sul Pezzo</span>
-                            <span id="cadDeltaBadge" class="text-xl font-black font-mono text-red-600">+0.00 mm</span>
-                        </div>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs md:text-sm border-collapse">
-                            <thead>
-                                <tr class="border-b border-amber-300 text-amber-900">
-                                    <th class="py-2">Parametro</th>
-                                    <th class="py-2 font-mono">Impostato in CAD</th>
-                                    <th class="py-2 font-mono">Realtà in Pressa</th>
-                                    <th class="py-2">Impatto Pratico</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-amber-200/70 text-slate-800">
-                                <tr>
-                                    <td class="py-2 font-semibold">Raggio Interno (r<sub>i</sub>)</td>
-                                    <td class="py-2 font-mono" id="tblCadRi">1.00 mm</td>
-                                    <td class="py-2 font-mono font-bold text-blue-900" id="tblRealRi">2.60 mm</td>
-                                    <td class="py-2 text-xs" id="tblRiComment">La cava genera un raggio più ampio</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2 font-semibold">Fattore K</td>
-                                    <td class="py-2 font-mono" id="tblCadK">0.33</td>
-                                    <td class="py-2 font-mono font-bold text-blue-900" id="tblRealK">0.42</td>
-                                    <td class="py-2 text-xs">Spostamento fibra neutra</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2 font-semibold">Ritiro Piega Totale (<span id="tblBdCountLabel">1x</span> BD)</td>
-                                    <td class="py-2 font-mono" id="tblCadBD">3.45 mm</td>
-                                    <td class="py-2 font-mono font-bold text-emerald-800" id="tblRealBD">3.82 mm</td>
-                                    <td class="py-2 text-xs" id="tblBdComment">Differenza ritiro effettivo</td>
-                                </tr>
-                                <tr class="bg-amber-100/70 font-semibold">
-                                    <td class="py-2.5">Sviluppo Taglio Laser</td>
-                                    <td class="py-2.5 font-mono" id="tblCadFlat">96.55 mm</td>
-                                    <td class="py-2.5 font-mono text-emerald-950 font-black" id="tblRealFlat">96.18 mm</td>
-                                    <td class="py-2.5 text-xs font-bold" id="tblFinalVerdict">Pezzo fuori tolleranza</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="bg-white/80 p-3.5 rounded-lg border border-amber-200 text-xs text-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                        <div>
-                            <strong>Consiglio per l'Ufficio Tecnico:</strong> Per ottenere quote piegate corrette al primo colpo, imposta nella tabella di piegatura del CAD un <strong>Ritiro (BD) unitario di <span id="adviceBD" class="font-mono font-bold text-slate-900">0.00 mm</span></strong>, oppure imposta direttamente r<sub>i</sub> = <span id="adviceRi" class="font-mono font-bold">0.00 mm</span> e K = <span id="adviceK" class="font-mono font-bold">0.00</span>.
-                        </div>
-                        <button onclick="copyShareLink()" class="shrink-0 bg-amber-800 hover:bg-amber-700 text-white font-bold px-3 py-2 rounded text-xs transition">
-                            Invia Link al Disegnatore
-                        </button>
-                    </div>
-                </div>
-
-            </div>
+            <div class="rounded-lg border border-blue-100 bg-blue-50 p-3 text-xs text-blue-900 leading-relaxed"><strong>Convenzione quote:</strong> le flange A e B sono misurate come quote esterne fino agli spigoli teorici. Il calcolo presuppone una singola piega, un angolo misurato e un raggio interno effettivo.</div>
+          </div>
+          <div class="lg:col-span-5 space-y-4">
+            <div id="sampleWarning" class="hidden rounded-lg border p-3 text-sm"></div>
+            <div class="bg-slate-900 text-white p-5 sm:p-6 rounded-xl shadow-sm"><p class="text-xs uppercase tracking-wide text-slate-400 font-bold">Fattore K ricavato dal campione</p><div id="skResultK" class="text-4xl sm:text-5xl font-black font-mono text-blue-300 mt-2">—</div><p class="text-xs text-slate-300 mt-2">Calcolato dalle quote inserite.</p></div>
+            <div class="grid grid-cols-2 gap-3"><div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">Bend Allowance</p><div id="skResultBA" class="text-xl font-bold font-mono mt-1">—</div></div><div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">Bend Deduction</p><div id="skResultBD" class="text-xl font-bold font-mono mt-1">—</div></div></div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4 space-y-3"><h3 class="font-bold text-slate-900">Configurazione campione</h3><p id="skSummary" class="text-sm text-slate-600">Inserisci le misure del campione.</p><button type="button" onclick="copyShareLink('sample')" class="w-full bg-blue-700 hover:bg-blue-600 text-white font-bold px-4 py-3 rounded-lg text-sm">Condividi configurazione</button></div>
+          </div>
         </section>
 
-        <!-- TAB 2: TABELLA INTERATTIVA MATRICI -->
-        <section id="tab-matrix" class="hidden bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">
-                <div>
-                    <h2 class="text-xl font-bold text-slate-900">Tabella Regolo di Piegatura in Aria (1 Metro Lineare)</h2>
-                    <p class="text-xs text-slate-500">Clicca su una riga per evidenziare lo spessore. I valori mostrano: <strong>Tonnellate/metro</strong> | Raggio interno (r<sub>i</sub>) | Bordo minimo (b<sub>min</sub>).</p>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <label class="text-xs font-bold uppercase text-slate-600">Materiale Tabella:</label>
-                    <select id="tableMaterial" onchange="renderMatrixTable()" class="rounded-lg border border-slate-300 p-2 text-sm bg-slate-50 font-semibold">
-                        <option value="420">Acciaio S235 / Ferro (Rm 420)</option>
-                        <option value="700">Acciaio Inox AISI 304 (Rm 700)</option>
-                        <option value="220">Alluminio (Rm 220)</option>
-                    </select>
-                </div>
+        <section id="tab-development" role="tabpanel" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+          <div class="lg:col-span-7 bg-white p-5 sm:p-6 rounded-xl shadow-sm border border-slate-200 space-y-5">
+            <div class="border-b pb-3"><h2 class="text-xl font-bold text-slate-900">Calcola lo sviluppo</h2><p class="text-sm text-slate-600 mt-1">La cava V resta selezionabile fra le misure disponibili. Ri e bordo minimo sono calcolati dal modello e non sono modificabili.</p></div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div><label for="devMaterial" class="block text-xs font-bold uppercase text-slate-600 mb-1">Materiale</label><select id="devMaterial" onchange="onDevelopmentMaterialChange()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-slate-50"><option value="420">Acciaio dolce (Rm 420)</option><option value="520">Acciaio S355 (Rm 520)</option><option value="700">Acciaio inox (Rm 700)</option><option value="220">Alluminio (Rm 220)</option><option value="1100">Altoresistenziale (Rm 1100)</option><option value="custom">Personalizzato</option></select></div>
+              <div><label for="devRm" class="block text-xs font-bold uppercase text-slate-600 mb-1">Rm materiale (N/mm²)</label><input id="devRm" type="number" min="50" max="2500" step="10" value="420" inputmode="decimal" oninput="refreshDevelopmentModel()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="devThickness" class="block text-xs font-bold uppercase text-slate-600 mb-1">Spessore s (mm)</label><input id="devThickness" type="number" min="0.3" max="30" step="0.1" value="2" inputmode="decimal" oninput="onDevelopmentThicknessChange()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="devMethod" class="block text-xs font-bold uppercase text-slate-600 mb-1">Metodo di piega</label><select id="devMethod" onchange="onDevelopmentMethodChange()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-slate-50"><option value="air">Piegatura in aria</option><option value="wing">Tangenziale / WingBend</option><option value="coining">Fondo cava / coniatura</option><option value="panel">Pannellatrice / wiping</option></select></div>
+              <div class="sm:col-span-2"><label for="devV" class="block text-xs font-bold uppercase text-slate-600 mb-1" id="devVLabel">Cava V suggerita (selezionabile)</label><select id="devV" onchange="calculateDevelopment()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-white"></select><p id="devVHelp" class="text-[11px] text-slate-500 mt-1">La misura suggerita segue una regola pratica e può essere cambiata fra le misure disponibili.</p></div>
+              <div><label for="devRp" class="block text-xs font-bold uppercase text-slate-600 mb-1">Raggio punta Rp (mm)</label><input id="devRp" type="number" min="0.2" max="50" step="0.1" value="1" inputmode="decimal" oninput="calculateDevelopment()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="devAngle" class="block text-xs font-bold uppercase text-slate-600 mb-1">Angolo interno (°)</label><input id="devAngle" type="number" min="10" max="175" step="1" value="90" inputmode="decimal" oninput="calculateDevelopment()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="devFlangeA" class="block text-xs font-bold uppercase text-slate-600 mb-1">Flangia esterna A (mm)</label><input id="devFlangeA" type="number" min="1" max="12000" step="0.1" value="50" inputmode="decimal" oninput="calculateDevelopment()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="devFlangeB" class="block text-xs font-bold uppercase text-slate-600 mb-1">Flangia esterna B (mm)</label><input id="devFlangeB" type="number" min="1" max="12000" step="0.1" value="50" inputmode="decimal" oninput="calculateDevelopment()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
             </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-center text-xs border-collapse" id="interactiveMatrix">
-                    <!-- Generata dinamicamente via JS -->
-                </table>
-            </div>
-            <div class="flex flex-wrap gap-4 text-xs text-slate-600 pt-2">
-                <span class="flex items-center gap-1.5"><span class="w-3 h-3 inline-block bg-emerald-100 border border-emerald-400 rounded"></span> Scelta Cava Ottimale (V &approx; 6 &divide; 10 &times; s)</span>
-                <span class="flex items-center gap-1.5"><span class="w-3 h-3 inline-block bg-slate-100 border border-slate-300 rounded"></span> Utilizzabile con attenzione</span>
-                <span class="flex items-center gap-1.5"><span class="w-3 h-3 inline-block bg-slate-50 text-slate-300 border border-slate-200 rounded"></span> Cava sconsigliata / incompatibile</span>
-            </div>
+          </div>
+          <div class="lg:col-span-5 space-y-4">
+            <div id="devWarning" class="hidden rounded-lg border p-3 text-sm"></div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">V / V equivalente selezionata</p><p id="devResultV" class="text-xl font-bold font-mono">—</p><div class="grid grid-cols-2 gap-3 mt-4"><div class="bg-slate-50 rounded-lg p-3"><p class="text-xs text-slate-500 uppercase font-semibold">Raggio interno Ri</p><p id="devResultRi" class="text-xl font-bold font-mono">—</p><p class="text-[11px] text-slate-500">Non modificabile</p></div><div class="bg-slate-50 rounded-lg p-3"><p class="text-xs text-slate-500 uppercase font-semibold">Bordo minimo</p><p id="devResultBmin" class="text-xl font-bold font-mono">—</p><p class="text-[11px] text-slate-500">Non modificabile</p></div></div></div>
+            <div class="bg-slate-900 text-white rounded-xl p-5 sm:p-6"><p class="text-xs text-slate-400 uppercase font-bold">Fattore K predittivo</p><p id="devResultK" class="text-4xl font-black font-mono text-blue-300 mt-2">—</p><p id="devKSource" class="text-xs text-slate-300 mt-2">Stima del modello, non valore certificato dal costruttore.</p></div>
+            <div class="grid grid-cols-2 gap-3"><div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">Bend Allowance</p><p id="devResultBA" class="text-xl font-bold font-mono mt-1">—</p></div><div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">Bend Deduction</p><p id="devResultBD" class="text-xl font-bold font-mono mt-1">—</p></div><div class="col-span-2 bg-emerald-50 border border-emerald-200 rounded-xl p-4"><p class="text-xs text-emerald-800 uppercase font-semibold">Sviluppo piano teorico</p><p id="devResultFlat" class="text-3xl font-black font-mono text-emerald-950 mt-1">—</p></div></div>
+            <p id="devModelNote" class="text-xs text-slate-600 leading-relaxed">Parametri derivati dal modello; verificare le tabelle dell’utensile installato.</p><button type="button" onclick="copyShareLink('development')" class="w-full bg-blue-700 hover:bg-blue-600 text-white font-bold px-4 py-3 rounded-lg text-sm">Condividi configurazione</button>
+          </div>
         </section>
 
+        <section id="tab-matrix" role="tabpanel" class="hidden bg-white p-5 sm:p-6 rounded-xl shadow-sm border border-slate-200 space-y-5">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4"><div><h2 class="text-xl font-bold text-slate-900">Tabella rapida S / V / F</h2><p class="text-xs text-slate-500 mt-1">Riferimento orientativo per la piegatura in aria. Verifica sempre la tabella specifica del costruttore e il carico ammissibile degli utensili.</p></div><div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full md:w-auto"><label for="tableMaterial" class="text-xs font-bold uppercase text-slate-600">Materiale tabella</label><select id="tableMaterial" onchange="renderMatrixTable()" class="rounded-lg border border-slate-300 p-2 text-sm bg-slate-50 font-semibold"><option value="420">Acciaio dolce (Rm 420)</option><option value="700">Acciaio inox (Rm 700)</option><option value="220">Alluminio (Rm 220)</option></select></div></div>
+          <div class="overflow-x-auto"><table class="w-full text-center text-xs border-collapse" id="interactiveMatrix"><!-- Generata dinamicamente via JavaScript --></table></div>
+          <div class="flex flex-wrap gap-3 text-xs text-slate-600 pt-2"><span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 bg-emerald-100 border border-emerald-400 rounded"></span> Rapporto V/s nella fascia pratica suggerita</span><span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 bg-slate-50 border border-slate-200 rounded"></span> Valore da verificare sulla tabella utensile</span></div>
+        </section>
         <!-- Spazio Banner AdSense In-Content -->
         <div class="bg-slate-200/70 border border-dashed border-slate-300 rounded text-center py-4 text-xs text-slate-500">
             [ Spazio Pubblicitario Google AdSense - In-Article / Multiplex ]
@@ -553,378 +291,224 @@
             }
         };
 
+        const STANDARD_DIES = [4, 6, 7, 8, 10, 12, 14, 16, 18, 20, 25, 32, 40, 50, 63, 80, 100, 125, 160, 200, 250];
+
         function switchTab(tab) {
-            document.getElementById('tab-main').classList.toggle('hidden', tab !== 'main');
-            document.getElementById('tab-matrix').classList.toggle('hidden', tab !== 'matrix');
-            document.getElementById('tab-btn-main').classList.toggle('tab-active', tab === 'main');
-            document.getElementById('tab-btn-matrix').classList.toggle('tab-active', tab === 'matrix');
+            if (!['sample', 'development', 'matrix'].includes(tab)) tab = 'sample';
+            ['sample', 'development', 'matrix'].forEach(key => {
+                const panelId = key === 'sample' ? 'tab-sample' : key === 'development' ? 'tab-development' : 'tab-matrix';
+                const panel = document.getElementById(panelId);
+                const button = document.getElementById('tab-btn-' + key);
+                const active = key === tab;
+                panel.classList.toggle('hidden', !active);
+                button.classList.toggle('tab-active', active);
+                button.classList.toggle('text-slate-600', !active);
+                button.setAttribute('aria-selected', String(active));
+            });
             if (tab === 'matrix') renderMatrixTable();
+            if (tab === 'sample') calculateSampleK();
+            if (tab === 'development') calculateDevelopment();
         }
 
-        function onMaterialPresetChange() {
-            const matSelect = document.getElementById('material').value;
-            const rmInput = document.getElementById('rmValue');
-            if (matSelect !== 'custom') {
-                rmInput.value = matSelect;
-            }
-            resetOptimalV();
-        }
-
-        function onThicknessChange() {
-            resetOptimalV();
-        }
-
-        function onMethodOrMaterialChange() {
-            resetOptimalV();
-        }
-
-        function resetOptimalV() {
-            const s = parseFloat(document.getElementById('thickness').value) || 2;
-            const rm = parseFloat(document.getElementById('rmValue').value) || 420;
-            const method = document.getElementById('bendMethod').value;
-
+        function recommendedV(s, rm, method) {
             let multiplier = 8;
-            if (method === 'coining' || method === 'wing') {
-                multiplier = 6;
-            } else if (method === 'panel') {
-                multiplier = 3;
-            } else {
-                if (rm >= 650) multiplier = 10;
-                else if (s <= 2.5) multiplier = 6;
-                else if (s <= 8) multiplier = 8;
-                else multiplier = 10;
+            if (method === 'wing' || method === 'coining') multiplier = 6;
+            else if (method === 'panel') multiplier = 3;
+            else if (rm >= 650) multiplier = 10;
+            else if (s <= 2.5) multiplier = 6;
+            else if (s <= 8) multiplier = 8;
+            else multiplier = 12;
+            return s * multiplier;
+        }
+
+        function populateVSelect(selectId, targetV) {
+            const select = document.getElementById(selectId);
+            const isSample = selectId === 'skV';
+            const s = Number(document.getElementById(isSample ? 'skThickness' : 'devThickness').value);
+            const method = document.getElementById(isSample ? 'skMethod' : 'devMethod').value;
+            const previous = Number(select.value);
+            let choices = STANDARD_DIES.filter(v => Number.isFinite(s) && s > 0 && v / s >= 4.5 && v / s <= 18);
+            if (!choices.length) choices = STANDARD_DIES.slice();
+            select.innerHTML = '';
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = method === 'wing' ? 'Seleziona V equivalente disponibile' : 'Seleziona apertura V';
+            select.appendChild(placeholder);
+            choices.forEach(v => {
+                const option = document.createElement('option');
+                option.value = String(v);
+                option.textContent = `${v} mm` + (method === 'wing' ? ' · riferimento da verificare sul modello' : '');
+                select.appendChild(option);
+            });
+            if (choices.length) {
+                const selected = choices.includes(previous) ? previous : choices.reduce((best, v) => Math.abs(v - targetV) < Math.abs(best - targetV) ? v : best, choices[0]);
+                select.value = String(selected);
             }
-
-            const standardDies = [4, 6, 8, 10, 12, 16, 20, 24, 32, 40, 50, 63, 80, 100, 125, 160, 200];
-            let targetV = s * multiplier;
-            if (method === 'air' || method === 'coining') {
-                let closest = standardDies.reduce((prev, curr) => 
-                    Math.abs(curr - targetV) < Math.abs(prev - targetV) ? curr : prev
-                );
-                document.getElementById('dieV').value = closest;
-            } else {
-                document.getElementById('dieV').value = Math.max(2, Math.round(targetV));
-            }
-            calculateAll();
         }
 
-        function computeSheetDevelopment(s, deflectionDeg, ri, k) {
-            const safeDeflection = Math.min(170, Math.max(5, deflectionDeg));
-            const rad = (safeDeflection * Math.PI) / 180;
-
-            const ba = rad * (ri + k * s);
-            const ossb = Math.tan(rad / 2) * (ri + s);
-            const bd = (2 * ossb) - ba;
-            return { ba, ossb, bd };
+        function updateSampleVOptions() {
+            const s = Number(document.getElementById('skThickness').value) || 2;
+            const rm = Number(document.getElementById('skRm').value) || 420;
+            const method = document.getElementById('skMethod').value;
+            populateVSelect('skV', recommendedV(s, rm, method));
         }
 
-        function updateTechnicalSvg(params) {
-            const { s, realRi, realK, internalAngle, deflectionAngle, flangeA, flangeB, realBD, bendCount } = params;
-            const group = document.getElementById('svgGeometryGroup');
-
-            document.getElementById('svgLegendS').textContent = s.toFixed(1);
-            document.getElementById('svgLegendK').textContent = realK.toFixed(2);
-            document.getElementById('svgAngleLabel').textContent = `Angolo Interno: ${internalAngle.toFixed(0)}° | Deviazione: ${deflectionAngle.toFixed(0)}°`;
-
-            const cx = 230;
-            const cy = 125;
-
-            const visT = Math.min(28, Math.max(12, s * 4.5));
-            const visRi = Math.min(55, Math.max(14, realRi * 5.5));
-            const visRo = visRi + visT;
-            const visRn = visRi + visT * realK;
-            const armLen = 115;
-
-            const alphaRad = (Math.min(165, Math.max(25, internalAngle)) * Math.PI) / 180;
-            const bendRad = Math.PI - alphaRad;
-
-            const pA_in_x = cx;
-            const pA_in_y = cy + visRi;
-            const pA_out_x = cx;
-            const pA_out_y = cy + visRo;
-            const pA_neu_x = cx;
-            const pA_neu_y = cy + visRn;
-
-            const endA_in_x = pA_in_x - armLen;
-            const endA_in_y = pA_in_y;
-            const endA_out_x = pA_out_x - armLen;
-            const endA_out_y = pA_out_y;
-            const endA_neu_x = pA_neu_x - armLen;
-            const endA_neu_y = pA_neu_y;
-
-            const nx = Math.sin(bendRad);
-            const ny = Math.cos(bendRad);
-            const tx = Math.cos(bendRad);
-            const ty = -Math.sin(bendRad);
-
-            const pB_in_x = cx + visRi * nx;
-            const pB_in_y = cy + visRi * ny;
-            const pB_out_x = cx + visRo * nx;
-            const pB_out_y = cy + visRo * ny;
-            const pB_neu_x = cx + visRn * nx;
-            const pB_neu_y = cy + visRn * ny;
-
-            const endB_in_x = pB_in_x + armLen * tx;
-            const endB_in_y = pB_in_y + armLen * ty;
-            const endB_out_x = pB_out_x + armLen * tx;
-            const endB_out_y = pB_out_y + armLen * ty;
-            const endB_neu_x = pB_neu_x + armLen * tx;
-            const endB_neu_y = pB_neu_y + armLen * ty;
-
-            const largeArc = bendRad > Math.PI ? 1 : 0;
-
-            const sheetPath = [
-                `M ${endA_in_x} ${endA_in_y}`,
-                `L ${pA_in_x} ${pA_in_y}`,
-                `A ${visRi} ${visRi} 0 ${largeArc} 0 ${pB_in_x} ${pB_in_y}`,
-                `L ${endB_in_x} ${endB_in_y}`,
-                `L ${endB_out_x} ${endB_out_y}`,
-                `L ${pB_out_x} ${pB_out_y}`,
-                `A ${visRo} ${visRo} 0 ${largeArc} 1 ${pA_out_x} ${pA_out_y}`,
-                `L ${endA_out_x} ${endA_out_y}`,
-                `Z`
-            ].join(' ');
-
-            const neutralPath = [
-                `M ${endA_neu_x} ${endA_neu_y}`,
-                `L ${pA_neu_x} ${pA_neu_y}`,
-                `A ${visRn} ${visRn} 0 ${largeArc} 0 ${pB_neu_x} ${pB_neu_y}`,
-                `L ${endB_neu_x} ${endB_neu_y}`
-            ].join(' ');
-
-            const midRad = bendRad / 2;
-            const mid_in_x = cx + visRi * Math.sin(midRad);
-            const mid_in_y = cy + visRi * Math.cos(midRad);
-
-            group.innerHTML = `
-                <path d="${sheetPath}" fill="#1e3a8a" fill-opacity="0.55" stroke="#60a5fa" stroke-width="2.5" stroke-linejoin="round" />
-                <path d="${neutralPath}" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-dasharray="5,4" />
-                <circle cx="${cx}" cy="${cy}" r="3" fill="#34d399" />
-                <line x1="${cx}" y1="${cy}" x2="${mid_in_x}" y2="${mid_in_y}" stroke="#34d399" stroke-width="1.5" />
-                <circle cx="${mid_in_x}" cy="${mid_in_y}" r="3.5" fill="#34d399" />
-                <text x="${cx - 10}" y="${cy - 10}" fill="#34d399" font-family="monospace" font-size="12" font-weight="bold">
-                    ri = ${realRi.toFixed(2)} mm
-                </text>
-                <text x="${endA_out_x + 10}" y="${endA_out_y + 18}" fill="#e2e8f0" font-family="monospace" font-size="12" font-weight="bold">
-                    A = ${flangeA} mm
-                </text>
-                <text x="${endB_out_x - 35}" y="${Math.max(22, endB_out_y - 10)}" fill="#e2e8f0" font-family="monospace" font-size="12" font-weight="bold">
-                    B = ${flangeB} mm
-                </text>
-                <rect x="365" y="18" width="142" height="92" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
-                <text x="375" y="38" fill="#94a3b8" font-family="sans-serif" font-size="10" font-weight="bold">DATI PIEGA ATTIVI</text>
-                <text x="375" y="56" fill="#38bdf8" font-family="monospace" font-size="11">Spessore: ${s} mm</text>
-                <text x="375" y="73" fill="#fbbf24" font-family="monospace" font-size="11">Fattore K: ${realK.toFixed(3)}</text>
-                <text x="375" y="90" fill="#34d399" font-family="monospace" font-size="11" font-weight="bold">BD (${bendCount}x): ${(realBD * bendCount).toFixed(2)} mm</text>
-            `;
+        function onSampleMaterialChange() {
+            const material = document.getElementById('skMaterial').value;
+            if (material !== 'custom') document.getElementById('skRm').value = material;
+            updateSampleVOptions();
+            calculateSampleK();
         }
 
-        function calculateAll() {
-            const $ = id => document.getElementById(id);
-            const method = $('bendMethod').value;
-            const rm = Number($('rmValue').value);
-            const s = Number($('thickness').value);
-            const L = Number($('length').value);
-            const rawAngle = Number($('angle').value);
-            const angleMode = $('angleMode').value;
-            const V = Number($('dieV').value);
-            const rp = Number($('punchR').value);
-            const flangeA = Number($('flangeA').value);
-            const flangeB = Number($('flangeB').value);
-            const bendCount = Number($('bendCount').value);
-            const cadRi = Number($('cadRadius').value);
-            const cadK = Number($('cadK').value);
-            const warningBox = $('warningBox');
+        function onDevelopmentMaterialChange() {
+            const material = document.getElementById('devMaterial').value;
+            if (material !== 'custom') document.getElementById('devRm').value = material;
+            refreshDevelopmentModel(true);
+        }
 
-            const errors = [];
-            if (!Number.isFinite(rm) || rm < 50 || rm > 2500) errors.push('Rm deve essere compreso tra 50 e 2500 N/mm².');
-            if (!Number.isFinite(s) || s < 0.4 || s > 30) errors.push('Lo spessore deve essere compreso tra 0,4 e 30 mm.');
-            if (!Number.isFinite(L) || L < 10 || L > 12000) errors.push('La lunghezza deve essere compresa tra 10 e 12000 mm.');
-            if (!Number.isFinite(V) || V < 2 || V > 300) errors.push('La cava V deve essere compresa tra 2 e 300 mm.');
-            if (!Number.isFinite(rp) || rp < 0.1 || rp > 50) errors.push('Il raggio punzone deve essere compreso tra 0,1 e 50 mm.');
-            if (!Number.isFinite(rawAngle) || rawAngle < 5 || rawAngle > 175) errors.push('L’angolo deve essere compreso tra 5° e 175°.');
-            if (!Number.isFinite(flangeA) || flangeA < 1 || !Number.isFinite(flangeB) || flangeB < 1) errors.push('Le quote esterne delle flange devono essere positive.');
-            if (!Number.isInteger(bendCount) || bendCount < 1 || bendCount > 20) errors.push('Il numero di pieghe deve essere un intero tra 1 e 20.');
-            if (!Number.isFinite(cadRi) || cadRi <= 0 || !Number.isFinite(cadK) || cadK < 0 || cadK > 1) errors.push('Verifica il raggio e il fattore K impostati nel CAD.');
-            if (errors.length) {
-                warningBox.textContent = errors.join(' ');
-                warningBox.className = 'p-4 rounded-xl border bg-red-50 border-red-300 text-red-900 text-sm';
+        function onDevelopmentThicknessChange() { refreshDevelopmentModel(true); }
+        function onDevelopmentMethodChange() { refreshDevelopmentModel(true); }
+
+        function refreshDevelopmentModel(reselectV = false) {
+            const s = Number(document.getElementById('devThickness').value);
+            const rm = Number(document.getElementById('devRm').value);
+            const method = document.getElementById('devMethod').value;
+            if (!Number.isFinite(s) || s <= 0 || !Number.isFinite(rm) || rm <= 0) return;
+            const target = recommendedV(s, rm, method);
+            if (reselectV || !document.getElementById('devV').value) populateVSelect('devV', target);
+            document.getElementById('devVLabel').textContent = method === 'wing' ? 'V equivalente (selezionabile)' : 'Cava V suggerita (selezionabile)';
+            document.getElementById('devVHelp').textContent = method === 'wing' ? 'Seleziona la V equivalente disponibile per l’esatto modello WingBend. Le misure elencate sono riferimenti dimensionali: verifica la scheda del costruttore.' : 'La cava suggerita segue una regola pratica; puoi selezionare un’altra misura disponibile nell’elenco.';
+            calculateDevelopment();
+        }
+
+        function calculateSampleK() {
+            const s = Number(document.getElementById('skThickness').value);
+            const angle = Number(document.getElementById('skAngle').value);
+            const ri = Number(document.getElementById('skRi').value);
+            const flat = Number(document.getElementById('skFlat').value);
+            const a = Number(document.getElementById('skFlangeA').value);
+            const b = Number(document.getElementById('skFlangeB').value);
+            const v = Number(document.getElementById('skV').value);
+            const method = document.getElementById('skMethod').value;
+            const warning = document.getElementById('sampleWarning');
+            if (![s, angle, ri, flat, a, b, v].every(Number.isFinite) || s <= 0 || angle <= 0 || angle >= 180 || ri <= 0 || flat <= 0 || a <= 0 || b <= 0 || v <= 0) {
+                document.getElementById('skResultK').textContent = '—';
+                document.getElementById('skResultBA').textContent = '—';
+                document.getElementById('skResultBD').textContent = '—';
+                warning.textContent = 'Completa tutti i dati con valori numerici positivi.';
+                warning.className = 'rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900';
                 return;
             }
-
-            const internalAngle = angleMode === 'internal'
-                ? Math.min(175, Math.max(15, rawAngle))
-                : 180 - Math.min(175, Math.max(5, rawAngle));
-            const deflectionAngle = 180 - internalAngle;
-
-            $('methodHint').textContent = METHOD_INFO[method].hint;
-            $('activeMethodTag').textContent = METHOD_INFO[method].tag;
-            $('labelV').textContent = METHOD_INFO[method].labelV;
-            $('vRatioBadge').textContent = `Rapporto V/s: ${(V / s).toFixed(1)}x`;
-
-            // Il raggio e il K stimati sono valori empirici, non misure fisiche.
-            let realRi, riSourceText, minFlange;
-            let forceTons = null, forceKnPerMeter = null;
-            const springbackText = 'Non stimato: richiede calibrazione sperimentale';
-
-            if (method === 'air') {
-                let vFactor = 0.16;
-                if (rm >= 650) vFactor = 0.20;
-                else if (rm <= 280) vFactor = 0.14;
-                const naturalRi = V * vFactor;
-                realRi = Math.max(naturalRi, rp);
-                riSourceText = rp > naturalRi
-                    ? 'Stima limitata dal raggio punta; da verificare con prova'
-                    : `Stima empirica: ${(vFactor * 100).toFixed(0)}% di V; da verificare`;
-                minFlange = 0.7 * V;
-
-                // F' [kN/m] ≈ k · Rm[N/mm²] · s²[mm²] / V[mm].
-                // k = 1,42 è una stima empirica iniziale, da validare con dati macchina/utensile.
-                const forceCoefficient = 1.42;
-                forceKnPerMeter = forceCoefficient * rm * s * s / V;
-                forceTons = forceKnPerMeter * (L / 1000) / 9.80665;
-            } else if (method === 'wing') {
-                realRi = Math.max(rp, s * 0.65);
-                riSourceText = 'Stima euristica matrice rotante; verificare dati del costruttore';
-                minFlange = 0.45 * V;
-            } else if (method === 'coining') {
-                realRi = rp;
-                riSourceText = 'Ipotesi geometrica: raggio punta; verificare processo';
-                minFlange = 0.65 * V;
+            const theta = (180 - angle) * Math.PI / 180;
+            const bd = a + b - flat;
+            const outsideSetback = Math.tan(theta / 2) * (ri + s);
+            const ba = 2 * outsideSetback - bd;
+            const k = (ba / theta - ri) / s;
+            document.getElementById('skResultK').textContent = Number.isFinite(k) ? k.toFixed(4) : '—';
+            document.getElementById('skResultBA').textContent = Number.isFinite(ba) ? `${ba.toFixed(3)} mm` : '—';
+            document.getElementById('skResultBD').textContent = Number.isFinite(bd) ? `${bd.toFixed(3)} mm` : '—';
+            document.getElementById('skSummary').textContent = `Rm ${document.getElementById('skRm').value} N/mm² · s ${s} mm · ${method} · V ${v} mm · angolo interno ${angle}° · Ri ${ri} mm.`;
+            if (!Number.isFinite(k) || k < 0 || k > 1 || ba <= 0) {
+                warning.textContent = 'K o BA fuori dall’intervallo atteso: controlla convenzione delle quote, raggio e misure. Non utilizzare il risultato senza verifica.';
+                warning.className = 'rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900';
             } else {
-                realRi = Math.max(rp, s * 0.8);
-                riSourceText = 'Stima euristica pannellatrice; verificare utensile';
-                minFlange = 2.5 * s;
+                warning.textContent = 'K ricavato dalle misure del campione. Il risultato è specifico della configurazione descritta, non un valore universale del materiale.';
+                warning.className = 'rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900';
             }
-
-            let realK;
-            const ratioRiS = realRi / s;
-            if (method === 'coining') realK = 0.42;
-            else if (method === 'panel') realK = Math.min(0.42, 0.28 + 0.04 * ratioRiS);
-            else if (ratioRiS < 0.65) realK = 0.32;
-            else if (ratioRiS <= 4) realK = Math.min(0.50, Math.max(0.30, 0.33 + 0.045 * Math.log2(ratioRiS + 0.5)));
-            else realK = 0.48;
-
-            const realDev = computeSheetDevelopment(s, deflectionAngle, realRi, realK);
-            const cadDev = computeSheetDevelopment(s, deflectionAngle, cadRi, cadK);
-            const totalRealBD = realDev.bd * bendCount;
-            const totalCadBD = cadDev.bd * bendCount;
-            const realFlatLength = flangeA + flangeB - totalRealBD;
-            const cadFlatLength = flangeA + flangeB - totalCadBD;
-            const deltaFlat = cadFlatLength - realFlatLength;
-
-            const warnings = [];
-            if (method === 'air' && V < s * 5) warnings.push('Rapporto V/s basso rispetto a una regola pratica comune: verificare carico e compatibilità con le tabelle del costruttore.');
-            if (rp < s * 0.63) warnings.push('Raggio punta piccolo rispetto allo spessore (Rp < 0,63×s): indicazione empirica, non soglia universale.');
-            if (flangeA < minFlange || flangeB < minFlange) warnings.push(`Una flangia è sotto il bordo minimo indicativo (${minFlange.toFixed(1)} mm): verificare geometria e dati del costruttore.`);
-            if (bendCount > 1) warnings.push('Il modello multi-piega presume pieghe equivalenti e somma quote esterne corretta. Per pieghe con angolo o raggio diversi, calcolare ogni BD separatamente.');
-            if (method !== 'air') warnings.push('Forza non stimata: il modello in aria non è trasferibile in modo affidabile a questo processo.');
-            warningBox.textContent = warnings.join(' ');
-            warningBox.className = warnings.length
-                ? 'p-4 rounded-xl border bg-amber-50 border-amber-300 text-amber-900 text-sm'
-                : 'hidden p-4 rounded-xl border bg-red-50 border-red-300 text-red-900 text-sm';
-
-            $('resTon').textContent = forceTons === null ? 'N/D' : `${forceTons.toFixed(1)} tf`;
-            $('resKn').textContent = forceKnPerMeter === null
-                ? 'Modello non disponibile per questo processo'
-                : `${(forceTons * 9.80665).toFixed(0)} kN (${(forceKnPerMeter / 9.80665).toFixed(1)} tf/m)`;
-            $('resRealRi').textContent = `${realRi.toFixed(2)} mm`;
-            $('resRiSource').textContent = riSourceText;
-            $('resMinFlange').textContent = `${minFlange.toFixed(1)} mm`;
-            $('resSpringback').textContent = springbackText;
-            $('resRealK').textContent = realK.toFixed(3);
-            $('resRealBA').textContent = `${realDev.ba.toFixed(2)} mm`;
-            $('resRealBD').textContent = `${realDev.bd.toFixed(2)} mm`;
-            $('resTotalBDText').textContent = bendCount > 1
-                ? `Totale teorico su ${bendCount} pieghe equivalenti: ${totalRealBD.toFixed(2)} mm`
-                : 'Valore teorico da sottrarre (1 piega)';
-            $('lblFlanges').textContent = `${flangeA} + ${flangeB} - (${bendCount} × ${realDev.bd.toFixed(2)}) mm`;
-            $('resFlatLength').textContent = `${realFlatLength.toFixed(2)} mm`;
-
-            updateTechnicalSvg({ s, realRi, realK, internalAngle, deflectionAngle, flangeA, flangeB, realBD: realDev.bd, bendCount });
-            $('lblDiagnosticBends').textContent = bendCount > 1 ? `su ${bendCount} pieghe equivalenti` : 'su 1 piega';
-            $('tblBdCountLabel').textContent = `${bendCount}×`;
-            $('tblCadRi').textContent = `${cadRi.toFixed(2)} mm`;
-            $('tblRealRi').textContent = `${realRi.toFixed(2)} mm`;
-            $('tblCadK').textContent = cadK.toFixed(2);
-            $('tblRealK').textContent = realK.toFixed(3);
-            $('tblCadBD').textContent = `${totalCadBD.toFixed(2)} mm`;
-            $('tblRealBD').textContent = `${totalRealBD.toFixed(2)} mm`;
-            $('tblCadFlat').textContent = `${cadFlatLength.toFixed(2)} mm`;
-            $('tblRealFlat').textContent = `${realFlatLength.toFixed(2)} mm`;
-
-            const absDelta = Math.abs(deltaFlat);
-            $('cadDeltaBadge').textContent = `${deltaFlat >= 0 ? '+' : ''}${deltaFlat.toFixed(2)} mm`;
-            $('cadDeltaBadge').className = absDelta > 0.25
-                ? 'text-xl font-black font-mono text-red-600'
-                : 'text-xl font-black font-mono text-emerald-700';
-            $('tblRiComment').textContent = Math.abs(realRi - cadRi) > 0.3
-                ? `Differenza tra i raggi: ${(realRi - cadRi).toFixed(2)} mm`
-                : 'Raggi vicini; questo non certifica la conformità delle quote';
-            const verdict = $('tblFinalVerdict');
-            verdict.textContent = absDelta <= 0.15
-                ? 'I due modelli teorici risultano vicini alla precisione mostrata.'
-                : deltaFlat > 0
-                    ? `Il modello CAD prevede uno sviluppo più lungo di ${absDelta.toFixed(2)} mm.`
-                    : `Il modello CAD prevede uno sviluppo più corto di ${absDelta.toFixed(2)} mm.`;
-            verdict.className = 'py-2.5 text-xs font-bold text-slate-800';
-            $('adviceBD').textContent = `${realDev.bd.toFixed(2)} mm`;
-            $('adviceRi').textContent = `${realRi.toFixed(2)} mm`;
-            $('adviceK').textContent = realK.toFixed(3);
         }
 
-        function copyShareLink() {
-            const params = new URLSearchParams({
-                m: document.getElementById('bendMethod').value,
-                rm: document.getElementById('rmValue').value,
-                s: document.getElementById('thickness').value,
-                l: document.getElementById('length').value,
-                a: document.getElementById('angle').value,
-                am: document.getElementById('angleMode').value,
-                v: document.getElementById('dieV').value,
-                rp: document.getElementById('punchR').value,
-                fa: document.getElementById('flangeA').value,
-                fb: document.getElementById('flangeB').value,
-                n: document.getElementById('bendCount').value,
-                cri: document.getElementById('cadRadius').value,
-                ck: document.getElementById('cadK').value
-            });
+        function estimatedKFromGeometry(ri, s, method) {
+            const ratio = Math.max(0.2, ri / s);
+            let k;
+            if (method === 'wing') k = 0.22 + 0.055 * Math.log2(ratio + 0.5);
+            else if (method === 'coining') k = 0.34 + 0.025 * Math.log2(ratio + 0.5);
+            else if (method === 'panel') k = 0.28 + 0.04 * ratio;
+            else k = 0.33 + 0.045 * Math.log2(ratio + 0.5);
+            return Math.min(method === 'panel' ? 0.46 : 0.50, Math.max(method === 'wing' ? 0.18 : 0.25, k));
+        }
 
+        function calculateDevelopment() {
+            const s = Number(document.getElementById('devThickness').value);
+            const rm = Number(document.getElementById('devRm').value);
+            const method = document.getElementById('devMethod').value;
+            const v = Number(document.getElementById('devV').value);
+            const rp = Number(document.getElementById('devRp').value);
+            const angle = Number(document.getElementById('devAngle').value);
+            const a = Number(document.getElementById('devFlangeA').value);
+            const b = Number(document.getElementById('devFlangeB').value);
+            const warning = document.getElementById('devWarning');
+            if (![s, rm, v, rp, angle, a, b].every(Number.isFinite) || s <= 0 || rm <= 0 || v <= 0 || rp <= 0 || angle <= 0 || angle >= 180 || a <= 0 || b <= 0) {
+                warning.textContent = 'Completa i campi numerici per calcolare lo sviluppo.';
+                warning.className = 'rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900';
+                return;
+            }
+            let ri, bmin, riSource;
+            if (method === 'air') {
+                const vFactor = rm >= 650 ? 0.20 : rm <= 280 ? 0.14 : 0.16;
+                ri = Math.max(v * vFactor, rp);
+                bmin = 0.7 * v;
+                riSource = 'Raggio stimato empiricamente da V e materiale';
+            } else if (method === 'wing') {
+                ri = rp;
+                bmin = 0.45 * v;
+                riSource = 'Raggio guidato dalla punta: verificare l’esatto modello e la relativa tabella';
+            } else if (method === 'coining') {
+                ri = rp;
+                bmin = 0.65 * v;
+                riSource = 'Ipotesi geometrica da verificare sulla matrice installata';
+            } else {
+                ri = Math.max(rp, 0.8 * s);
+                bmin = 2.5 * s;
+                riSource = 'Stima indicativa per pannellatrice';
+            }
+            const k = estimatedKFromGeometry(ri, s, method);
+            const theta = (180 - angle) * Math.PI / 180;
+            const ba = theta * (ri + k * s);
+            const ossb = Math.tan(theta / 2) * (ri + s);
+            const bd = 2 * ossb - ba;
+            const flat = a + b - bd;
+            document.getElementById('devResultV').textContent = `${v.toFixed(1)} mm`;
+            document.getElementById('devResultRi').textContent = `${ri.toFixed(2)} mm`;
+            document.getElementById('devResultBmin').textContent = `${bmin.toFixed(2)} mm`;
+            document.getElementById('devResultK').textContent = k.toFixed(3);
+            document.getElementById('devResultBA').textContent = `${ba.toFixed(3)} mm`;
+            document.getElementById('devResultBD').textContent = `${bd.toFixed(3)} mm`;
+            document.getElementById('devResultFlat').textContent = `${flat.toFixed(3)} mm`;
+            document.getElementById('devKSource').textContent = method === 'wing' ? 'Modello geometrico preliminare WingBend: da validare con campioni del modello specifico.' : 'Stima del modello in funzione di Ri/spessore; non è un K fisso letto da tabella.';
+            document.getElementById('devModelNote').textContent = `${riSource}. Il bordo minimo è mostrato come riferimento non modificabile e deve essere verificato con la tabella dell’utensile installato.`;
+            warning.textContent = method === 'wing' ? 'Per WingBend, V equivalente e bordo minimo devono corrispondere all’esatto modello del costruttore: i valori generici non sostituiscono la scheda tecnica.' : '';
+            warning.className = method === 'wing' ? 'rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900' : 'hidden rounded-lg border p-3 text-sm';
+        }
+
+        function copyShareLink(whichTab = null) {
+            const activeTab = whichTab || (!document.getElementById('tab-development').classList.contains('hidden') ? 'development' : !document.getElementById('tab-matrix').classList.contains('hidden') ? 'matrix' : 'sample');
+            const params = new URLSearchParams({ tab: activeTab });
+            const map = activeTab === 'development' ? {material:'devMaterial',rm:'devRm',s:'devThickness',method:'devMethod',v:'devV',rp:'devRp',angle:'devAngle',a:'devFlangeA',b:'devFlangeB'} : {material:'skMaterial',rm:'skRm',s:'skThickness',method:'skMethod',v:'skV',angle:'skAngle',ri:'skRi',flat:'skFlat',a:'skFlangeA',b:'skFlangeB'};
+            if (activeTab === 'matrix') params.set('material', document.getElementById('tableMaterial').value);
+            else Object.entries(map).forEach(([key,id]) => params.set(key, document.getElementById(id).value));
             const shareUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
-            navigator.clipboard.writeText(shareUrl).then(() => {
-                const btn = document.getElementById('shareBtnHeader');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = `<span>✅ Link Copiato!</span>`;
-                setTimeout(() => { btn.innerHTML = originalText; }, 2200);
-            });
+            if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(shareUrl).then(() => { const btn = document.getElementById('shareBtnHeader'); if (btn) { const old = btn.innerHTML; btn.innerHTML = '<span>✅ Link copiato</span>'; setTimeout(() => btn.innerHTML = old, 2000); } }).catch(() => window.prompt('Copia questo collegamento:', shareUrl));
+            else window.prompt('Copia questo collegamento:', shareUrl);
         }
 
         function loadFromUrlParams() {
             const p = new URLSearchParams(window.location.search);
-            if (!p.has('s')) {
-                resetOptimalV();
-                return;
+            const set = (key, id) => { if (p.has(key)) document.getElementById(id).value = p.get(key); };
+            const tab = p.get('tab') || 'sample';
+            if (tab === 'development') {
+                const map = {material:'devMaterial',rm:'devRm',s:'devThickness',method:'devMethod',v:'devV',rp:'devRp',angle:'devAngle',a:'devFlangeA',b:'devFlangeB'};
+                Object.entries(map).forEach(([key,id]) => set(key,id));
+                refreshDevelopmentModel(false);
+            } else if (tab === 'matrix') { set('material','tableMaterial'); renderMatrixTable(); }
+            else {
+                if (p.has('m')) set('m','skMethod');
+                const map = {material:'skMaterial',rm:'skRm',s:'skThickness',method:'skMethod',v:'skV',angle:'skAngle',ri:'skRi',flat:'skFlat',a:'skFlangeA',b:'skFlangeB'};
+                Object.entries(map).forEach(([key,id]) => set(key,id));
+                updateSampleVOptions();
+                calculateSampleK();
             }
-            if (p.has('m')) document.getElementById('bendMethod').value = p.get('m');
-            if (p.has('rm')) {
-                document.getElementById('rmValue').value = p.get('rm');
-                document.getElementById('material').value = 'custom';
-            }
-            if (p.has('s')) document.getElementById('thickness').value = p.get('s');
-            if (p.has('l')) document.getElementById('length').value = p.get('l');
-            if (p.has('a')) document.getElementById('angle').value = p.get('a');
-            if (p.has('am')) document.getElementById('angleMode').value = p.get('am');
-            if (p.has('v')) document.getElementById('dieV').value = p.get('v');
-            if (p.has('rp')) document.getElementById('punchR').value = p.get('rp');
-            if (p.has('fa')) document.getElementById('flangeA').value = p.get('fa');
-            if (p.has('fb')) document.getElementById('flangeB').value = p.get('fb');
-            if (p.has('n')) document.getElementById('bendCount').value = p.get('n');
-            if (p.has('cri')) document.getElementById('cadRadius').value = p.get('cri');
-            if (p.has('ck')) document.getElementById('cadK').value = p.get('ck');
-
-            calculateAll();
+            switchTab(tab);
         }
-
         function renderMatrixTable() {
             const rm = parseFloat(document.getElementById('tableMaterial').value) || 420;
             const thicknesses = [0.8, 1.0, 1.2, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0];
@@ -976,7 +560,7 @@
                 title.textContent = "Chi Siamo — Il Progetto Grievesk Bend";
                 body.innerHTML = `
                     <p><strong>Grievesk Bend</strong> nasce dall'esperienza pratica di oltre 25 anni nella gestione del reparto di piegatura lamiera, attrezzaggio di presse piegatrici industriali e programmazione CAD/CAM.</p>
-                    <p>L'obiettivo dello strumento è colmare il divario storico tra <strong>Ufficio Tecnico (progettazione 3D)</strong> e <strong>Officina (realtà fisica in macchina)</strong>: troppo spesso gli sviluppi piano generati dai software CAD con parametri statici non tengono conto del raggio reale imposto dall'apertura della matrice V o dalle matrici rotanti tangenziali.</p>
+                    <p>L'obiettivo dello strumento è offrire a piegatori, attrezzisti e disegnatori strumenti rapidi per ricavare il fattore K da un campione, stimare lo sviluppo e condividere la configurazione di calcolo.</p>
                     <p>Tutti gli algoritmi sono progettati per offrire a piegatori, attrezzisti e disegnatori un riscontro immediato, gratuito e privo di registrazioni obbligatorie.</p>
                 `;
             } else if (type === 'privacy') {
@@ -1005,7 +589,10 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             initProtectedEmail();
+            updateSampleVOptions();
+            refreshDevelopmentModel(true);
             loadFromUrlParams();
+            renderMatrixTable();
         });
     </script>
 </body>
