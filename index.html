@@ -720,201 +720,157 @@
         }
 
         function calculateAll() {
-            const method = document.getElementById('bendMethod').value;
-            const rm = parseFloat(document.getElementById('rmValue').value) || 420;
-            const s = parseFloat(document.getElementById('thickness').value) || 1;
-            const L = parseFloat(document.getElementById('length').value) || 1000;
-            const rawAngle = parseFloat(document.getElementById('angle').value) || 90;
-            const angleMode = document.getElementById('angleMode').value;
-            const V = parseFloat(document.getElementById('dieV').value) || 16;
-            const rp = parseFloat(document.getElementById('punchR').value) || 1.0;
+            const $ = id => document.getElementById(id);
+            const method = $('bendMethod').value;
+            const rm = Number($('rmValue').value);
+            const s = Number($('thickness').value);
+            const L = Number($('length').value);
+            const rawAngle = Number($('angle').value);
+            const angleMode = $('angleMode').value;
+            const V = Number($('dieV').value);
+            const rp = Number($('punchR').value);
+            const flangeA = Number($('flangeA').value);
+            const flangeB = Number($('flangeB').value);
+            const bendCount = Number($('bendCount').value);
+            const cadRi = Number($('cadRadius').value);
+            const cadK = Number($('cadK').value);
+            const warningBox = $('warningBox');
 
-            const flangeA = parseFloat(document.getElementById('flangeA').value) || 50;
-            const flangeB = parseFloat(document.getElementById('flangeB').value) || 50;
-            const bendCount = Math.max(1, parseInt(document.getElementById('bendCount').value) || 1);
-            const cadRi = parseFloat(document.getElementById('cadRadius').value) || 1.0;
-            const cadK = parseFloat(document.getElementById('cadK').value) || 0.33;
-
-            let internalAngle = 90;
-            let deflectionAngle = 90;
-            if (angleMode === 'internal') {
-                internalAngle = Math.min(175, Math.max(15, rawAngle));
-                deflectionAngle = 180 - internalAngle;
-            } else {
-                deflectionAngle = Math.min(165, Math.max(5, rawAngle));
-                internalAngle = 180 - deflectionAngle;
+            const errors = [];
+            if (!Number.isFinite(rm) || rm < 50 || rm > 2500) errors.push('Rm deve essere compreso tra 50 e 2500 N/mm².');
+            if (!Number.isFinite(s) || s < 0.4 || s > 30) errors.push('Lo spessore deve essere compreso tra 0,4 e 30 mm.');
+            if (!Number.isFinite(L) || L < 10 || L > 12000) errors.push('La lunghezza deve essere compresa tra 10 e 12000 mm.');
+            if (!Number.isFinite(V) || V < 2 || V > 300) errors.push('La cava V deve essere compresa tra 2 e 300 mm.');
+            if (!Number.isFinite(rp) || rp < 0.1 || rp > 50) errors.push('Il raggio punzone deve essere compreso tra 0,1 e 50 mm.');
+            if (!Number.isFinite(rawAngle) || rawAngle < 5 || rawAngle > 175) errors.push('L’angolo deve essere compreso tra 5° e 175°.');
+            if (!Number.isFinite(flangeA) || flangeA < 1 || !Number.isFinite(flangeB) || flangeB < 1) errors.push('Le quote esterne delle flange devono essere positive.');
+            if (!Number.isInteger(bendCount) || bendCount < 1 || bendCount > 20) errors.push('Il numero di pieghe deve essere un intero tra 1 e 20.');
+            if (!Number.isFinite(cadRi) || cadRi <= 0 || !Number.isFinite(cadK) || cadK < 0 || cadK > 1) errors.push('Verifica il raggio e il fattore K impostati nel CAD.');
+            if (errors.length) {
+                warningBox.textContent = errors.join(' ');
+                warningBox.className = 'p-4 rounded-xl border bg-red-50 border-red-300 text-red-900 text-sm';
+                return;
             }
 
-            document.getElementById('methodHint').textContent = METHOD_INFO[method].hint;
-            document.getElementById('activeMethodTag').textContent = METHOD_INFO[method].tag;
-            document.getElementById('labelV').textContent = METHOD_INFO[method].labelV;
-            document.getElementById('vRatioBadge').textContent = `Rapporto V/s: ${(V / s).toFixed(1)}x`;
+            const internalAngle = angleMode === 'internal'
+                ? Math.min(175, Math.max(15, rawAngle))
+                : 180 - Math.min(175, Math.max(5, rawAngle));
+            const deflectionAngle = 180 - internalAngle;
 
-            let forceTons = 0;
-            let realRi = 1.0;
-            let riSourceText = "";
-            let minFlange = 0;
-            let springbackDeg = 0;
+            $('methodHint').textContent = METHOD_INFO[method].hint;
+            $('activeMethodTag').textContent = METHOD_INFO[method].tag;
+            $('labelV').textContent = METHOD_INFO[method].labelV;
+            $('vRatioBadge').textContent = `Rapporto V/s: ${(V / s).toFixed(1)}x`;
 
-            // CORRETTO: Formula industriale in kN per metro: F [kN/m] = (8 * Rm * s^2) / V
-            // Conversione in tonnellate totali: (kN/m * (L/1000)) / 9.81 * 10 (fattore scala corretto)
-            const forceKnPerMeter = (8 * rm * Math.pow(s, 2)) / V;
-            const baseAirTons = (forceKnPerMeter * (L / 1000)) / 9.81;
+            // Il raggio e il K stimati sono valori empirici, non misure fisiche.
+            let realRi, riSourceText, minFlange;
+            let forceTons = null, forceKnPerMeter = null;
+            const springbackText = 'Non stimato: richiede calibrazione sperimentale';
 
             if (method === 'air') {
-                forceTons = baseAirTons;
                 let vFactor = 0.16;
                 if (rm >= 650) vFactor = 0.20;
                 else if (rm <= 280) vFactor = 0.14;
-
-                let naturalRi = V * vFactor;
-                if (rp > naturalRi) {
-                    realRi = rp;
-                    riSourceText = "Imposto da Raggio Punzone (Rp > V/6)";
-                } else {
-                    realRi = naturalRi;
-                    riSourceText = `Generato da Cava V (${(vFactor*100).toFixed(0)}% di V)`;
-                }
+                const naturalRi = V * vFactor;
+                realRi = Math.max(naturalRi, rp);
+                riSourceText = rp > naturalRi
+                    ? 'Stima limitata dal raggio punta; da verificare con prova'
+                    : `Stima empirica: ${(vFactor * 100).toFixed(0)}% di V; da verificare`;
                 minFlange = 0.7 * V;
-                springbackDeg = (rm / 400) * (1.2 + 0.12 * (V / s));
 
+                // F' [kN/m] ≈ k · Rm[N/mm²] · s²[mm²] / V[mm].
+                // k = 1,42 è una stima empirica iniziale, da validare con dati macchina/utensile.
+                const forceCoefficient = 1.42;
+                forceKnPerMeter = forceCoefficient * rm * s * s / V;
+                forceTons = forceKnPerMeter * (L / 1000) / 9.80665;
             } else if (method === 'wing') {
-                forceTons = baseAirTons * 0.88;
                 realRi = Math.max(rp, s * 0.65);
-                if (rm >= 650) realRi *= 1.12;
-                riSourceText = "Guidato da Punzone + Ali Rotanti";
+                riSourceText = 'Stima euristica matrice rotante; verificare dati del costruttore';
                 minFlange = 0.45 * V;
-                springbackDeg = (rm / 400) * 1.4;
-
             } else if (method === 'coining') {
-                forceTons = baseAirTons * 3.5;
                 realRi = rp;
-                riSourceText = "Stampato da Punta Punzone (Fondo Cava)";
+                riSourceText = 'Ipotesi geometrica: raggio punta; verificare processo';
                 minFlange = 0.65 * V;
-                springbackDeg = 0.3;
-
-            } else if (method === 'panel') {
-                const leverArm = Math.max(V, s * 1.5);
-                forceTons = (baseAirTons * 0.35);
-                realRi = Math.max(rp, s * 0.8);
-                riSourceText = "Generato da Raggio Utensile / Premilamiera";
-                minFlange = s * 2.5;
-                springbackDeg = (rm / 400) * 1.8;
-            }
-
-            let ratioRiS = realRi / s;
-            let realK = 0.42;
-
-            if (method === 'coining') {
-                realK = 0.46;
-            } else if (method === 'panel') {
-                realK = Math.min(0.42, 0.28 + 0.04 * ratioRiS);
             } else {
-                if (ratioRiS < 0.65) {
-                    realK = 0.32;
-                } else if (ratioRiS <= 4.0) {
-                    realK = 0.33 + 0.045 * Math.log2(ratioRiS + 0.5);
-                } else {
-                    realK = 0.48;
-                }
-                realK = Math.min(0.50, Math.max(0.30, realK));
+                realRi = Math.max(rp, s * 0.8);
+                riSourceText = 'Stima euristica pannellatrice; verificare utensile';
+                minFlange = 2.5 * s;
             }
+
+            let realK;
+            const ratioRiS = realRi / s;
+            if (method === 'coining') realK = 0.42;
+            else if (method === 'panel') realK = Math.min(0.42, 0.28 + 0.04 * ratioRiS);
+            else if (ratioRiS < 0.65) realK = 0.32;
+            else if (ratioRiS <= 4) realK = Math.min(0.50, Math.max(0.30, 0.33 + 0.045 * Math.log2(ratioRiS + 0.5)));
+            else realK = 0.48;
 
             const realDev = computeSheetDevelopment(s, deflectionAngle, realRi, realK);
             const cadDev = computeSheetDevelopment(s, deflectionAngle, cadRi, cadK);
-
             const totalRealBD = realDev.bd * bendCount;
             const totalCadBD = cadDev.bd * bendCount;
-
             const realFlatLength = flangeA + flangeB - totalRealBD;
             const cadFlatLength = flangeA + flangeB - totalCadBD;
             const deltaFlat = cadFlatLength - realFlatLength;
 
             const warnings = [];
-            if (V < s * 4 && method !== 'panel') {
-                warnings.push(`⚠️ <strong>Cava V troppo stretta (${V} mm per spessore ${s} mm):</strong> Rischio critico di sovraccarico e rottura matrice.`);
-            }
-            if (rp < s * 0.63 && method !== 'panel') {
-                warnings.push(`ℹ️ <strong>Effetto Spigolatura (Punzone Acuto):</strong> Il raggio punzone (${rp} mm) è inferiore a 0.63×s (${(s*0.63).toFixed(2)} mm). La punta inciderà l'interno piega.`);
-            }
-            if (flangeA < minFlange || flangeB < minFlange) {
-                warnings.push(`⚠️ <strong>Flangia inferiore al Bordo Minimo (${minFlange.toFixed(1)} mm):</strong> Il lembo rischia di scivolare dentro la matrice durante la discesa.`);
-            }
+            if (method === 'air' && V < s * 5) warnings.push('Rapporto V/s basso rispetto a una regola pratica comune: verificare carico e compatibilità con le tabelle del costruttore.');
+            if (rp < s * 0.63) warnings.push('Raggio punta piccolo rispetto allo spessore (Rp < 0,63×s): indicazione empirica, non soglia universale.');
+            if (flangeA < minFlange || flangeB < minFlange) warnings.push(`Una flangia è sotto il bordo minimo indicativo (${minFlange.toFixed(1)} mm): verificare geometria e dati del costruttore.`);
+            if (bendCount > 1) warnings.push('Il modello multi-piega presume pieghe equivalenti e somma quote esterne corretta. Per pieghe con angolo o raggio diversi, calcolare ogni BD separatamente.');
+            if (method !== 'air') warnings.push('Forza non stimata: il modello in aria non è trasferibile in modo affidabile a questo processo.');
+            warningBox.textContent = warnings.join(' ');
+            warningBox.className = warnings.length
+                ? 'p-4 rounded-xl border bg-amber-50 border-amber-300 text-amber-900 text-sm'
+                : 'hidden p-4 rounded-xl border bg-red-50 border-red-300 text-red-900 text-sm';
 
-            const warningBox = document.getElementById('warningBox');
-            if (warnings.length > 0) {
-                warningBox.innerHTML = warnings.join('<br>');
-                warningBox.classList.remove('hidden');
-            } else {
-                warningBox.classList.add('hidden');
-            }
+            $('resTon').textContent = forceTons === null ? 'N/D' : `${forceTons.toFixed(1)} tf`;
+            $('resKn').textContent = forceKnPerMeter === null
+                ? 'Modello non disponibile per questo processo'
+                : `${(forceTons * 9.80665).toFixed(0)} kN (${(forceKnPerMeter / 9.80665).toFixed(1)} tf/m)`;
+            $('resRealRi').textContent = `${realRi.toFixed(2)} mm`;
+            $('resRiSource').textContent = riSourceText;
+            $('resMinFlange').textContent = `${minFlange.toFixed(1)} mm`;
+            $('resSpringback').textContent = springbackText;
+            $('resRealK').textContent = realK.toFixed(3);
+            $('resRealBA').textContent = `${realDev.ba.toFixed(2)} mm`;
+            $('resRealBD').textContent = `${realDev.bd.toFixed(2)} mm`;
+            $('resTotalBDText').textContent = bendCount > 1
+                ? `Totale teorico su ${bendCount} pieghe equivalenti: ${totalRealBD.toFixed(2)} mm`
+                : 'Valore teorico da sottrarre (1 piega)';
+            $('lblFlanges').textContent = `${flangeA} + ${flangeB} - (${bendCount} × ${realDev.bd.toFixed(2)}) mm`;
+            $('resFlatLength').textContent = `${realFlatLength.toFixed(2)} mm`;
 
-            document.getElementById('resTon').textContent = `${forceTons.toFixed(1)} t`;
-            document.getElementById('resKn').textContent = `${(forceTons * 9.81).toFixed(0)} kN (${(forceTons / (L/1000)).toFixed(1)} t/m)`;
-            document.getElementById('resRealRi').textContent = `${realRi.toFixed(2)} mm`;
-            document.getElementById('resRiSource').textContent = riSourceText;
-            document.getElementById('resMinFlange').textContent = `${minFlange.toFixed(1)} mm`;
-            document.getElementById('resSpringback').textContent = `~${springbackDeg.toFixed(1)}°`;
-
-            document.getElementById('resRealK').textContent = realK.toFixed(3);
-            document.getElementById('resRealBA').textContent = `${realDev.ba.toFixed(2)} mm`;
-            document.getElementById('resRealBD').textContent = `${realDev.bd.toFixed(2)} mm`;
-            document.getElementById('resTotalBDText').textContent = bendCount > 1 
-                ? `Totale su ${bendCount} pieghe: ${totalRealBD.toFixed(2)} mm` 
-                : `Valore da sottrarre (1 piega)`;
-            document.getElementById('lblFlanges').textContent = `${flangeA} + ${flangeB} - (${bendCount} × ${realDev.bd.toFixed(2)}) mm`;
-            document.getElementById('resFlatLength').textContent = `${realFlatLength.toFixed(2)} mm`;
-
-            updateTechnicalSvg({
-                s,
-                realRi,
-                realK,
-                internalAngle,
-                deflectionAngle,
-                flangeA,
-                flangeB,
-                realBD: realDev.bd,
-                bendCount
-            });
-
-            document.getElementById('lblDiagnosticBends').textContent = bendCount > 1 ? `su ${bendCount} pieghe` : `su 1 piega`;
-            document.getElementById('tblBdCountLabel').textContent = `${bendCount}×`;
-            document.getElementById('tblCadRi').textContent = `${cadRi.toFixed(2)} mm`;
-            document.getElementById('tblRealRi').textContent = `${realRi.toFixed(2)} mm`;
-            document.getElementById('tblCadK').textContent = cadK.toFixed(2);
-            document.getElementById('tblRealK').textContent = realK.toFixed(3);
-            document.getElementById('tblCadBD').textContent = `${totalCadBD.toFixed(2)} mm`;
-            document.getElementById('tblRealBD').textContent = `${totalRealBD.toFixed(2)} mm`;
-            document.getElementById('tblCadFlat').textContent = `${cadFlatLength.toFixed(2)} mm`;
-            document.getElementById('tblRealFlat').textContent = `${realFlatLength.toFixed(2)} mm`;
+            updateTechnicalSvg({ s, realRi, realK, internalAngle, deflectionAngle, flangeA, flangeB, realBD: realDev.bd, bendCount });
+            $('lblDiagnosticBends').textContent = bendCount > 1 ? `su ${bendCount} pieghe equivalenti` : 'su 1 piega';
+            $('tblBdCountLabel').textContent = `${bendCount}×`;
+            $('tblCadRi').textContent = `${cadRi.toFixed(2)} mm`;
+            $('tblRealRi').textContent = `${realRi.toFixed(2)} mm`;
+            $('tblCadK').textContent = cadK.toFixed(2);
+            $('tblRealK').textContent = realK.toFixed(3);
+            $('tblCadBD').textContent = `${totalCadBD.toFixed(2)} mm`;
+            $('tblRealBD').textContent = `${totalRealBD.toFixed(2)} mm`;
+            $('tblCadFlat').textContent = `${cadFlatLength.toFixed(2)} mm`;
+            $('tblRealFlat').textContent = `${realFlatLength.toFixed(2)} mm`;
 
             const absDelta = Math.abs(deltaFlat);
-            const sign = deltaFlat >= 0 ? "+" : "";
-            const badge = document.getElementById('cadDeltaBadge');
-            badge.textContent = `${sign}${deltaFlat.toFixed(2)} mm`;
-            badge.className = absDelta > 0.25 
-                ? "text-xl font-black font-mono text-red-600" 
-                : "text-xl font-black font-mono text-emerald-700";
-
-            document.getElementById('tblRiComment').textContent = Math.abs(realRi - cadRi) > 0.3
-                ? `Scarto raggio di ${(realRi - cadRi).toFixed(2)} mm`
-                : "Raggio allineato al CAD";
-
-            const verdictEl = document.getElementById('tblFinalVerdict');
-            if (absDelta <= 0.15) {
-                verdictEl.textContent = "✅ Sviluppo CAD conforme";
-                verdictEl.className = "py-2.5 text-xs font-bold text-emerald-800";
-            } else if (deltaFlat > 0) {
-                verdictEl.textContent = `⚠️ Il CAD taglia ${absDelta.toFixed(2)} mm più LUNGO`;
-                verdictEl.className = "py-2.5 text-xs font-bold text-red-700";
-            } else {
-                verdictEl.textContent = `⚠️ Il CAD taglia ${absDelta.toFixed(2)} mm più CORTO`;
-                verdictEl.className = "py-2.5 text-xs font-bold text-red-700";
-            }
-
-            document.getElementById('adviceBD').textContent = `${realDev.bd.toFixed(2)} mm`;
-            document.getElementById('adviceRi').textContent = `${realRi.toFixed(2)} mm`;
-            document.getElementById('adviceK').textContent = realK.toFixed(3);
+            $('cadDeltaBadge').textContent = `${deltaFlat >= 0 ? '+' : ''}${deltaFlat.toFixed(2)} mm`;
+            $('cadDeltaBadge').className = absDelta > 0.25
+                ? 'text-xl font-black font-mono text-red-600'
+                : 'text-xl font-black font-mono text-emerald-700';
+            $('tblRiComment').textContent = Math.abs(realRi - cadRi) > 0.3
+                ? `Differenza tra i raggi: ${(realRi - cadRi).toFixed(2)} mm`
+                : 'Raggi vicini; questo non certifica la conformità delle quote';
+            const verdict = $('tblFinalVerdict');
+            verdict.textContent = absDelta <= 0.15
+                ? 'I due modelli teorici risultano vicini alla precisione mostrata.'
+                : deltaFlat > 0
+                    ? `Il modello CAD prevede uno sviluppo più lungo di ${absDelta.toFixed(2)} mm.`
+                    : `Il modello CAD prevede uno sviluppo più corto di ${absDelta.toFixed(2)} mm.`;
+            verdict.className = 'py-2.5 text-xs font-bold text-slate-800';
+            $('adviceBD').textContent = `${realDev.bd.toFixed(2)} mm`;
+            $('adviceRi').textContent = `${realRi.toFixed(2)} mm`;
+            $('adviceK').textContent = realK.toFixed(3);
         }
 
         function copyShareLink() {
