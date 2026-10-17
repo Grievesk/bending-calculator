@@ -442,7 +442,7 @@
                         Con una cava da 24 mm, il raggio interno reale sarà circa 3.8&divide;4.0 mm, non 1.0 mm! Un raggio maggiore comporta un ritiro di piega (<em>Bend Deduction</em>) sensibilmente più alto. Se su una singola piega l'errore è di 0.5 mm, su uno scatolato o profilo omega a 4 pieghe l'errore accumulato supera i <strong>2.0 mm</strong>, rendendo il pezzo inutilizzabile.
                     </p>
                     <div class="bg-slate-100 p-3 rounded font-mono text-xs text-slate-800">
-                        Formula Forza (Aria): F [t/m] = (8 &times; R<sub>m</sub> &times; s&sup2;) / (1000 &times; V)<br>
+                        Formula Forza (Aria): F [kN] = (8 &times; R<sub>m</sub> &times; L &times; s&sup2;) / V<br>
                         Bend Allowance (BA): &pi; &times; (&beta; / 180) &times; (r<sub>i</sub> + K &times; s)<br>
                         Outside Setback (OSSB): tan(&beta; / 2) &times; (r<sub>i</sub> + s)<br>
                         Bend Deduction (BD): 2 &times; OSSB &minus; BA &nbsp;(dove &beta; = angolo di deviazione)
@@ -756,8 +756,10 @@
             let minFlange = 0;
             let springbackDeg = 0;
 
-            // CORRETTO: Formula standard aria (8 * Rm * s^2) / (1000 * V) per metro lineare
-            const baseAirTons = (8 * rm * (L / 1000) * Math.pow(s, 2)) / (1000 * V);
+            // CORRETTO: Formula industriale in kN per metro: F [kN/m] = (8 * Rm * s^2) / V
+            // Conversione in tonnellate totali: (kN/m * (L/1000)) / 9.81 * 10 (fattore scala corretto)
+            const forceKnPerMeter = (8 * rm * Math.pow(s, 2)) / V;
+            const baseAirTons = (forceKnPerMeter * (L / 1000)) / 9.81;
 
             if (method === 'air') {
                 forceTons = baseAirTons;
@@ -793,7 +795,7 @@
 
             } else if (method === 'panel') {
                 const leverArm = Math.max(V, s * 1.5);
-                forceTons = (4 * rm * (L / 1000) * Math.pow(s, 2)) / (1000 * leverArm);
+                forceTons = (baseAirTons * 0.35);
                 realRi = Math.max(rp, s * 0.8);
                 riSourceText = "Generato da Raggio Utensile / Premilamiera";
                 minFlange = s * 2.5;
@@ -990,7 +992,7 @@
                     if (ratio < 4.5 || ratio > 18) {
                         html += `<td class="p-2 border border-slate-200 bg-slate-50 text-slate-300">—</td>`;
                     } else {
-                        const tons = (8 * rm * 1.0 * Math.pow(s, 2)) / (1000 * v);
+                        const tons = ((8 * rm * Math.pow(s, 2)) / v) / 9.81;
                         const ri = v * vFactor;
                         const bmin = 0.7 * v;
                         const isOptimal = (rm >= 650) ? (ratio >= 7.5 && ratio <= 12) : (ratio >= 5.5 && ratio <= 9.5);
