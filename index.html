@@ -501,10 +501,11 @@
                 refreshDevelopmentModel(false);
             } else if (tab === 'matrix') { set('material','tableMaterial'); renderMatrixTable(); }
             else {
-                if (p.has('m')) set('m','skMethod');
+                if (p.has('m')) document.getElementById('skMethod').value = p.get('m');
                 const map = {material:'skMaterial',rm:'skRm',s:'skThickness',method:'skMethod',v:'skV',angle:'skAngle',ri:'skRi',flat:'skFlat',a:'skFlangeA',b:'skFlangeB'};
                 Object.entries(map).forEach(([key,id]) => set(key,id));
                 updateSampleVOptions();
+                if (p.has('v')) document.getElementById('skV').value = p.get('v');
                 calculateSampleK();
             }
             switchTab(tab);
