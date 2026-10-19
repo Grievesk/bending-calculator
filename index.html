@@ -148,7 +148,7 @@
         </section>
         <!-- Spazio Banner AdSense In-Content -->
         <div class="bg-slate-200/70 border border-dashed border-slate-300 rounded text-center py-4 text-xs text-slate-500">
-            [ Spazio Pubblicitario Google AdSense - In-Article / Multiplex ]
+            Spazio riservato agli annunci. Gli annunci saranno attivati solo dopo la configurazione e l'approvazione di Google AdSense.
         </div>
 
         <!-- SEZIONE GUIDA TECNICA E FORMULE -->
@@ -229,9 +229,9 @@
                 <div>
                     <h5 class="text-white font-bold uppercase mb-2">Informazioni Legali &amp; Contatti</h5>
                     <ul class="space-y-1.5">
-                        <li><button onclick="openModal('about')" class="hover:text-white underline">Chi Siamo / Il Progetto</button></li>
-                        <li><button onclick="openModal('privacy')" class="hover:text-white underline">Privacy &amp; Cookie Policy</button></li>
-                        <li><button onclick="openModal('terms')" class="hover:text-white underline">Termini di Utilizzo</button></li>
+                        <li><a href="/about.html" class="hover:text-white underline">Chi Siamo / Il Progetto</a></li>
+                        <li><a href="/privacy.html" class="hover:text-white underline">Privacy &amp; Cookie Policy</a></li>
+                        <li><a href="/terms.html" class="hover:text-white underline">Termini di Utilizzo</a></li>
                         <li class="pt-1">Contatto diretto: <a id="protectedEmail" href="#" class="text-blue-400 hover:underline font-mono">Caricamento contatto...</a></li>
                         <li>GitHub: <a href="https://github.com/Grievesk" target="_blank" rel="noopener" class="text-slate-300 hover:text-white underline">github.com/Grievesk</a></li>
                     </ul>
@@ -242,17 +242,6 @@
             </div>
         </div>
     </footer>
-
-    <!-- Modal per Privacy, Termini e Chi Siamo -->
-    <div id="legalModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl max-w-2xl w-full p-6 max-h-[80vh] overflow-y-auto space-y-4 text-sm text-slate-700">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h3 id="modalTitle" class="text-lg font-bold text-slate-900">Informativa</h3>
-                <button onclick="closeModal()" class="text-slate-500 hover:text-slate-900 font-bold text-lg">&times;</button>
-            </div>
-            <div id="modalBody" class="space-y-3 leading-relaxed"></div>
-        </div>
-    </div>
 
     <!-- LOGICA JAVASCRIPT -->
     <script>
@@ -550,42 +539,6 @@
 
             html += `</tbody>`;
             document.getElementById('interactiveMatrix').innerHTML = html;
-        }
-
-        function openModal(type) {
-            const modal = document.getElementById('legalModal');
-            const title = document.getElementById('modalTitle');
-            const body = document.getElementById('modalBody');
-
-            if (type === 'about') {
-                title.textContent = "Chi Siamo — Il Progetto Grievesk Bend";
-                body.innerHTML = `
-                    <p><strong>Grievesk Bend</strong> nasce dall'esperienza pratica di oltre 25 anni nella gestione del reparto di piegatura lamiera, attrezzaggio di presse piegatrici industriali e programmazione CAD/CAM.</p>
-                    <p>L'obiettivo dello strumento è offrire a piegatori, attrezzisti e disegnatori strumenti rapidi per ricavare il fattore K da un campione, stimare lo sviluppo e condividere la configurazione di calcolo.</p>
-                    <p>Tutti gli algoritmi sono progettati per offrire a piegatori, attrezzisti e disegnatori un riscontro immediato, gratuito e privo di registrazioni obbligatorie.</p>
-                `;
-            } else if (type === 'privacy') {
-                title.textContent = "Privacy & Cookie Policy";
-                body.innerHTML = `
-                    <p><strong>1. Trattamento dei dati:</strong> Tutti i calcoli eseguiti su Grievesk Bend avvengono localmente nel browser dell'utente. Nessun disegno tecnico o parametro di lavorazione viene salvato su server esterni.</p>
-                    <p><strong>2. Cookie e Google AdSense:</strong> Questo sito utilizza fornitori di terze parti, tra cui Google, che impiegano cookie per pubblicare annunci in base alle precedenti visite dell'utente su questo o altri siti web.</p>
-                    <p>L'utilizzo dei cookie per la pubblicità consente a Google e ai suoi partner di pubblicare annunci per gli utenti in base alla loro visita a questo sito. Gli utenti possono scegliere di disattivare la pubblicità personalizzata visitando la pagina Impostazioni annunci di Google.</p>
-                `;
-            } else {
-                title.textContent = "Termini di Utilizzo e Limitazione di Responsabilità";
-                body.innerHTML = `
-                    <p>I risultati forniti da Grievesk Bend (forze di piegatura, raggi interni, fattori K e sviluppi lamiera) costituiscono stime tecniche basate su formule empiriche di settore.</p>
-                    <p>L'utente è tenuto a verificare sempre la compatibilità con i limiti di carico massimo dei propri utensili (punzoni e matrici) e della propria pressa piegatrice, effettuando campionature prima della lavorazione di lotti produttivi.</p>
-                `;
-            }
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('legalModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
         }
 
         window.addEventListener('DOMContentLoaded', () => {
