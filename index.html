@@ -96,7 +96,7 @@
             <div class="rounded-lg border border-slate-200 bg-slate-50 p-3 sm:p-4 space-y-3">
               <div>
                 <h3 class="font-bold text-slate-900">Come misurare le flange</h3>
-                <p class="text-sm text-slate-600 mt-1">Misura ogni tratto rettilineo dal bordo libero fino al punto in cui il profilo esterno diventa curvo (tangenza del raggio esterno). Non proiettare gli spigoli teorici.</p>
+                <p class="text-sm text-slate-600 mt-1">La quota A/B è parallela al rispettivo lato. Dal bordo libero e dalla tangenza esterna traccia le linee di richiamo perpendicolari al lato: i loro punti d’incontro con la linea di quotatura definiscono la misura. Non proiettare gli spigoli teorici.</p>
               </div>
               <svg viewBox="0 0 640 390" role="img" aria-labelledby="flangeDiagramTitle flangeDiagramDesc" class="w-full h-auto rounded-lg bg-white border border-slate-200">
                 <title id="flangeDiagramTitle">Quote delle flange proiettate perpendicolarmente ai lati fino alla tangenza esterna</title>
@@ -129,7 +129,7 @@
                 <text x="238" y="190" font-size="13" fill="#475569">Lato rettilineo</text>
                 <text x="240" y="383" font-size="13" fill="#475569">Lato rettilineo</text>
               </svg>        </svg>
-              <p class="text-xs text-slate-600 leading-relaxed"><strong>Convenzione quote:</strong> A e B sono le lunghezze dei tratti rettilinei fino alla tangenza del raggio esterno. Questa convenzione viene usata direttamente nella formula.</p>
+              <p class="text-xs text-slate-600 leading-relaxed"><strong>Convenzione quote:</strong> la linea di quota A/B è parallela al lato; le due linee di richiamo, dal bordo libero e dalla tangenza esterna, sono perpendicolari al lato. La distanza tra le proiezioni è la quota da inserire.</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div><label for="skThickness" class="block text-xs font-bold uppercase text-slate-600 mb-1">Spessore s (mm)</label><input id="skThickness" type="number" min="0.3" max="30" step="0.1" value="2" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
