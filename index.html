@@ -104,20 +104,18 @@
                 <defs>
                   <marker id="flangeArrow" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto-start-reverse"><path d="M0,0 L7,3.5 L0,7 z" fill="#2563eb"/></marker>
                 </defs>
-                <path d="M72 48 L276 221 Q294 236 312 221 L435 90" fill="none" stroke="#334155" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M72 48 L276 221 Q294 236 312 221 L435 90" fill="none" stroke="#e2e8f0" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="276" cy="221" r="5" fill="#ea580c" stroke="white" stroke-width="2"/>
-                <circle cx="312" cy="221" r="5" fill="#ea580c" stroke="white" stroke-width="2"/>
-                <text x="256" y="205" font-size="15" font-weight="700" fill="#c2410c">Tangenza</text>
-                <text x="320" y="205" font-size="15" font-weight="700" fill="#c2410c">Tangenza</text>
-                <path d="M87 82 L247 217" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)"/>
-                <text x="149" y="130" font-size="22" font-weight="700" fill="#1d4ed8" transform="rotate(40 149 130)">A</text>
-                <path d="M336 205 L421 115" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)"/>
-                <text x="378" y="166" font-size="22" font-weight="700" fill="#1d4ed8" transform="rotate(-47 378 166)">B</text>
-                <path d="M280 248 Q294 260 308 248" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 4"/>
-                <text x="294" y="284" text-anchor="middle" font-size="14" fill="#475569">Arco esterno</text>
-                <text x="32" y="25" font-size="14" fill="#475569">Bordo libero</text>
-                <text x="448" y="82" font-size="14" fill="#475569">Bordo libero</text>
+                <path d="M62 55 L269 224 Q294 246 319 224 L394 75 L382 67 L307 210 Q294 221 279 210 L82 44 Z" fill="#e2e8f0" stroke="#334155" stroke-width="3" stroke-linejoin="round"/>
+                <circle cx="269" cy="224" r="5" fill="#ea580c" stroke="white" stroke-width="2"/>
+                <circle cx="319" cy="224" r="5" fill="#ea580c" stroke="white" stroke-width="2"/>
+                <text x="245" y="251" font-size="14" font-weight="700" fill="#c2410c">Tangenza</text>
+                <text x="320" y="251" font-size="14" font-weight="700" fill="#c2410c">Tangenza</text>
+                <path d="M82 72 L252 210" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)"/>
+                <text x="148" y="125" font-size="22" font-weight="700" fill="#1d4ed8" transform="rotate(39 148 125)">A</text>
+                <path d="M380 103 L333 196" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)"/>
+                <text x="367" y="151" font-size="22" font-weight="700" fill="#1d4ed8" transform="rotate(-64 367 151)">B</text>
+                <text x="294" y="289" text-anchor="middle" font-size="14" fill="#475569">Raggio esterno della piega</text>
+                <text x="25" y="28" font-size="14" fill="#475569">Bordo libero</text>
+                <text x="407" y="66" font-size="14" fill="#475569">Bordo libero</text>
               </svg>
               <p class="text-xs text-slate-600 leading-relaxed"><strong>Convenzione quote:</strong> A e B sono le lunghezze dei tratti rettilinei fino alla tangenza del raggio esterno. Questa convenzione viene usata direttamente nella formula.</p>
             </div>
@@ -126,8 +124,8 @@
               <div><label for="skAngle" class="block text-xs font-bold uppercase text-slate-600 mb-1">Angolo interno dopo piega (°)</label><input id="skAngle" type="number" min="10" max="175" step="1" value="90" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
               <div><label for="skRi" class="block text-xs font-bold uppercase text-slate-600 mb-1">Raggio interno misurato Ri (mm)</label><input id="skRi" type="number" min="0.05" max="100" step="0.1" value="2" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
               <div><label for="skFlat" class="block text-xs font-bold uppercase text-slate-600 mb-1">Lunghezza piana iniziale (mm)</label><input id="skFlat" type="number" min="1" max="12000" step="0.1" value="96.5" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
-              <div><label for="skFlangeA" class="block text-xs font-bold uppercase text-slate-600 mb-1">Flangia A — fino alla tangenza (mm)</label><input id="skFlangeA" type="number" min="1" max="12000" step="0.1" value="45" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
-              <div><label for="skFlangeB" class="block text-xs font-bold uppercase text-slate-600 mb-1">Flangia B — fino alla tangenza (mm)</label><input id="skFlangeB" type="number" min="1" max="12000" step="0.1" value="45" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="skFlangeA" class="block text-xs font-bold uppercase text-slate-600 mb-1">Flangia A — fino alla tangenza (mm)</label><input id="skFlangeA" type="number" min="1" max="12000" step="0.1" value="46" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="skFlangeB" class="block text-xs font-bold uppercase text-slate-600 mb-1">Flangia B — fino alla tangenza (mm)</label><input id="skFlangeB" type="number" min="1" max="12000" step="0.1" value="46" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
             </div>
             <details class="rounded-lg border border-slate-200 bg-white">
               <summary class="cursor-pointer select-none px-4 py-3 font-semibold text-sm text-slate-800">Configurazione di piegatura (facoltativa)</summary>
@@ -135,10 +133,10 @@
                 <p class="text-xs text-slate-600 leading-relaxed">Questi dati documentano la configurazione usata per produrre il campione e possono essere inclusi nel link condiviso. <strong>Non contribuiscono direttamente al calcolo geometrico del fattore K.</strong></p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div><label for="skMaterial" class="block text-xs font-bold uppercase text-slate-600 mb-1">Materiale (facoltativo)</label><select id="skMaterial" onchange="onSampleMaterialChange()" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm bg-slate-50"><option value="420">Acciaio dolce</option><option value="520">Acciaio S355</option><option value="700">Acciaio inox</option><option value="220">Alluminio</option><option value="1100">Acciaio altoresistenziale</option><option value="custom">Personalizzato</option></select></div>
-                  <div><label for="skRm" class="block text-xs font-bold uppercase text-slate-600 mb-1">Rm nominale (N/mm², facoltativo)</label><input id="skRm" type="number" min="50" max="2500" step="10" value="420" inputmode="decimal" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
-                  <div><label for="skMethod" class="block text-xs font-bold uppercase text-slate-600 mb-1">Metodo di piega</label><select id="skMethod" onchange="updateSampleVOptions()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-slate-50"><option value="air">Piegatura in aria</option><option value="wing">Tangenziale / WingBend</option><option value="coining">Fondo cava / coniatura</option><option value="panel">Pannellatrice / wiping</option></select></div>
-                  <div><label for="skV" class="block text-xs font-bold uppercase text-slate-600 mb-1">Apertura V / V equivalente (mm)</label><select id="skV" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-white"></select></div>
-                  <div><label for="skRpReference" class="block text-xs font-bold uppercase text-slate-600 mb-1">Raggio nominale punzone Rp (mm)</label><input id="skRpReference" type="number" min="0.1" max="100" step="0.1" placeholder="Facoltativo" inputmode="decimal" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+                  <div><label for="skRm" class="block text-xs font-bold uppercase text-slate-600 mb-1">Rm nominale (N/mm², facoltativo)</label><input id="skRm" type="number" min="50" max="2500" step="10" value="420" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+                  <div><label for="skMethod" class="block text-xs font-bold uppercase text-slate-600 mb-1">Metodo di piega</label><select id="skMethod" onchange="updateSampleVOptions(); calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-slate-50"><option value="air">Piegatura in aria</option><option value="wing">Tangenziale / WingBend</option><option value="coining">Fondo cava / coniatura</option><option value="panel">Pannellatrice / wiping</option></select></div>
+                  <div><label for="skV" class="block text-xs font-bold uppercase text-slate-600 mb-1">Apertura V / V equivalente (mm)</label><select id="skV" onchange="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-white"></select></div>
+                  <div><label for="skRpReference" class="block text-xs font-bold uppercase text-slate-600 mb-1">Raggio nominale punzone Rp (mm)</label><input id="skRpReference" type="number" min="0.1" max="100" step="0.1" placeholder="Facoltativo" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
                 </div>
               </div>
             </details>
