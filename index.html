@@ -99,23 +99,34 @@
                 <p class="text-sm text-slate-600 mt-1">Misura ogni tratto rettilineo dal bordo libero fino al punto in cui il profilo esterno diventa curvo (tangenza del raggio esterno). Non proiettare gli spigoli teorici.</p>
               </div>
               <svg viewBox="0 0 640 330" role="img" aria-labelledby="flangeDiagramTitle flangeDiagramDesc" class="w-full h-auto rounded-lg bg-white border border-slate-200">
-                <title id="flangeDiagramTitle">Misura delle flange fino alla tangenza esterna</title>
-                <desc id="flangeDiagramDesc">Sezione di una lamiera con piega acuta. Le quote A e B sono parallele ai tratti rettilinei e terminano nei punti di tangenza dell'arco esterno.</desc>
+                <title id="flangeDiagramTitle">Misura del lato rettilineo fino alla tangenza della piega</title>
+                <desc id="flangeDiagramDesc">Una lamiera con una sola piega: due tratti rettilinei, uno orizzontale e uno inclinato, si raccordano con il raggio. Le quote A e B sono misurate lungo ciascun tratto dal bordo libero fino al punto di tangenza del profilo esterno.</desc>
                 <defs>
                   <marker id="flangeArrow" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto-start-reverse"><path d="M0,0 L7,3.5 L0,7 z" fill="#2563eb"/></marker>
                 </defs>
-                <path d="M62 55 L269 224 Q294 246 319 224 L394 75 L382 67 L307 210 Q294 221 279 210 L82 44 Z" fill="#e2e8f0" stroke="#334155" stroke-width="3" stroke-linejoin="round"/>
-                <circle cx="269" cy="224" r="5" fill="#ea580c" stroke="white" stroke-width="2"/>
-                <circle cx="319" cy="224" r="5" fill="#ea580c" stroke="white" stroke-width="2"/>
-                <text x="245" y="251" font-size="14" font-weight="700" fill="#c2410c">Tangenza</text>
-                <text x="320" y="251" font-size="14" font-weight="700" fill="#c2410c">Tangenza</text>
-                <path d="M82 72 L252 210" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)"/>
-                <text x="148" y="125" font-size="22" font-weight="700" fill="#1d4ed8" transform="rotate(39 148 125)">A</text>
-                <path d="M380 103 L333 196" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)"/>
-                <text x="367" y="151" font-size="22" font-weight="700" fill="#1d4ed8" transform="rotate(-64 367 151)">B</text>
-                <text x="294" y="289" text-anchor="middle" font-size="14" fill="#475569">Raggio esterno della piega</text>
-                <text x="25" y="28" font-size="14" fill="#475569">Bordo libero</text>
-                <text x="407" y="66" font-size="14" fill="#475569">Bordo libero</text>
+                <!-- Lamiera: due lati rettilinei collegati da una sola piega arrotondata -->
+                <path d="M54 54 L500 270 Q535 287 565 259 Q589 235 570 208 L543 174"
+                  fill="none" stroke="#334155" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M54 54 L500 270 Q535 287 565 259 Q589 235 570 208 L543 174"
+                  fill="none" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- Punti di tangenza del profilo esterno -->
+                <circle cx="500" cy="270" r="5" fill="#ea580c" stroke="white" stroke-width="2"/>
+                <circle cx="570" cy="208" r="5" fill="#ea580c" stroke="white" stroke-width="2"/>
+                <!-- Quote parallele ai lati rettilinei: bordo libero -> tangenza -->
+                <path d="M70 78 L480 276" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)"/>
+                <text x="255" y="163" font-size="22" font-weight="700" fill="#1d4ed8" transform="rotate(26 255 163)">A</text>
+                <path d="M80 28 L478 246" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)" opacity="0"/>
+                <path d="M70 68 L485 259" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)" opacity="0"/>
+                <path d="M86 44 L486 238" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)" opacity="0"/>
+                <path d="M88 69 L485 250" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)" opacity="0"/>
+                <path d="M565 187 L535 166" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)" opacity="0"/>
+                <path d="M557 199 L532 184" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)" opacity="0"/>
+                <path d="M556 196 L552 194" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)" opacity="0"/>
+                <text x="574" y="188" font-size="22" font-weight="700" fill="#1d4ed8">B</text>
+                <text x="440" y="306" font-size="13" fill="#c2410c">Tangenza</text>
+                <text x="494" y="148" font-size="13" fill="#c2410c">Tangenza</text>
+                <text x="28" y="35" font-size="13" fill="#475569">Bordo libero</text>
+                <text x="485" y="132" font-size="13" fill="#475569">Bordo libero</text>
               </svg>
               <p class="text-xs text-slate-600 leading-relaxed"><strong>Convenzione quote:</strong> A e B sono le lunghezze dei tratti rettilinei fino alla tangenza del raggio esterno. Questa convenzione viene usata direttamente nella formula.</p>
             </div>
