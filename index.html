@@ -98,32 +98,37 @@
                 <h3 class="font-bold text-slate-900">Come misurare le flange</h3>
                 <p class="text-sm text-slate-600 mt-1">Misura ogni tratto rettilineo dal bordo libero fino al punto in cui il profilo esterno diventa curvo (tangenza del raggio esterno). Non proiettare gli spigoli teorici.</p>
               </div>
-              <svg viewBox="0 0 640 340" role="img" aria-labelledby="flangeDiagramTitle flangeDiagramDesc" class="w-full h-auto rounded-lg bg-white border border-slate-200">
-                <title id="flangeDiagramTitle">Misura dei due lati rettilinei fino alla tangenza della piega</title>
-                <desc id="flangeDiagramDesc">Sezione di una lamiera con una sola piega arrotondata verso destra e due lati che si estendono verso sinistra: uno inclinato e uno orizzontale. Le quote A e B sono misurate lungo ciascun lato dal bordo libero fino al punto di tangenza del profilo esterno.</desc>
+              <svg viewBox="0 0 640 390" role="img" aria-labelledby="flangeDiagramTitle flangeDiagramDesc" class="w-full h-auto rounded-lg bg-white border border-slate-200">
+                <title id="flangeDiagramTitle">Quote delle flange proiettate perpendicolarmente ai lati fino alla tangenza esterna</title>
+                <desc id="flangeDiagramDesc">Sezione di una lamiera piegata. Per ciascun lato rettilineo, le linee di richiamo sono perpendicolari al lato e partono dal bordo libero e dalla tangenza più esterna del raggio. La quota A o B si legge sulla linea di quota parallela al lato.</desc>
                 <defs>
                   <marker id="flangeArrow" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto-start-reverse"><path d="M0,0 L7,3.5 L0,7 z" fill="#2563eb"/></marker>
                 </defs>
-                <!-- Profilo esterno del campione: due tratti rettilinei e una sola piega -->
-                <path d="M58 42 L476 222 Q518 244 498 270 Q490 280 468 280 L58 280"
+                <!-- Profilo esterno del pezzo: i punti arancioni sono le tangenti esterne -->
+                <path d="M58 82 L476 262 Q518 284 498 310 Q490 320 468 320 L58 320"
                   fill="none" stroke="#334155" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M58 42 L476 222 Q518 244 498 270 Q490 280 468 280 L58 280"
+                <path d="M58 82 L476 262 Q518 284 498 310 Q490 320 468 320 L58 320"
                   fill="none" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
-                <!-- Tangency points: start/end of the curved outside profile -->
-                <circle cx="476" cy="222" r="5" fill="#ea580c" stroke="white" stroke-width="2"/>
-                <circle cx="468" cy="280" r="5" fill="#ea580c" stroke="white" stroke-width="2"/>
-                <!-- B: along the inclined straight side, from free edge to tangency -->
-                <path d="M77 22 L455 185" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)"/>
-                <text x="252" y="104" font-size="22" font-weight="700" fill="#1d4ed8" transform="rotate(23 252 104)">B</text>
-                <!-- A: along the horizontal straight side, from free edge to tangency -->
-                <path d="M58 310 L458 310" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)"/>
-                <text x="255" y="306" font-size="22" font-weight="700" fill="#1d4ed8">A</text>
-                <text x="17" y="28" font-size="13" fill="#475569">Bordo libero</text>
-                <text x="18" y="264" font-size="13" fill="#475569">Bordo libero</text>
-                <text x="416" y="203" font-size="12" font-weight="700" fill="#c2410c">Tangenza</text>
-                <text x="422" y="292" font-size="12" font-weight="700" fill="#c2410c">Tangenza</text>
-                <text x="318" y="70" font-size="13" fill="#475569">Lato rettilineo</text>
-              </svg>
+                <circle cx="476" cy="262" r="5" fill="#ea580c" stroke="white" stroke-width="2"/>
+                <circle cx="468" cy="320" r="5" fill="#ea580c" stroke="white" stroke-width="2"/>
+
+                <!-- Quota B: linea di quota parallela al lato; richiami perpendicolari al lato -->
+                <path d="M58 82 L83 24 M476 262 L501 204" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3"/>
+                <path d="M83 24 L501 204" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)"/>
+                <text x="285" y="112" font-size="22" font-weight="700" fill="#1d4ed8" transform="rotate(23 285 112)">B</text>
+
+                <!-- Quota A: linea di quota parallela al lato; richiami perpendicolari al lato -->
+                <path d="M58 320 L58 354 M468 320 L468 354" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3"/>
+                <path d="M58 354 L468 354" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)"/>
+                <text x="260" y="347" font-size="22" font-weight="700" fill="#1d4ed8">A</text>
+
+                <text x="14" y="66" font-size="13" fill="#475569">Bordo libero</text>
+                <text x="14" y="304" font-size="13" fill="#475569">Bordo libero</text>
+                <text x="405" y="245" font-size="12" font-weight="700" fill="#c2410c">Tangenza esterna</text>
+                <text x="397" y="342" font-size="12" font-weight="700" fill="#c2410c">Tangenza esterna</text>
+                <text x="238" y="190" font-size="13" fill="#475569">Lato rettilineo</text>
+                <text x="240" y="383" font-size="13" fill="#475569">Lato rettilineo</text>
+              </svg>        </svg>
               <p class="text-xs text-slate-600 leading-relaxed"><strong>Convenzione quote:</strong> A e B sono le lunghezze dei tratti rettilinei fino alla tangenza del raggio esterno. Questa convenzione viene usata direttamente nella formula.</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
