@@ -96,7 +96,7 @@
             <div class="rounded-lg border border-slate-200 bg-slate-50 p-3 sm:p-4 space-y-3">
               <div>
                 <h3 class="font-bold text-slate-900">Come misurare le flange</h3>
-                <p class="text-sm text-slate-600 mt-1">La quota A/B è parallela al rispettivo lato. Le linee di richiamo sono perpendicolari al lato e arrivano alla proiezione dell’ingombro più esterno della piega, non alla tangenza del tratto rettilineo. Non proiettare gli spigoli teorici.</p>
+                <p class="text-sm text-slate-600 mt-1">La quota A/B è parallela al rispettivo lato. Le linee di richiamo sono perpendicolari al lato e arrivano alla proiezione dell’ingombro esterno della piega. Per ogni lato la quota comprende la parte rettilinea più il ritiro esterno OSS; a 90° OSS = Ri + s.</p>
               </div>
               <svg viewBox="0 0 640 390" role="img" aria-labelledby="flangeDiagramTitle flangeDiagramDesc" class="w-full h-auto rounded-lg bg-white border border-slate-200">
                 <title id="flangeDiagramTitle">Quote A e B proiettate fino all'ingombro esterno della piega</title>
@@ -129,15 +129,15 @@
                 <text x="232" y="191" font-size="13" fill="#475569">Lato rettilineo</text>
                 <text x="240" y="383" font-size="13" fill="#475569">Lato rettilineo</text>
               </svg>        </svg>        </svg>
-              <p class="text-xs text-slate-600 leading-relaxed"><strong>Convenzione quote:</strong> la linea di quota A/B è parallela al lato; le linee di richiamo sono perpendicolari al lato e terminano sulla proiezione dell’ingombro più esterno della piega, non sul punto di tangenza.</p>
+              <p class="text-xs text-slate-600 leading-relaxed"><strong>Convenzione quote:</strong> la linea di quota A/B è parallela al lato; le linee di richiamo sono perpendicolari al lato e terminano sulla proiezione dell’ingombro esterno. La formula usa OSS = (Ri + s) × tan(angolo di piega / 2), che vale Ri + s per una piega a 90°.</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div><label for="skThickness" class="block text-xs font-bold uppercase text-slate-600 mb-1">Spessore s (mm)</label><input id="skThickness" type="number" min="0.3" max="30" step="0.1" value="2" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
               <div><label for="skAngle" class="block text-xs font-bold uppercase text-slate-600 mb-1">Angolo interno dopo piega (°)</label><input id="skAngle" type="number" min="10" max="175" step="1" value="90" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
               <div><label for="skRi" class="block text-xs font-bold uppercase text-slate-600 mb-1">Raggio interno misurato Ri (mm)</label><input id="skRi" type="number" min="0.05" max="100" step="0.1" value="2" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
               <div><label for="skFlat" class="block text-xs font-bold uppercase text-slate-600 mb-1">Lunghezza piana iniziale (mm)</label><input id="skFlat" type="number" min="1" max="12000" step="0.1" value="96.5" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
-              <div><label for="skFlangeA" class="block text-xs font-bold uppercase text-slate-600 mb-1">Flangia A — fino alla tangenza (mm)</label><input id="skFlangeA" type="number" min="1" max="12000" step="0.1" value="46" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
-              <div><label for="skFlangeB" class="block text-xs font-bold uppercase text-slate-600 mb-1">Flangia B — fino alla tangenza (mm)</label><input id="skFlangeB" type="number" min="1" max="12000" step="0.1" value="46" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="skFlangeA" class="block text-xs font-bold uppercase text-slate-600 mb-1">Quota esterna A — proiezione piega (mm)</label><input id="skFlangeA" type="number" min="1" max="12000" step="0.1" value="46" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="skFlangeB" class="block text-xs font-bold uppercase text-slate-600 mb-1">Quota esterna B — proiezione piega (mm)</label><input id="skFlangeB" type="number" min="1" max="12000" step="0.1" value="46" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
             </div>
             <details class="rounded-lg border border-slate-200 bg-white">
               <summary class="cursor-pointer select-none px-4 py-3 font-semibold text-sm text-slate-800">Configurazione di piegatura (facoltativa)</summary>
@@ -433,11 +433,11 @@
             }
 
             const theta = (180 - angle) * Math.PI / 180;
-            // A e B sono le lunghezze rettilinee dal bordo libero alla tangenza del raggio esterno.
-            // Lo sviluppo piano è quindi somma dei due tratti rettilinei e della bend allowance.
-            const ba = flat - a - b;
+            // A e B sono quote esterne: lato rettilineo più proiezione dell'ingombro esterno della piega.
+            // OSS = proiezione esterna per ciascun lato; a 90° vale Ri + s.
             const outsideSetback = Math.tan(theta / 2) * (ri + s);
-            const bd = 2 * outsideSetback - ba;
+            const ba = flat - a - b + 2 * outsideSetback;
+            const bd = a + b - flat;
             const k = (ba / theta - ri) / s;
 
             document.getElementById('skResultK').textContent = Number.isFinite(k) ? k.toFixed(4) : '—';
@@ -449,10 +449,10 @@
             const method = document.getElementById('skMethod').selectedOptions[0]?.textContent || 'non specificato';
             const v = document.getElementById('skV').value || 'non specificata';
             const rp = document.getElementById('skRpReference').value || 'non specificato';
-            document.getElementById('skSummary').textContent = `Misure: s ${s} mm · angolo interno ${angle}° · Ri ${ri} mm · sviluppo piano ${flat} mm · flange A/B ${a}/${b} mm fino alla tangenza. Configurazione facoltativa: ${material} · Rm ${rm} N/mm² · ${method} · V ${v} mm · Rp ${rp} mm. Questi dati di processo non entrano nel calcolo di K.`;
+            document.getElementById('skSummary').textContent = `Misure: s ${s} mm · angolo interno ${angle}° · Ri ${ri} mm · sviluppo piano ${flat} mm · quote esterne A/B ${a}/${b} mm fino alla proiezione dell’ingombro esterno della piega. Configurazione facoltativa: ${material} · Rm ${rm} N/mm² · ${method} · V ${v} mm · Rp ${rp} mm. Questi dati di processo non entrano nel calcolo di K.`;
 
             if (!Number.isFinite(k) || k < 0 || k > 1 || ba <= 0 || bd < 0) {
-                warning.textContent = 'Il risultato geometrico è incoerente o fuori dall’intervallo atteso. Controlla lo sviluppo piano, le flange misurate fino alla tangenza, l’angolo e il raggio; non usare K senza verifica.';
+                warning.textContent = 'Il risultato geometrico è incoerente o fuori dall’intervallo atteso. Controlla lo sviluppo piano, le quote esterne A/B, l’angolo e il raggio; non usare K senza verifica.';
                 warning.className = 'rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900';
             } else {
                 warning.textContent = 'K ricavato esclusivamente dalle misure geometriche del campione. Metodo, cava V, raggio nominale del punzone e Rm sono dati facoltativi e non contribuiscono al calcolo.';
