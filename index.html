@@ -96,40 +96,40 @@
             <div class="rounded-lg border border-slate-200 bg-slate-50 p-3 sm:p-4 space-y-3">
               <div>
                 <h3 class="font-bold text-slate-900">Come misurare le flange</h3>
-                <p class="text-sm text-slate-600 mt-1">La quota A/B è parallela al rispettivo lato. Dal bordo libero e dalla tangenza esterna traccia le linee di richiamo perpendicolari al lato: i loro punti d’incontro con la linea di quotatura definiscono la misura. Non proiettare gli spigoli teorici.</p>
+                <p class="text-sm text-slate-600 mt-1">La quota A/B è parallela al rispettivo lato. Le linee di richiamo sono perpendicolari al lato e arrivano alla proiezione dell’ingombro più esterno della piega, non alla tangenza del tratto rettilineo. Non proiettare gli spigoli teorici.</p>
               </div>
               <svg viewBox="0 0 640 390" role="img" aria-labelledby="flangeDiagramTitle flangeDiagramDesc" class="w-full h-auto rounded-lg bg-white border border-slate-200">
-                <title id="flangeDiagramTitle">Quote delle flange proiettate perpendicolarmente ai lati fino alla tangenza esterna</title>
-                <desc id="flangeDiagramDesc">Sezione di una lamiera piegata. Per ciascun lato rettilineo, le linee di richiamo sono perpendicolari al lato e partono dal bordo libero e dalla tangenza più esterna del raggio. La quota A o B si legge sulla linea di quota parallela al lato.</desc>
+                <title id="flangeDiagramTitle">Quote A e B proiettate fino all'ingombro esterno della piega</title>
+                <desc id="flangeDiagramDesc">La quota è parallela al lato rettilineo. Le linee di richiamo sono perpendicolari al lato: partono dal bordo libero e dalla proiezione del punto più esterno della piega. Non terminano al punto di tangenza del tratto rettilineo.</desc>
                 <defs>
                   <marker id="flangeArrow" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto-start-reverse"><path d="M0,0 L7,3.5 L0,7 z" fill="#2563eb"/></marker>
                 </defs>
-                <!-- Profilo esterno del pezzo: i punti arancioni sono le tangenti esterne -->
+                <!-- Profilo esterno del campione: due lati e raccordo -->
                 <path d="M58 82 L476 262 Q518 284 498 310 Q490 320 468 320 L58 320"
                   fill="none" stroke="#334155" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M58 82 L476 262 Q518 284 498 310 Q490 320 468 320 L58 320"
                   fill="none" stroke="#cbd5e1" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="476" cy="262" r="5" fill="#ea580c" stroke="white" stroke-width="2"/>
-                <circle cx="468" cy="320" r="5" fill="#ea580c" stroke="white" stroke-width="2"/>
 
-                <!-- Quota B: linea di quota parallela al lato; richiami perpendicolari al lato -->
-                <path d="M58 82 L83 24 M476 262 L501 204" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3"/>
-                <path d="M83 24 L501 204" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)"/>
-                <text x="285" y="112" font-size="22" font-weight="700" fill="#1d4ed8" transform="rotate(23 285 112)">B</text>
+                <!-- Punto di riferimento: ingombro più esterno della curva, non la tangenza -->
+                <circle cx="518" cy="284" r="5" fill="#ea580c" stroke="white" stroke-width="2"/>
+                <text x="408" y="267" font-size="12" font-weight="700" fill="#c2410c">Estremo esterno</text>
 
-                <!-- Quota A: linea di quota parallela al lato; richiami perpendicolari al lato -->
-                <path d="M58 320 L58 354 M468 320 L468 354" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3"/>
-                <path d="M58 354 L468 354" fill="none" stroke="#2563eb" stroke-width="2.5" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)"/>
-                <text x="260" y="347" font-size="22" font-weight="700" fill="#1d4ed8">A</text>
+                <!-- B: quota parallela al lato inclinato; richiami perpendicolari da bordo e ingombro esterno -->
+                <path d="M58 82 L76 40 M518 284 L536 242" fill="none" stroke="#64748b" stroke-width="1.7" stroke-dasharray="5 4"/>
+                <path d="M76 40 L536 242" fill="none" stroke="#2563eb" stroke-width="2.7" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)"/>
+                <text x="294" y="119" font-size="22" font-weight="700" fill="#1d4ed8" transform="rotate(23.7 294 119)">B</text>
+
+                <!-- A: quota parallela al lato orizzontale; richiamo fino alla proiezione dell'ingombro esterno -->
+                <path d="M58 320 L58 354 M518 284 L518 354" fill="none" stroke="#64748b" stroke-width="1.7" stroke-dasharray="5 4"/>
+                <path d="M58 354 L518 354" fill="none" stroke="#2563eb" stroke-width="2.7" marker-start="url(#flangeArrow)" marker-end="url(#flangeArrow)"/>
+                <text x="280" y="347" font-size="22" font-weight="700" fill="#1d4ed8">A</text>
 
                 <text x="14" y="66" font-size="13" fill="#475569">Bordo libero</text>
                 <text x="14" y="304" font-size="13" fill="#475569">Bordo libero</text>
-                <text x="405" y="245" font-size="12" font-weight="700" fill="#c2410c">Tangenza esterna</text>
-                <text x="397" y="342" font-size="12" font-weight="700" fill="#c2410c">Tangenza esterna</text>
-                <text x="238" y="190" font-size="13" fill="#475569">Lato rettilineo</text>
+                <text x="232" y="191" font-size="13" fill="#475569">Lato rettilineo</text>
                 <text x="240" y="383" font-size="13" fill="#475569">Lato rettilineo</text>
-              </svg>        </svg>
-              <p class="text-xs text-slate-600 leading-relaxed"><strong>Convenzione quote:</strong> la linea di quota A/B è parallela al lato; le due linee di richiamo, dal bordo libero e dalla tangenza esterna, sono perpendicolari al lato. La distanza tra le proiezioni è la quota da inserire.</p>
+              </svg>        </svg>        </svg>
+              <p class="text-xs text-slate-600 leading-relaxed"><strong>Convenzione quote:</strong> la linea di quota A/B è parallela al lato; le linee di richiamo sono perpendicolari al lato e terminano sulla proiezione dell’ingombro più esterno della piega, non sul punto di tangenza.</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div><label for="skThickness" class="block text-xs font-bold uppercase text-slate-600 mb-1">Spessore s (mm)</label><input id="skThickness" type="number" min="0.3" max="30" step="0.1" value="2" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
