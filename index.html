@@ -604,7 +604,7 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             // Seleziona il valore esistente al focus, così digitare lo sostituisce invece di accodare cifre.
-            document.querySelectorAll('input[type="text"]').forEach(input => {
+            document.querySelectorAll('input[inputmode="decimal"]').forEach(input => {
                 input.addEventListener('focus', () => {
                     try { input.select(); } catch (_) {}
                 });
