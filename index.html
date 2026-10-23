@@ -295,7 +295,7 @@
         // Legge numeri anche quando il browser italiano usa la virgola decimale.
         function readNumericField(id) {
             const raw = document.getElementById(id)?.value ?? '';
-            const normalized = String(raw).trim().replace(/\\s/g, '').replace(',', '.');
+            const normalized = String(raw).trim().replace(/\s/g, '').replace(',', '.');
             return normalized === '' ? NaN : Number(normalized);
         }
 
