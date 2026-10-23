@@ -132,12 +132,12 @@
               <p class="text-xs text-slate-600 leading-relaxed"><strong>Convenzione quote:</strong> la linea di quota A/B è parallela al lato; le linee di richiamo sono perpendicolari al lato e terminano sulla proiezione dell’ingombro esterno. La formula usa OSS = (Ri + s) × tan(angolo di piega / 2), che vale Ri + s per una piega a 90°.</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div><label for="skThickness" class="block text-xs font-bold uppercase text-slate-600 mb-1">Spessore s (mm)</label><input id="skThickness" type="number" min="0.3" max="30" step="0.1" value="2" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="skThickness" class="block text-xs font-bold uppercase text-slate-600 mb-1">Spessore s (mm)</label><input id="skThickness" type="number" min="0.3" max="30" step="0.1" value="1" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
               <div><label for="skAngle" class="block text-xs font-bold uppercase text-slate-600 mb-1">Angolo interno dopo piega (°)</label><input id="skAngle" type="number" min="10" max="175" step="1" value="90" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
-              <div><label for="skRi" class="block text-xs font-bold uppercase text-slate-600 mb-1">Raggio interno misurato Ri (mm)</label><input id="skRi" type="number" min="0.05" max="100" step="0.1" value="2" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
-              <div><label for="skFlat" class="block text-xs font-bold uppercase text-slate-600 mb-1">Lunghezza piana iniziale (mm)</label><input id="skFlat" type="number" min="1" max="12000" step="0.1" value="96.5" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
-              <div><label for="skFlangeA" class="block text-xs font-bold uppercase text-slate-600 mb-1">Quota esterna A — proiezione piega (mm)</label><input id="skFlangeA" type="number" min="1" max="12000" step="0.1" value="46" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
-              <div><label for="skFlangeB" class="block text-xs font-bold uppercase text-slate-600 mb-1">Quota esterna B — proiezione piega (mm)</label><input id="skFlangeB" type="number" min="1" max="12000" step="0.1" value="46" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="skRi" class="block text-xs font-bold uppercase text-slate-600 mb-1">Raggio interno misurato Ri (mm)</label><input id="skRi" type="number" min="0.05" max="100" step="0.1" value="1.5" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="skFlat" class="block text-xs font-bold uppercase text-slate-600 mb-1">Lunghezza piana iniziale (mm)</label><input id="skFlat" type="number" min="1" max="12000" step="0.1" value="98" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="skFlangeA" class="block text-xs font-bold uppercase text-slate-600 mb-1">Quota esterna A — proiezione piega (mm)</label><input id="skFlangeA" type="number" min="1" max="12000" step="0.1" value="50" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="skFlangeB" class="block text-xs font-bold uppercase text-slate-600 mb-1">Quota esterna B — proiezione piega (mm)</label><input id="skFlangeB" type="number" min="1" max="12000" step="0.1" value="50" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
             </div>
             <details class="rounded-lg border border-slate-200 bg-white">
               <summary class="cursor-pointer select-none px-4 py-3 font-semibold text-sm text-slate-800">Configurazione di piegatura (facoltativa)</summary>
@@ -292,6 +292,13 @@
         const EMAIL_USER = 'info'; 
         const EMAIL_DOMAIN = 'grieveskbend.com';
 
+        // Legge numeri anche quando il browser italiano usa la virgola decimale.
+        function readNumericField(id) {
+            const raw = document.getElementById(id)?.value ?? '';
+            const normalized = String(raw).trim().replace(/\\s/g, '').replace(',', '.');
+            return normalized === '' ? NaN : Number(normalized);
+        }
+
         function initProtectedEmail() {
             const emailLink = document.getElementById('protectedEmail');
             if (emailLink) {
@@ -357,7 +364,7 @@
         function populateVSelect(selectId, targetV) {
             const select = document.getElementById(selectId);
             const isSample = selectId === 'skV';
-            const s = Number(document.getElementById(isSample ? 'skThickness' : 'devThickness').value);
+            const s = readNumericField(isSample ? 'skThickness' : 'devThickness');
             const method = document.getElementById(isSample ? 'skMethod' : 'devMethod').value;
             const previous = Number(select.value);
             let choices = STANDARD_DIES.filter(v => Number.isFinite(s) && s > 0 && v / s >= 4.5 && v / s <= 18);
@@ -380,8 +387,8 @@
         }
 
         function updateSampleVOptions() {
-            const s = Number(document.getElementById('skThickness').value) || 2;
-            const rm = Number(document.getElementById('skRm').value) || 420;
+            const s = readNumericField('skThickness') || 2;
+            const rm = readNumericField('skRm') || 420;
             const method = document.getElementById('skMethod').value;
             populateVSelect('skV', recommendedV(s, rm, method));
         }
@@ -403,8 +410,8 @@
         function onDevelopmentMethodChange() { refreshDevelopmentModel(true); }
 
         function refreshDevelopmentModel(reselectV = false) {
-            const s = Number(document.getElementById('devThickness').value);
-            const rm = Number(document.getElementById('devRm').value);
+            const s = readNumericField('devThickness');
+            const rm = readNumericField('devRm');
             const method = document.getElementById('devMethod').value;
             if (!Number.isFinite(s) || s <= 0 || !Number.isFinite(rm) || rm <= 0) return;
             const target = recommendedV(s, rm, method);
@@ -415,12 +422,12 @@
         }
 
         function calculateSampleK() {
-            const s = Number(document.getElementById('skThickness').value);
-            const angle = Number(document.getElementById('skAngle').value);
-            const ri = Number(document.getElementById('skRi').value);
-            const flat = Number(document.getElementById('skFlat').value);
-            const a = Number(document.getElementById('skFlangeA').value);
-            const b = Number(document.getElementById('skFlangeB').value);
+            const s = readNumericField('skThickness');
+            const angle = readNumericField('skAngle');
+            const ri = readNumericField('skRi');
+            const flat = readNumericField('skFlat');
+            const a = readNumericField('skFlangeA');
+            const b = readNumericField('skFlangeB');
             const warning = document.getElementById('sampleWarning');
             const resultIds = ['skResultK', 'skResultBA', 'skResultBD'];
             const clearResults = () => resultIds.forEach(id => document.getElementById(id).textContent = '—');
@@ -471,14 +478,14 @@
         }
 
         function calculateDevelopment() {
-            const s = Number(document.getElementById('devThickness').value);
-            const rm = Number(document.getElementById('devRm').value);
+            const s = readNumericField('devThickness');
+            const rm = readNumericField('devRm');
             const method = document.getElementById('devMethod').value;
             const v = Number(document.getElementById('devV').value);
-            const rp = Number(document.getElementById('devRp').value);
-            const angle = Number(document.getElementById('devAngle').value);
-            const a = Number(document.getElementById('devFlangeA').value);
-            const b = Number(document.getElementById('devFlangeB').value);
+            const rp = readNumericField('devRp');
+            const angle = readNumericField('devAngle');
+            const a = readNumericField('devFlangeA');
+            const b = readNumericField('devFlangeB');
             const warning = document.getElementById('devWarning');
             if (![s, rm, v, rp, angle, a, b].every(Number.isFinite) || s <= 0 || rm <= 0 || v <= 0 || rp <= 0 || angle <= 0 || angle >= 180 || a <= 0 || b <= 0) {
                 warning.textContent = 'Completa i campi numerici per calcolare lo sviluppo.';
@@ -596,6 +603,12 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            // Seleziona il valore esistente al focus, così digitare lo sostituisce invece di accodare cifre.
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.addEventListener('focus', () => {
+                    try { input.select(); } catch (_) {}
+                });
+            });
             initProtectedEmail();
             updateSampleVOptions();
             refreshDevelopmentModel(true);
