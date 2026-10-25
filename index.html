@@ -64,7 +64,7 @@
             <div class="flex items-center">
                 <a href="/" class="flex items-center shrink-0" aria-label="Grievesk Bend — home"><img src="/grievesk-bend-logo.png" alt="Grievesk Bend — Calcolo del fattore K e sviluppo lamiera" class="h-11 w-auto max-w-[220px] object-contain" fetchpriority="high"></a>
             </div>
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-3"><label class="text-xs text-slate-200 flex items-center gap-1">Unità <select id="unitSystem" class="text-slate-900 rounded px-2 py-1" aria-label="Unità di misura" onchange="changeUnitSystem(this.value)"><option value="mm">mm</option><option value="in">in (pollici)</option></select></label><a href="/en/" class="text-xs underline hover:text-blue-300" lang="en">English</a><div class="flex items-center space-x-4">
                 <nav class="hidden md:flex space-x-4 text-sm">
                     <a href="#calcolatore" onclick="switchTab('sample')" class="hover:text-blue-400 transition">Calcolo K</a>
                     <a href="#calcolatore" onclick="switchTab('matrix')" class="hover:text-blue-400 transition">Tabella S/V/F</a>
@@ -74,7 +74,7 @@
                 <button onclick="copyShareLink()" id="shareBtnHeader" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-3 py-2 rounded-lg transition flex items-center gap-1.5 shadow-sm">
                     <span>🔗 Condividi Setup</span>
                 </button>
-            </div>
+            </div></div>
         </div>
     </header>
 
