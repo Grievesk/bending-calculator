@@ -245,22 +245,16 @@
                     <td class="p-2.5 border border-slate-300 font-bold font-mono bg-slate-100 sticky left-0">${s.toFixed(1)} mm</td>`;
 
                 dies.forEach(v => {
-                    const ratio = v / s;
-                    if (ratio < 4.5 || ratio > 18) {
+                    const cell = GrieveskBendEngine.matrixCell({ thickness: s, v, tensileStrength: rm });
+                    if (!cell) {
                         html += `<td class="p-2 border border-slate-200 bg-slate-50 text-slate-300">—</td>`;
                     } else {
-                        const tons = ((8 * rm * Math.pow(s, 2)) / v) / 9.81;
-                        const ri = v * vFactor;
-                        const bmin = 0.7 * v;
-                        const isOptimal = (rm >= 650) ? (ratio >= 7.5 && ratio <= 12) : (ratio >= 5.5 && ratio <= 9.5);
-                        const cellBg = isOptimal ? "bg-emerald-50/90 border-emerald-300" : "bg-white border-slate-200";
-
+                        const cellBg = cell.optimal ? "bg-emerald-50/90 border-emerald-300" : "bg-white border-slate-200";
                         html += `<td class="p-2 border ${cellBg}">
-                            <div class="font-bold font-mono text-slate-900">${tons.toFixed(1)} t/m</div>
-                            <div class="text-[10px] text-slate-500 font-mono">ri:${ri.toFixed(1)} | b:${bmin.toFixed(1)}</div>
+                            <div class="font-bold font-mono text-slate-900">${cell.forceTonsPerMetre.toFixed(1)} t/m</div>
+                            <div class="text-[10px] text-slate-500 font-mono">ri:${cell.innerRadius.toFixed(1)} | b:${cell.minFlange.toFixed(1)}</div>
                         </td>`;
-                    }
-                });
+                    }                });
                 html += `</tr>`;
             });
 
