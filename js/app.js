@@ -2,10 +2,41 @@
         const EMAIL_DOMAIN = 'grieveskbend.com';
 
         // Legge numeri anche quando il browser italiano usa la virgola decimale.
+        const INCH_TO_MM = 25.4;
+        const DIMENSIONAL_INPUTS = ['skThickness','skRi','skFlat','skFlangeA','skFlangeB','skRpReference','devThickness','devRp','devFlangeA','devFlangeB'];
+        function currentUnit() { return document.getElementById('unitSystem')?.value || 'mm'; }
+        function displayLength(mm, digits=3) {
+            const n = currentUnit() === 'in' ? mm / INCH_TO_MM : mm;
+            return Number.isFinite(n) ? n.toFixed(digits) + (currentUnit() === 'in' ? ' in' : ' mm') : '—';
+        }
         function readNumericField(id) {
             const raw = document.getElementById(id)?.value ?? '';
             const normalized = String(raw).trim().replace(/\s/g, '').replace(',', '.');
-            return normalized === '' ? NaN : Number(normalized);
+            if (normalized === '') return NaN;
+            const n = Number(normalized);
+            return currentUnit() === 'in' && DIMENSIONAL_INPUTS.includes(id) ? n * INCH_TO_MM : n;
+        }
+        function changeUnitSystem(next) {
+            const previous = currentUnit();
+            if (next !== 'mm' && next !== 'in') next = 'mm';
+            if (previous === next) return;
+            DIMENSIONAL_INPUTS.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el || !el.value.trim()) return;
+                const n = Number(String(el.value).trim().replace(',', '.'));
+                if (!Number.isFinite(n)) return;
+                const converted = previous === 'mm' ? n / INCH_TO_MM : n * INCH_TO_MM;
+                el.value = String(Number(converted.toFixed(5)));
+            });
+            document.querySelectorAll('label[for]').forEach(label => {
+                if (/\(mm\)/i.test(label.textContent)) label.innerHTML = label.innerHTML.replace(/\(mm\)/gi, next === 'in' ? '(in)' : '(mm)');
+            });
+            renderMatrixTable();
+            calculateSampleK();
+            calculateDevelopment();
+            const url = new URL(location.href);
+            url.searchParams.set('units', next);
+            history.replaceState(null, '', url);
         }
 
         function initProtectedEmail() {
@@ -144,8 +175,8 @@
             const { bendAllowance: ba, bendDeduction: bd, k } = result;
 
             document.getElementById('skResultK').textContent = Number.isFinite(k) ? k.toFixed(4) : '—';
-            document.getElementById('skResultBA').textContent = Number.isFinite(ba) ? `${ba.toFixed(3)} mm` : '—';
-            document.getElementById('skResultBD').textContent = Number.isFinite(bd) ? `${bd.toFixed(3)} mm` : '—';
+            document.getElementById('skResultBA').textContent = Number.isFinite(ba) ? displayLength(ba, 3) : '—';
+            document.getElementById('skResultBD').textContent = Number.isFinite(bd) ? displayLength(bd, 3) : '—';
 
             const material = document.getElementById('skMaterial').selectedOptions[0]?.textContent || 'Non specificato';
             const rm = document.getElementById('skRm').value || 'non specificata';
@@ -183,13 +214,13 @@
             const result = GrieveskBendEngine.calculateDevelopment({ thickness: s, tensileStrength: rm, method, v, punchRadius: rp, angle, flangeA: a, flangeB: b });
             const { innerRadius: ri, minFlange: bmin, radiusSource: riSource, k, bendAllowance: ba, bendDeduction: bd, flatLength: flat } = result;
 
-            document.getElementById('devResultV').textContent = `${v.toFixed(1)} mm`;
-            document.getElementById('devResultRi').textContent = `${ri.toFixed(2)} mm`;
-            document.getElementById('devResultBmin').textContent = `${bmin.toFixed(2)} mm`;
+            document.getElementById('devResultV').textContent = displayLength(v, 1);
+            document.getElementById('devResultRi').textContent = displayLength(ri, 2);
+            document.getElementById('devResultBmin').textContent = displayLength(bmin, 2);
             document.getElementById('devResultK').textContent = k.toFixed(3);
             document.getElementById('devResultBA').textContent = `${ba.toFixed(3)} mm`;
             document.getElementById('devResultBD').textContent = `${bd.toFixed(3)} mm`;
-            document.getElementById('devResultFlat').textContent = `${flat.toFixed(3)} mm`;
+            document.getElementById('devResultFlat').textContent = displayLength(flat, 3);
             document.getElementById('devKSource').textContent = method === 'wing' ? 'Modello geometrico preliminare WingBend: da validare con campioni del modello specifico.' : 'Stima del modello in funzione di Ri/spessore; non è un K fisso letto da tabella.';
             document.getElementById('devModelNote').textContent = `${riSource}. Il bordo minimo è mostrato come riferimento non modificabile e deve essere verificato con la tabella dell’utensile installato.`;
             warning.textContent = method === 'wing' ? 'Per WingBend, V equivalente e bordo minimo devono corrispondere all’esatto modello del costruttore: i valori generici non sostituiscono la scheda tecnica.' : '';
@@ -198,7 +229,7 @@
 
         function copyShareLink(whichTab = null) {
             const activeTab = whichTab || (!document.getElementById('tab-development').classList.contains('hidden') ? 'development' : !document.getElementById('tab-matrix').classList.contains('hidden') ? 'matrix' : 'sample');
-            const params = new URLSearchParams({ tab: activeTab });
+            const params = new URLSearchParams({ tab: activeTab, units: currentUnit() });
             const map = activeTab === 'development' ? {material:'devMaterial',rm:'devRm',s:'devThickness',method:'devMethod',v:'devV',rp:'devRp',angle:'devAngle',a:'devFlangeA',b:'devFlangeB'} : {material:'skMaterial',rm:'skRm',s:'skThickness',method:'skMethod',v:'skV',rp:'skRpReference',angle:'skAngle',ri:'skRi',flat:'skFlat',a:'skFlangeA',b:'skFlangeB'};
             if (activeTab === 'matrix') params.set('material', document.getElementById('tableMaterial').value);
             else Object.entries(map).forEach(([key,id]) => params.set(key, document.getElementById(id).value));
@@ -271,6 +302,8 @@
                 });
             });
             initProtectedEmail();
+            const unitSelect = document.getElementById("unitSystem");
+            if (unitSelect) unitSelect.value = new URLSearchParams(window.location.search).get("units") === "in" ? "in" : "mm";
             updateSampleVOptions();
             refreshDevelopmentModel(true);
             loadFromUrlParams();
