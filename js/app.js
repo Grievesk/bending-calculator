@@ -303,11 +303,11 @@
             });
             initProtectedEmail();
             const unitSelect = document.getElementById("unitSystem");
-            if (unitSelect) unitSelect.value = "mm";
+            if (unitSelect) unitSelect.value = new URLSearchParams(window.location.search).get("units") === "in" ? "in" : "mm";
             updateSampleVOptions();
             refreshDevelopmentModel(true);
             loadFromUrlParams();
             renderMatrixTable();
-            if (new URLSearchParams(window.location.search).get("units") === "in") changeUnitSystem("in");
+
         });
     
