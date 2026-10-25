@@ -193,7 +193,7 @@
             const method = document.getElementById('skMethod').selectedOptions[0]?.textContent || 'non specificato';
             const v = document.getElementById('skV').value || 'non specificata';
             const rp = document.getElementById('skRpReference').value || 'non specificato';
-            document.getElementById('skSummary').textContent = `Misure: s ${s} mm · angolo interno ${angle}° · Ri ${ri} mm · sviluppo piano ${flat} mm · quote esterne A/B ${a}/${b} mm fino alla proiezione dell’ingombro esterno della piega. Configurazione facoltativa: ${material} · Rm ${rm} N/mm² · ${method} · V ${v} mm · Rp ${rp} mm. Questi dati di processo non entrano nel calcolo di K.`;
+            document.getElementById('skSummary').textContent = `Misure: s ${displayLength(s,3)} · angolo interno ${angle}° · Ri ${displayLength(ri,3)} · sviluppo piano ${displayLength(flat,3)} · quote esterne A/B ${displayLength(a,3)}/${displayLength(b,3)} fino alla proiezione dell’ingombro esterno della piega. Configurazione facoltativa: ${material} · Rm ${rm} N/mm² · ${method} · V ${v ? displayLength(Number(v),3) : 'non specificata'} · Rp ${rp ? displayLength(Number(rp),3) : 'non specificato'}. Questi dati di processo non entrano nel calcolo di K.`;
 
             if (!Number.isFinite(k) || k < 0 || k > 1 || ba <= 0 || bd < 0) {
                 warning.textContent = 'Il risultato geometrico è incoerente o fuori dall’intervallo atteso. Controlla lo sviluppo piano, le quote esterne A/B, l’angolo e il raggio; non usare K senza verifica.';
