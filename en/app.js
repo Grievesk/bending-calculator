@@ -35,6 +35,12 @@
             document.querySelectorAll('label[for]').forEach(label => {
                 if (/\(mm\)/i.test(label.textContent)) label.innerHTML = label.innerHTML.replace(/\(mm\)/gi, next === 'in' ? '(in)' : '(mm)');
             });
+            document.querySelectorAll('#skV option, #devV option').forEach(option => {
+                const v = Number(option.value);
+                if (!Number.isFinite(v) || v <= 0) return;
+                const shown = next === 'in' ? (v / INCH_TO_MM).toFixed(3) + ' in' : v + ' mm';
+                option.textContent = shown + (option.textContent.includes('·') ? ' · ' + (next === 'in' ? 'verify manufacturer model' : 'riferimento da verificare sul modello') : '');
+            });
             renderMatrixTable();
             calculateSampleK();
             calculateDevelopment();
