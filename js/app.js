@@ -114,12 +114,12 @@
             select.innerHTML = '';
             const placeholder = document.createElement('option');
             placeholder.value = '';
-            placeholder.textContent = method === 'wing' ? 'Seleziona V equivalente disponibile' : 'Seleziona apertura V';
+            placeholder.textContent = method === 'wing' ? (document.documentElement.lang === 'en' ? 'Select an available equivalent V' : 'Seleziona V equivalente disponibile') : (document.documentElement.lang === 'en' ? 'Select V opening' : 'Seleziona apertura V');
             select.appendChild(placeholder);
             choices.forEach(v => {
                 const option = document.createElement('option');
                 option.value = String(v);
-                option.textContent = `${v} mm` + (method === 'wing' ? ' · riferimento da verificare sul modello' : '');
+                option.textContent = `${currentUnit() === 'in' ? (v / INCH_TO_MM).toFixed(3) + ' in' : v + ' mm'}` + (method === 'wing' ? (document.documentElement.lang === 'en' ? ' · verify manufacturer model' : ' · riferimento da verificare sul modello') : '');
                 select.appendChild(option);
             });
             if (choices.length) {
@@ -158,8 +158,8 @@
             if (!Number.isFinite(s) || s <= 0 || !Number.isFinite(rm) || rm <= 0) return;
             const target = recommendedV(s, rm, method);
             if (reselectV || !document.getElementById('devV').value) populateVSelect('devV', target);
-            document.getElementById('devVLabel').textContent = method === 'wing' ? 'V equivalente (selezionabile)' : 'Cava V suggerita (selezionabile)';
-            document.getElementById('devVHelp').textContent = method === 'wing' ? 'Seleziona la V equivalente disponibile per l’esatto modello WingBend. Le misure elencate sono riferimenti dimensionali: verifica la scheda del costruttore.' : 'La cava suggerita segue una regola pratica; puoi selezionare un’altra misura disponibile nell’elenco.';
+            document.getElementById('devVLabel').textContent = document.documentElement.lang === 'en' ? (method === 'wing' ? 'Equivalent V (selectable)' : 'Suggested V-die opening (selectable)') : (method === 'wing' ? 'V equivalente (selezionabile)' : 'Cava V suggerita (selezionabile)');
+            document.getElementById('devVHelp').textContent = document.documentElement.lang === 'en' ? (method === 'wing' ? 'Choose the equivalent V for the exact WingBend model. Listed dimensions are references; check the manufacturer datasheet.' : 'The suggested opening follows a practical rule; you can select another available size.') : (method === 'wing' ? 'Seleziona la V equivalente disponibile per l’esatto modello WingBend. Le misure elencate sono riferimenti dimensionali: verifica la scheda del costruttore.' : 'La cava suggerita segue una regola pratica; puoi selezionare un’altra misura disponibile nell’elenco.');
             calculateDevelopment();
         }
 
