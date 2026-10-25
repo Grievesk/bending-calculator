@@ -158,7 +158,7 @@
             if (!Number.isFinite(s) || s <= 0 || !Number.isFinite(rm) || rm <= 0) return;
             const target = recommendedV(s, rm, method);
             if (reselectV || !document.getElementById('devV').value) populateVSelect('devV', target);
-            document.getElementById('devVLabel').textContent = method === 'wing' ? 'V equivalente (selezionabile)' : 'Cava V suggerita (selezionabile)';
+            document.getElementById('devVLabel').textContent = method === 'wing' ? 'Equivalent V (selectable)' : 'Suggested V-die opening (selectable)';
             document.getElementById('devVHelp').textContent = method === 'wing' ? 'Seleziona la V equivalente disponibile per l’esatto modello WingBend. Le misure elencate sono riferimenti dimensionali: verifica la scheda del costruttore.' : 'La cava suggerita segue una regola pratica; puoi selezionare un’altra misura disponibile nell’elenco.';
             calculateDevelopment();
         }
@@ -193,7 +193,7 @@
             const method = document.getElementById('skMethod').selectedOptions[0]?.textContent || 'not specified';
             const v = document.getElementById('skV').value || 'not specified';
             const rp = document.getElementById('skRpReference').value || 'not specified';
-            document.getElementById('skSummary').textContent = `Misure: s ${s} mm · angolo interno ${angle}° · Ri ${ri} mm · sviluppo piano ${flat} mm · quote esterne A/B ${a}/${b} mm fino alla proiezione dell’ingombro esterno della piega. Configurazione facoltativa: ${material} · Rm ${rm} N/mm² · ${method} · V ${v} mm · Rp ${rp} mm. Questi dati di processo non entrano nel calcolo di K.`;
+            document.getElementById('skSummary').textContent = `Dimensions: s ${displayLength(s,3)} · inside angle ${angle}° · Ri ${displayLength(ri,3)} · flat length ${displayLength(flat,3)} · outside dimensions A/B ${displayLength(a,3)}/${displayLength(b,3)} to the projected outer bend envelope. Optional setup: ${material} · Rm ${rm} N/mm² · ${method} · V ${v ? displayLength(Number(v),3) : 'not specified'} · Rp ${rp ? displayLength(Number(rp),3) : 'not specified'}. These process details do not enter the K-factor calculation.`;
 
             if (!Number.isFinite(k) || k < 0 || k > 1 || ba <= 0 || bd < 0) {
                 warning.textContent = 'The geometric result is inconsistent or outside the expected range. Check flat length, outside dimensions A/B, angle and radius; verify K before use.';
