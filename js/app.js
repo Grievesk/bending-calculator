@@ -254,7 +254,8 @@
                             <div class="font-bold font-mono text-slate-900">${cell.forceTonsPerMetre.toFixed(1)} t/m</div>
                             <div class="text-[10px] text-slate-500 font-mono">ri:${cell.innerRadius.toFixed(1)} | b:${cell.minFlange.toFixed(1)}</div>
                         </td>`;
-                    }                });
+                    }
+                });
                 html += `</tr>`;
             });
 
