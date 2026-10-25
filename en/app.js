@@ -228,8 +228,8 @@
             document.getElementById('devResultRi').textContent = displayLength(ri, 2);
             document.getElementById('devResultBmin').textContent = displayLength(bmin, 2);
             document.getElementById('devResultK').textContent = k.toFixed(3);
-            document.getElementById('devResultBA').textContent = `${ba.toFixed(3)} mm`;
-            document.getElementById('devResultBD').textContent = `${bd.toFixed(3)} mm`;
+            document.getElementById('devResultBA').textContent = displayLength(ba, 3);
+            document.getElementById('devResultBD').textContent = displayLength(bd, 3);
             document.getElementById('devResultFlat').textContent = displayLength(flat, 3);
             document.getElementById('devKSource').textContent = method === 'wing' ? 'Preliminary WingBend geometric model: validate using samples from the specific model.' : 'Model estimate based on Ri/thickness; this is not a fixed K read from a table.';
             document.getElementById('devModelNote').textContent = `${riSource}. The minimum flange is a reference value and must be checked against the installed tool chart.`;
@@ -277,13 +277,13 @@
             let html = `<thead><tr class="bg-slate-900 text-white">
                 <th class="p-2.5 border border-slate-700 sticky left-0 bg-slate-900">Thickness s \\ V-die</th>`;
             dies.forEach(v => {
-                html += `<th class="p-2.5 border border-slate-700 font-mono">V = ${v} mm</th>`;
+                html += `<th class="p-2.5 border border-slate-700 font-mono">V = ${currentUnit() === 'in' ? (v / INCH_TO_MM).toFixed(3) + ' in' : v + ' mm'}</th>`;
             });
             html += `</tr></thead><tbody>`;
 
             thicknesses.forEach(s => {
                 html += `<tr onclick="this.classList.toggle('ring-2'); this.classList.toggle('ring-blue-600')" class="cursor-pointer hover:bg-blue-50/40 transition">
-                    <td class="p-2.5 border border-slate-300 font-bold font-mono bg-slate-100 sticky left-0">${s.toFixed(1)} mm</td>`;
+                    <td class="p-2.5 border border-slate-300 font-bold font-mono bg-slate-100 sticky left-0">${currentUnit() === 'in' ? (s / INCH_TO_MM).toFixed(3) : s.toFixed(1)} ${currentUnit() === 'in' ? 'in' : 'mm'}</td>`;
 
                 dies.forEach(v => {
                     const cell = GrieveskBendEngine.matrixCell({ thickness: s, v, tensileStrength: rm });
@@ -293,7 +293,7 @@
                         const cellBg = cell.optimal ? "bg-emerald-50/90 border-emerald-300" : "bg-white border-slate-200";
                         html += `<td class="p-2 border ${cellBg}">
                             <div class="font-bold font-mono text-slate-900">${cell.forceTonsPerMetre.toFixed(1)} t/m</div>
-                            <div class="text-[10px] text-slate-500 font-mono">ri:${cell.innerRadius.toFixed(1)} | b:${cell.minFlange.toFixed(1)}</div>
+                            <div class="text-[10px] text-slate-500 font-mono">ri:${currentUnit() === 'in' ? (cell.innerRadius / INCH_TO_MM).toFixed(3) : cell.innerRadius.toFixed(1)} | b:${currentUnit() === 'in' ? (cell.minFlange / INCH_TO_MM).toFixed(3) : cell.minFlange.toFixed(1)} ${currentUnit() === 'in' ? 'in' : 'mm'}</div>
                         </td>`;
                     }
                 });
@@ -313,12 +313,14 @@
             });
             initProtectedEmail();
             const unitSelect = document.getElementById("unitSystem");
-            activeUnit = new URLSearchParams(window.location.search).get("units") === "in" ? "in" : "mm";
+            const params = new URLSearchParams(window.location.search);
+            activeUnit = params.get("units") === "in" && params.has("s") ? "in" : "mm";
             if (unitSelect) unitSelect.value = activeUnit;
             updateSampleVOptions();
             refreshDevelopmentModel(true);
             loadFromUrlParams();
             renderMatrixTable();
+            if (params.get("units") === "in" && !params.has("s")) changeUnitSystem("in");
 
         });
     
