@@ -4,7 +4,8 @@
         // Legge numeri anche quando il browser italiano usa la virgola decimale.
         const INCH_TO_MM = 25.4;
         const DIMENSIONAL_INPUTS = ['skThickness','skRi','skFlat','skFlangeA','skFlangeB','skRpReference','devThickness','devRp','devFlangeA','devFlangeB'];
-        function currentUnit() { return document.getElementById('unitSystem')?.value || 'mm'; }
+        let activeUnit = 'mm';
+        function currentUnit() { return activeUnit; }
         function displayLength(mm, digits=3) {
             const n = currentUnit() === 'in' ? mm / INCH_TO_MM : mm;
             return Number.isFinite(n) ? n.toFixed(digits) + (currentUnit() === 'in' ? ' in' : ' mm') : '—';
@@ -28,6 +29,9 @@
                 const converted = previous === 'mm' ? n / INCH_TO_MM : n * INCH_TO_MM;
                 el.value = String(Number(converted.toFixed(5)));
             });
+            activeUnit = next;
+            const unitSelect = document.getElementById('unitSystem');
+            if (unitSelect) unitSelect.value = next;
             document.querySelectorAll('label[for]').forEach(label => {
                 if (/\(mm\)/i.test(label.textContent)) label.innerHTML = label.innerHTML.replace(/\(mm\)/gi, next === 'in' ? '(in)' : '(mm)');
             });
@@ -303,7 +307,8 @@
             });
             initProtectedEmail();
             const unitSelect = document.getElementById("unitSystem");
-            if (unitSelect) unitSelect.value = new URLSearchParams(window.location.search).get("units") === "in" ? "in" : "mm";
+            activeUnit = new URLSearchParams(window.location.search).get("units") === "in" ? "in" : "mm";
+            if (unitSelect) unitSelect.value = activeUnit;
             updateSampleVOptions();
             refreshDevelopmentModel(true);
             loadFromUrlParams();
