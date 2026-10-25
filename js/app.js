@@ -232,7 +232,8 @@
             document.getElementById('devResultBD').textContent = displayLength(bd, 3);
             document.getElementById('devResultFlat').textContent = displayLength(flat, 3);
             document.getElementById('devKSource').textContent = method === 'wing' ? 'Modello geometrico preliminare WingBend: da validare con campioni del modello specifico.' : 'Stima del modello in funzione di Ri/spessore; non è un K fisso letto da tabella.';
-            document.getElementById('devModelNote').textContent = `${riSource}. Il bordo minimo è mostrato come riferimento non modificabile e deve essere verificato con la tabella dell’utensile installato.`;
+            const radiusSourceText = ({'empirical-v-material':'Raggio stimato empiricamente da V e materiale','punch-guided':'Raggio guidato dalla punta: verificare il modello esatto','tooling-dependent':'Ipotesi geometrica da verificare sulla matrice installata','panel-estimate':'Stima indicativa per pannellatrice'})[riSource] || riSource;
+            document.getElementById('devModelNote').textContent = `${radiusSourceText}. Il bordo minimo è mostrato come riferimento non modificabile e deve essere verificato con la tabella dell’utensile installato.`;
             warning.textContent = method === 'wing' ? 'Per WingBend, V equivalente e bordo minimo devono corrispondere all’esatto modello del costruttore: i valori generici non sostituiscono la scheda tecnica.' : '';
             warning.className = method === 'wing' ? 'rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900' : 'hidden rounded-lg border p-3 text-sm';
         }
