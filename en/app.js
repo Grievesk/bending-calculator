@@ -1,7 +1,7 @@
         const EMAIL_USER = 'info'; 
         const EMAIL_DOMAIN = 'grieveskbend.com';
 
-        // Legge numeri anche quando il browser italiano usa la virgola decimale.
+        // Parse numbers even when the browser locale uses a decimal comma.
         const INCH_TO_MM = 25.4;
         const DIMENSIONAL_INPUTS = ['skThickness','skRi','skFlat','skFlangeA','skFlangeB','skRpReference','devThickness','devRp','devFlangeA','devFlangeB'];
         let activeUnit = 'mm';
@@ -39,7 +39,7 @@
                 const v = Number(option.value);
                 if (!Number.isFinite(v) || v <= 0) return;
                 const shown = next === 'in' ? (v / INCH_TO_MM).toFixed(3) + ' in' : v + ' mm';
-                option.textContent = shown + (option.textContent.includes('·') ? ' · ' + (next === 'in' ? 'verify manufacturer model' : 'riferimento da verificare sul modello') : '');
+                option.textContent = shown + (option.textContent.includes('·') ? ' · ' + (next === 'in' ? 'verify manufacturer model' : 'verify against the manufacturer model') : '');
             });
             renderMatrixTable();
             calculateSampleK();
@@ -76,8 +76,8 @@
             },
             panel: {
                 tag: "Panel Bender (Tangential)",
-                hint: "Lavorazione per flessione a sbalzo: la lama piega il lembo sporgente dal premilamiera. Ideale per scatolati e profili complessi.",
-                labelV: "Braccio di Leva / Gioco Lama (mm)"
+                hint: "Cantilever bending process: the blade bends the flange projecting beyond the blank holder. Ideal for box-shaped parts and complex profiles.",
+                labelV: "Lever Arm / Blade Clearance (mm)"
             }
         };
 
@@ -119,7 +119,7 @@
             choices.forEach(v => {
                 const option = document.createElement('option');
                 option.value = String(v);
-                option.textContent = `${currentUnit() === 'in' ? (v / INCH_TO_MM).toFixed(3) + ' in' : v + ' mm'}` + (method === 'wing' ? (document.documentElement.lang === 'en' ? ' · verify manufacturer model' : ' · riferimento da verificare sul modello') : '');
+                option.textContent = `${currentUnit() === 'in' ? (v / INCH_TO_MM).toFixed(3) + ' in' : v + ' mm'}` + (method === 'wing' ? (document.documentElement.lang === 'en' ? ' · verify manufacturer model' : ' · verify against the manufacturer model') : '');
                 select.appendChild(option);
             });
             if (choices.length) {
@@ -159,7 +159,7 @@
             const target = recommendedV(s, rm, method);
             if (reselectV || !document.getElementById('devV').value) populateVSelect('devV', target);
             document.getElementById('devVLabel').textContent = method === 'wing' ? 'Equivalent V (selectable)' : 'Suggested V-die opening (selectable)';
-            document.getElementById('devVHelp').textContent = document.documentElement.lang === 'en' ? (method === 'wing' ? 'Choose the equivalent V for the exact WingBend model. Listed dimensions are references; check the manufacturer datasheet.' : 'The suggested opening follows a practical rule; you can select another available size.') : (method === 'wing' ? 'Seleziona la V equivalente disponibile per l’esatto modello WingBend. Le misure elencate sono riferimenti dimensionali: verifica la scheda del costruttore.' : 'La cava suggerita segue una regola pratica; puoi selezionare un’altra misura disponibile nell’elenco.');
+            document.getElementById('devVHelp').textContent = document.documentElement.lang === 'en' ? (method === 'wing' ? 'Choose the equivalent V for the exact WingBend model. Listed dimensions are references; check the manufacturer datasheet.' : 'The suggested opening follows a practical rule; you can select another available size.') : (method === 'wing' ? 'Select the equivalent V for the exact WingBend model. Listed dimensions are dimensional references; check the manufacturer datasheet.' : 'The suggested V-die opening follows a rule of thumb; you can select another available size from the list.');
             calculateDevelopment();
         }
 
@@ -305,7 +305,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Seleziona il valore esistente al focus, così digitare lo sostituisce invece di accodare cifre.
+            // Select the current value on focus so typing replaces it instead of appending digits.
             document.querySelectorAll('input[inputmode="decimal"]').forEach(input => {
                 input.addEventListener('focus', () => {
                     try { input.select(); } catch (_) {}
