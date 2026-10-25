@@ -59,16 +59,8 @@
             if (tab === 'development') calculateDevelopment();
         }
 
-        function recommendedV(s, rm, method) {
-            let multiplier = 8;
-            if (method === 'wing' || method === 'coining') multiplier = 6;
-            else if (method === 'panel') multiplier = 3;
-            else if (rm >= 650) multiplier = 10;
-            else if (s <= 2.5) multiplier = 6;
-            else if (s <= 8) multiplier = 8;
-            else multiplier = 12;
-            return s * multiplier;
-        }
+        // Formula implementation lives in engine.js and is shared by every locale.
+        const recommendedV = (...args) => GrieveskBendEngine.recommendedV(...args);
 
         function populateVSelect(selectId, targetV) {
             const select = document.getElementById(selectId);
@@ -148,13 +140,8 @@
                 return;
             }
 
-            const theta = (180 - angle) * Math.PI / 180;
-            // A e B sono quote esterne: lato rettilineo più proiezione dell'ingombro esterno della piega.
-            // OSS = proiezione esterna per ciascun lato; a 90° vale Ri + s.
-            const outsideSetback = Math.tan(theta / 2) * (ri + s);
-            const ba = flat - a - b + 2 * outsideSetback;
-            const bd = a + b - flat;
-            const k = (ba / theta - ri) / s;
+            const result = GrieveskBendEngine.calculateSampleK({ thickness: s, angle, innerRadius: ri, flatLength: flat, flangeA: a, flangeB: b });
+            const { bendAllowance: ba, bendDeduction: bd, k } = result;
 
             document.getElementById('skResultK').textContent = Number.isFinite(k) ? k.toFixed(4) : '—';
             document.getElementById('skResultBA').textContent = Number.isFinite(ba) ? `${ba.toFixed(3)} mm` : '—';
@@ -176,15 +163,7 @@
             }
         }
 
-        function estimatedKFromGeometry(ri, s, method) {
-            const ratio = Math.max(0.2, ri / s);
-            let k;
-            if (method === 'wing') k = 0.22 + 0.055 * Math.log2(ratio + 0.5);
-            else if (method === 'coining') k = 0.34 + 0.025 * Math.log2(ratio + 0.5);
-            else if (method === 'panel') k = 0.28 + 0.04 * ratio;
-            else k = 0.33 + 0.045 * Math.log2(ratio + 0.5);
-            return Math.min(method === 'panel' ? 0.46 : 0.50, Math.max(method === 'wing' ? 0.18 : 0.25, k));
-        }
+        const estimatedKFromGeometry = (...args) => GrieveskBendEngine.estimatedKFromGeometry(...args);
 
         function calculateDevelopment() {
             const s = readNumericField('devThickness');
@@ -201,31 +180,9 @@
                 warning.className = 'rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900';
                 return;
             }
-            let ri, bmin, riSource;
-            if (method === 'air') {
-                const vFactor = rm >= 650 ? 0.20 : rm <= 280 ? 0.14 : 0.16;
-                ri = Math.max(v * vFactor, rp);
-                bmin = 0.7 * v;
-                riSource = 'Raggio stimato empiricamente da V e materiale';
-            } else if (method === 'wing') {
-                ri = rp;
-                bmin = 0.45 * v;
-                riSource = 'Raggio guidato dalla punta: verificare l’esatto modello e la relativa tabella';
-            } else if (method === 'coining') {
-                ri = rp;
-                bmin = 0.65 * v;
-                riSource = 'Ipotesi geometrica da verificare sulla matrice installata';
-            } else {
-                ri = Math.max(rp, 0.8 * s);
-                bmin = 2.5 * s;
-                riSource = 'Stima indicativa per pannellatrice';
-            }
-            const k = estimatedKFromGeometry(ri, s, method);
-            const theta = (180 - angle) * Math.PI / 180;
-            const ba = theta * (ri + k * s);
-            const ossb = Math.tan(theta / 2) * (ri + s);
-            const bd = 2 * ossb - ba;
-            const flat = a + b - bd;
+            const result = GrieveskBendEngine.calculateDevelopment({ thickness: s, tensileStrength: rm, method, v, punchRadius: rp, angle, flangeA: a, flangeB: b });
+            const { innerRadius: ri, minFlange: bmin, radiusSource: riSource, k, bendAllowance: ba, bendDeduction: bd, flatLength: flat } = result;
+
             document.getElementById('devResultV').textContent = `${v.toFixed(1)} mm`;
             document.getElementById('devResultRi').textContent = `${ri.toFixed(2)} mm`;
             document.getElementById('devResultBmin').textContent = `${bmin.toFixed(2)} mm`;
