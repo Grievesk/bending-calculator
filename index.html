@@ -6,38 +6,18 @@
     <title>Grievesk Bend | Regolo di Piegatura Lamiera, Sviluppo CAD & Fattore K</title>
     <meta name="description" content="Grievesk Bend: calcolatore tecnico per piegatura lamiera. Forza di piega, scelta cava V, raggio interno reale, WingBend, ritiro di piega (Bend Deduction) e condivisione di configurazioni e consultazione dei riferimenti S/V/F.">
     <link rel="canonical" href="https://grieveskbend.com/" />
+    <link rel="alternate" hreflang="it" href="https://grieveskbend.com/" />
+    <link rel="alternate" hreflang="en" href="https://grieveskbend.com/en/" />
+    <link rel="alternate" hreflang="x-default" href="https://grieveskbend.com/" />
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Grievesk Bend">
+    <meta property="og:title" content="Grievesk Bend | Regolo di Piegatura Lamiera, Sviluppo CAD & Fattore K">
+    <meta property="og:description" content="Strumenti tecnici gratuiti per la piegatura lamiera: fattore K da campioni misurati, stima dello sviluppo e tabella S/V/F.">
+    <meta property="og:url" content="https://grieveskbend.com/">
+    <meta name="twitter:card" content="summary">
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- JSON-LD Schema.org per SEO e Google Rich Snippets -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [{
-        "@type": "Question",
-        "name": "Perché lo sviluppo lamiera calcolato dal CAD è diverso da quello reale in officina?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "I software CAD utilizzano spesso un raggio interno fisso di default (es. 1 mm) e un Fattore K statico. Nella piegatura in aria, invece, il raggio interno reale dipende direttamente dall'apertura della matrice V (circa V/6 per l'acciaio al carbonio) e dall'elasticità del materiale. Se il raggio nel CAD non coincide con il raggio generato dalla cava V scelta in macchina, il ritiro di piega (Bend Deduction) risulterà errato e l'errore si moltiplicherà per ogni piega del pezzo."
-        }
-      }, {
-        "@type": "Question",
-        "name": "Come funzionano le matrici rotanti tipo WingBend o Rolla-V rispetto alle matrici tradizionali?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Nelle matrici con ali rotanti (WingBend / Rolla-V) la lamiera poggia su inserti mobili che ruotano accompagnando il movimento del punzone. Questo elimina l'attrito di strisciamento, evita segni superficiali, riduce il bordo minimo piegabile fino a 0.45xV e mantiene il raggio interno molto vicino al raggio della punta del punzone."
-        }
-      }, {
-        "@type": "Question",
-        "name": "Come si sceglie l'apertura della cava V in base allo spessore?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Per l'acciaio al carbonio (Fe360/S235) la regola standard prevede V = 6÷8 volte lo spessore per lamiere fino a 3 mm, e V = 8÷10 volte per spessori superiori. Per l'acciaio Inox si utilizza V = 8÷10 volte lo spessore per compensare l'elevata resistenza a trazione, mentre per l'alluminio si può scendere a V = 6 volte lo spessore."
-        }
-      }]
-    }
-    </script>
-
+    <!-- FAQ structured data omitted until it can be kept aligned with visible FAQ content. -->
     <style>
         input[type="text"]::-webkit-inner-spin-button,
         input[type="text"]::-webkit-outer-spin-button {
@@ -51,6 +31,9 @@
         }
         [role="tab"] { min-height: 52px; line-height: 1.25; }
         input, select { min-height: 42px; }
+        :focus-visible { outline: 3px solid #f59e0b; outline-offset: 3px; }
+        [id] { scroll-margin-top: 8rem; }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; } }
         /* Prevent iOS Safari from auto-zooming when form controls receive focus. */
         @media (max-width: 767px) {
             input, select, textarea { font-size: 16px; }
@@ -88,13 +71,13 @@
         <!-- Navigazione principale: i contenuti editoriali sottostanti restano statici -->
         <div class="sticky top-[68px] z-40 -mx-1 bg-slate-50/95 pt-1 backdrop-blur">
           <div class="grid grid-cols-3 border-b border-slate-300 bg-white rounded-t-xl shadow-sm overflow-hidden" role="tablist" aria-label="Calcolatori Grievesk Bend">
-            <button type="button" role="tab" aria-selected="true" onclick="switchTab('sample')" id="tab-btn-sample" class="tab-active px-2 sm:px-5 py-3 text-xs sm:text-sm font-semibold transition">1. Calcola K dal campione</button>
-            <button type="button" role="tab" aria-selected="false" onclick="switchTab('development')" id="tab-btn-development" class="px-2 sm:px-5 py-3 text-xs sm:text-sm text-slate-600 transition">2. Calcola sviluppo</button>
-            <button type="button" role="tab" aria-selected="false" onclick="switchTab('matrix')" id="tab-btn-matrix" class="px-2 sm:px-5 py-3 text-xs sm:text-sm text-slate-600 transition">Tabella S/V/F</button>
+            <button type="button" role="tab" aria-selected="true" onclick="switchTab('sample')" id="tab-btn-sample" aria-controls="tab-sample" class="tab-active px-2 sm:px-5 py-3 text-xs sm:text-sm font-semibold transition">1. Calcola K dal campione</button>
+            <button type="button" role="tab" aria-selected="false" onclick="switchTab('development')" id="tab-btn-development" aria-controls="tab-development" class="px-2 sm:px-5 py-3 text-xs sm:text-sm text-slate-600 transition">2. Calcola sviluppo</button>
+            <button type="button" role="tab" aria-selected="false" onclick="switchTab('matrix')" id="tab-btn-matrix" aria-controls="tab-matrix" class="px-2 sm:px-5 py-3 text-xs sm:text-sm text-slate-600 transition">Tabella S/V/F</button>
           </div>
         </div>
 
-        <section id="tab-sample" role="tabpanel" class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        <section id="tab-sample" role="tabpanel" aria-labelledby="tab-btn-sample" class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
           <div class="lg:col-span-7 bg-white p-5 sm:p-6 rounded-xl shadow-sm border border-slate-200 space-y-5">
             <div class="border-b pb-3"><h2 class="text-xl font-bold text-slate-900">Calcola il fattore K dal campione</h2><p class="text-sm text-slate-600 mt-1">Inserisci le quote misurate su un pezzo già piegato. Il K viene ricavato dalla geometria rilevata, non letto da una tabella.</p></div>
             <div class="rounded-lg border border-slate-200 bg-slate-50 p-3 sm:p-4 space-y-3">
@@ -132,12 +115,12 @@
                 <text x="14" y="304" font-size="13" fill="#475569">Bordo libero</text>
                 <text x="232" y="191" font-size="13" fill="#475569">Lato rettilineo</text>
                 <text x="240" y="383" font-size="13" fill="#475569">Lato rettilineo</text>
-              </svg>        </svg>        </svg>
+              </svg>
               <p class="text-xs text-slate-600 leading-relaxed"><strong>Convenzione quote:</strong> la linea di quota A/B è parallela al lato; le linee di richiamo sono perpendicolari al lato e terminano sulla proiezione dell’ingombro esterno. La formula usa OSS = (Ri + s) × tan(angolo di piega / 2), che vale Ri + s per una piega a 90°.</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div><label for="skThickness" class="block text-xs font-bold uppercase text-slate-600 mb-1">Spessore s (mm)</label><input id="skThickness" type="text" min="0.3" max="30" step="0.1" value="1" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
-              <div><label for="skAngle" class="block text-xs font-bold uppercase text-slate-600 mb-1">Angolo interno dopo piega (°)</label><input id="skAngle" type="text" min="10" max="175" step="1" value="90" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="skAngle" class="block text-xs font-bold uppercase text-slate-600 mb-1">Angolo interno dopo piega (°)</label><p class="text-xs text-slate-500 mb-1">Inserisci l’angolo interno: 0° = flange a contatto, 45° = acuto, 90° = retto, 135° = ottuso. Il segno ± usato da alcuni CAM indica la direzione della piega, non cambia il valore dell’angolo interno.</p><input id="skAngle" type="text" min="10" max="175" step="1" value="90" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
               <div><label for="skRi" class="block text-xs font-bold uppercase text-slate-600 mb-1">Raggio interno misurato Ri (mm)</label><input id="skRi" type="text" min="0.05" max="100" step="0.1" value="1.5" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
               <div><label for="skFlat" class="block text-xs font-bold uppercase text-slate-600 mb-1">Lunghezza piana iniziale (mm)</label><input id="skFlat" type="text" min="1" max="12000" step="0.1" value="98" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
               <div><label for="skFlangeA" class="block text-xs font-bold uppercase text-slate-600 mb-1">Quota esterna A — proiezione piega (mm)</label><input id="skFlangeA" type="text" min="1" max="12000" step="0.1" value="50" inputmode="decimal" oninput="calculateSampleK()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
@@ -158,14 +141,14 @@
             </details>
           </div>
           <div class="lg:col-span-5 space-y-4">
-            <div id="sampleWarning" class="hidden rounded-lg border p-3 text-sm"></div>
-            <div class="bg-slate-900 text-white p-5 sm:p-6 rounded-xl shadow-sm"><p class="text-xs uppercase tracking-wide text-slate-400 font-bold">Fattore K ricavato dal campione</p><div id="skResultK" class="text-4xl sm:text-5xl font-black font-mono text-blue-300 mt-2">—</div><p class="text-xs text-slate-300 mt-2">Calcolato dalle quote inserite.</p></div>
+            <div id="sampleWarning" role="status" aria-live="polite" class="hidden rounded-lg border p-3 text-sm"></div>
+            <div class="bg-slate-900 text-white p-5 sm:p-6 rounded-xl shadow-sm"><p class="text-xs uppercase tracking-wide text-slate-400 font-bold">Fattore K ricavato dal campione</p><div id="skResultK" aria-live="polite" class="text-4xl sm:text-5xl font-black font-mono text-blue-300 mt-2">—</div><p class="text-xs text-slate-300 mt-2">Calcolato dalle quote inserite.</p></div>
             <div class="grid grid-cols-2 gap-3"><div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">Bend Allowance</p><div id="skResultBA" class="text-xl font-bold font-mono mt-1">—</div></div><div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">Bend Deduction</p><div id="skResultBD" class="text-xl font-bold font-mono mt-1">—</div></div></div>
             <div class="bg-white border border-slate-200 rounded-xl p-4 space-y-3"><h3 class="font-bold text-slate-900">Configurazione campione</h3><p id="skSummary" class="text-sm text-slate-600">Inserisci le misure del campione.</p><button type="button" onclick="copyShareLink('sample')" class="w-full bg-blue-700 hover:bg-blue-600 text-white font-bold px-4 py-3 rounded-lg text-sm">Condividi configurazione</button></div>
           </div>
         </section>
 
-        <section id="tab-development" role="tabpanel" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        <section id="tab-development" role="tabpanel" aria-labelledby="tab-btn-development" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
           <div class="lg:col-span-7 bg-white p-5 sm:p-6 rounded-xl shadow-sm border border-slate-200 space-y-5">
             <div class="border-b pb-3"><h2 class="text-xl font-bold text-slate-900">Calcola lo sviluppo</h2><p class="text-sm text-slate-600 mt-1">La cava V resta selezionabile fra le misure disponibili. Ri e bordo minimo sono calcolati dal modello e non sono modificabili.</p></div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -181,23 +164,24 @@
             </div>
           </div>
           <div class="lg:col-span-5 space-y-4">
-            <div id="devWarning" class="hidden rounded-lg border p-3 text-sm"></div>
+            <div id="devWarning" role="status" aria-live="polite" class="hidden rounded-lg border p-3 text-sm"></div>
             <div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">V / V equivalente selezionata</p><p id="devResultV" class="text-xl font-bold font-mono">—</p><div class="grid grid-cols-2 gap-3 mt-4"><div class="bg-slate-50 rounded-lg p-3"><p class="text-xs text-slate-500 uppercase font-semibold">Raggio interno Ri</p><p id="devResultRi" class="text-xl font-bold font-mono">—</p><p class="text-[11px] text-slate-500">Non modificabile</p></div><div class="bg-slate-50 rounded-lg p-3"><p class="text-xs text-slate-500 uppercase font-semibold">Bordo minimo</p><p id="devResultBmin" class="text-xl font-bold font-mono">—</p><p class="text-[11px] text-slate-500">Non modificabile</p></div></div></div>
             <div class="bg-slate-900 text-white rounded-xl p-5 sm:p-6"><p class="text-xs text-slate-400 uppercase font-bold">Fattore K predittivo</p><p id="devResultK" class="text-4xl font-black font-mono text-blue-300 mt-2">—</p><p id="devKSource" class="text-xs text-slate-300 mt-2">Stima del modello, non valore certificato dal costruttore.</p></div>
-            <div class="grid grid-cols-2 gap-3"><div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">Bend Allowance</p><p id="devResultBA" class="text-xl font-bold font-mono mt-1">—</p></div><div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">Bend Deduction</p><p id="devResultBD" class="text-xl font-bold font-mono mt-1">—</p></div><div class="col-span-2 bg-emerald-50 border border-emerald-200 rounded-xl p-4"><p class="text-xs text-emerald-800 uppercase font-semibold">Sviluppo piano teorico</p><p id="devResultFlat" class="text-3xl font-black font-mono text-emerald-950 mt-1">—</p></div></div>
+            <div class="grid grid-cols-2 gap-3"><div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">Bend Allowance</p><p id="devResultBA" class="text-xl font-bold font-mono mt-1">—</p></div><div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">Bend Deduction</p><p id="devResultBD" class="text-xl font-bold font-mono mt-1">—</p></div><div class="col-span-2 bg-emerald-50 border border-emerald-200 rounded-xl p-4"><p class="text-xs text-emerald-800 uppercase font-semibold">Sviluppo piano teorico</p><p id="devResultFlat" aria-live="polite" class="text-3xl font-black font-mono text-emerald-950 mt-1">—</p></div></div>
             <p id="devModelNote" class="text-xs text-slate-600 leading-relaxed">Parametri derivati dal modello; verificare le tabelle dell’utensile installato.</p><button type="button" onclick="copyShareLink('development')" class="w-full bg-blue-700 hover:bg-blue-600 text-white font-bold px-4 py-3 rounded-lg text-sm">Condividi configurazione</button>
           </div>
         </section>
 
-        <section id="tab-matrix" role="tabpanel" class="hidden bg-white p-5 sm:p-6 rounded-xl shadow-sm border border-slate-200 space-y-5">
+        <section id="tab-matrix" role="tabpanel" aria-labelledby="tab-btn-matrix" class="hidden bg-white p-5 sm:p-6 rounded-xl shadow-sm border border-slate-200 space-y-5">
           <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4"><div><h2 class="text-xl font-bold text-slate-900">Tabella rapida S / V / F</h2><p class="text-xs text-slate-500 mt-1">Riferimento orientativo per la piegatura in aria. Verifica sempre la tabella specifica del costruttore e il carico ammissibile degli utensili.</p></div><div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full md:w-auto"><label for="tableMaterial" class="text-xs font-bold uppercase text-slate-600">Materiale tabella</label><select id="tableMaterial" onchange="renderMatrixTable()" class="rounded-lg border border-slate-300 p-2 text-sm bg-slate-50 font-semibold"><option value="420">Acciaio dolce (Rm 420)</option><option value="700">Acciaio inox (Rm 700)</option><option value="220">Alluminio (Rm 220)</option></select></div></div>
           <div class="overflow-x-auto"><table class="w-full text-center text-xs border-collapse" id="interactiveMatrix"><!-- Generata dinamicamente via JavaScript --></table></div>
           <div class="flex flex-wrap gap-3 text-xs text-slate-600 pt-2"><span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 bg-emerald-100 border border-emerald-400 rounded"></span> Rapporto V/s nella fascia pratica suggerita</span><span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 bg-slate-50 border border-slate-200 rounded"></span> Valore da verificare sulla tabella utensile</span></div>
         </section>
-        <!-- Spazio Banner AdSense In-Content -->
-        <div class="bg-slate-200/70 border border-dashed border-slate-300 rounded text-center py-4 text-xs text-slate-500">
-            Spazio riservato agli annunci. Gli annunci saranno attivati solo dopo la configurazione e l'approvazione di Google AdSense.
-        </div>
+        <!-- Nota di trasparenza tecnica al posto di un segnaposto pubblicitario vuoto. -->
+        <aside class="rounded-xl border border-blue-200 bg-blue-50 p-4 sm:p-5 text-sm text-slate-700" aria-label="Limiti del modello">
+          <h2 class="font-bold text-slate-900">Prima di usare un valore calcolato in produzione</h2>
+          <p class="mt-1 leading-relaxed">Il calcolo del campione ricava K dalle quote inserite. Il calcolatore dello sviluppo usa un modello indicativo, non un risultato calibrato per ogni materiale, utensile e macchina. Verifica i carichi ammissibili e i dati del costruttore, quindi convalida la configurazione con una prova di piega prima della produzione. I valori del modello non sostituiscono i dati misurati in officina.</p>
+        </aside>
 
         <!-- SEZIONE GUIDA TECNICA E FORMULE -->
         <section id="guida" class="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-200 space-y-6">
@@ -228,7 +212,7 @@
                         Con una cava da 24 mm, il raggio interno reale sarà circa 3.8&divide;4.0 mm, non 1.0 mm! Un raggio maggiore comporta un ritiro di piega (<em>Bend Deduction</em>) sensibilmente più alto. Se su una singola piega l'errore è di 0.5 mm, su uno scatolato o profilo omega a 4 pieghe l'errore accumulato supera i <strong>2.0 mm</strong>, rendendo il pezzo inutilizzabile.
                     </p>
                     <div class="bg-slate-100 p-3 rounded font-mono text-xs text-slate-800">
-                        Formula Forza (Aria): F [kN] = (8 &times; R<sub>m</sub> &times; L &times; s&sup2;) / V<br>
+                        Forza di piegatura in aria (stima): F [kN] ≈ 1,42 × R<sub>m</sub> [MPa] × L [m] × s² [mm²] / V [mm]. Il valore è indicativo per la piegatura in aria; non usare questa formula per dimensionare da sola pressa o utensili.<br>
                         Bend Allowance (BA): &pi; &times; (&beta; / 180) &times; (r<sub>i</sub> + K &times; s)<br>
                         Outside Setback (OSSB): tan(&beta; / 2) &times; (r<sub>i</sub> + s)<br>
                         Bend Deduction (BD): 2 &times; OSSB &minus; BA &nbsp;(dove &beta; = angolo di deviazione)
@@ -243,15 +227,15 @@
             <div class="space-y-4 text-sm text-slate-700">
                 <div>
                     <h4 class="font-bold text-slate-900">Quando si verifica l'effetto "spigolatura" con un punzone troppo acuto?</h4>
-                    <p class="mt-1">Quando il raggio del punzone (R<sub>p</sub>) è inferiore a circa il 63% dello spessore della lamiera (R<sub>p</sub> &lt; 0.63 &times; s), la punta tende a incidere e solcare la fibra interna del metallo anziché accompagnarla in flessione, alterando il Fattore K e aumentando il rischio di cricche sull'esterno piega.</p>
+                    <p class="mt-1">Il rapporto tra raggio del punzone e spessore è un indicatore pratico, non una soglia universale. Un punzone molto acuto può concentrare la deformazione e lasciare segni sulla superficie interna; il rischio dipende anche da materiale, duttilità, angolo, gioco utensile e metodo di piega. Il valore R<sub>p</sub> &lt; 0,63 × s va trattato come regola orientativa da verificare, non come limite fisico valido per tutti i materiali.</p>
                 </div>
                 <div>
                     <h4 class="font-bold text-slate-900">Come influisce il senso di laminazione sulla piegatura?</h4>
-                    <p class="mt-1">Piegare perpendicolarmente alla fibra di laminazione richiede una forza leggermente superiore ma garantisce la massima resistenza alle fessurazioni, permettendo raggi più stretti. Piegando parallelamente alla vena di laminazione il ritorno elastico è inferiore, ma su acciai ad alta resistenza o alluminio serie 6000 aumenta il rischio di rottura superficiale.</p>
+                    <p class="mt-1">La direzione di laminazione può influire sulla duttilità e sul rischio di cricche, soprattutto con raggi interni ridotti e materiali ad alta resistenza. In molti casi piegare con la linea di piega perpendicolare alla direzione di laminazione riduce il rischio di fessurazione rispetto a una piega parallela, ma il comportamento dipende da lega, stato metallurgico, spessore, raggio e specifiche del materiale. Non è corretto assumere che una direzione richieda sempre più forza o produca sempre meno ritorno elastico: verificare le indicazioni del materiale e fare una prova quando il rischio di cricca è rilevante.</p>
                 </div>
                 <div>
                     <h4 class="font-bold text-slate-900">Qual è la differenza tra Bend Allowance (BA) e Bend Deduction (BD)?</h4>
-                    <p class="mt-1">La <em>Bend Allowance</em> rappresenta la lunghezza effettiva dell'arco lungo l'asse neutro nella zona piegata (si somma alle lunghezze piane prima dell'inizio del raggio). La <em>Bend Deduction</em> (o ritiro di piega) è invece il valore totale da sottrarre alla somma delle quote esterne a spigolo vivo (L = A + B &minus; N &times; BD).</p>
+                    <p class="mt-1">La <em>Bend Allowance</em> (BA) è la lunghezza dell'arco sull'asse neutro nella zona piegata. La <em>Bend Deduction</em> (BD) è la quantità da sottrarre alla somma delle quote esterne fino agli spigoli teorici per ottenere lo sviluppo: per un profilo con N pieghe, L piano = somma delle quote esterne − somma delle BD. BA e BD non sono intercambiabili e dipendono dalla geometria, dall'angolo, dal raggio interno e dal fattore K adottato.</p>
                 </div>
             </div>
         </section>
