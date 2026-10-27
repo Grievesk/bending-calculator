@@ -68,7 +68,9 @@
   function matrixCell({ thickness: s, v, tensileStrength: rm }) {
     if (![s, v, rm].every(Number.isFinite) || s <= 0 || v <= 0 || rm <= 0 || v / s < 4.5 || v / s > 18) return null;
     const vFactor = rm >= 650 ? 0.20 : (rm <= 280 ? 0.14 : 0.16);
-    const forceTonsPerMetre = ((8 * rm * Math.pow(s, 2)) / v) / 9.81;
+    // Common air-bending estimate: 1.42 * Rm[MPa] * s[mm]^2 / V[mm] = kN/m.
+    // Convert kN/m to metric ton-force/m for display.
+    const forceTonsPerMetre = ((1.42 * rm * Math.pow(s, 2)) / v) / 9.80665;
     const innerRadius = v * vFactor;
     const minFlange = 0.7 * v;
     const ratio = v / s;
