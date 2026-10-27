@@ -8,36 +8,7 @@
     <link rel="canonical" href="https://grieveskbend.com/" />
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- JSON-LD Schema.org per SEO e Google Rich Snippets -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [{
-        "@type": "Question",
-        "name": "Perché lo sviluppo lamiera calcolato dal CAD è diverso da quello reale in officina?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "I software CAD utilizzano spesso un raggio interno fisso di default (es. 1 mm) e un Fattore K statico. Nella piegatura in aria, invece, il raggio interno reale dipende direttamente dall'apertura della matrice V (circa V/6 per l'acciaio al carbonio) e dall'elasticità del materiale. Se il raggio nel CAD non coincide con il raggio generato dalla cava V scelta in macchina, il ritiro di piega (Bend Deduction) risulterà errato e l'errore si moltiplicherà per ogni piega del pezzo."
-        }
-      }, {
-        "@type": "Question",
-        "name": "Come funzionano le matrici rotanti tipo WingBend o Rolla-V rispetto alle matrici tradizionali?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Nelle matrici con ali rotanti (WingBend / Rolla-V) la lamiera poggia su inserti mobili che ruotano accompagnando il movimento del punzone. Questo elimina l'attrito di strisciamento, evita segni superficiali, riduce il bordo minimo piegabile fino a 0.45xV e mantiene il raggio interno molto vicino al raggio della punta del punzone."
-        }
-      }, {
-        "@type": "Question",
-        "name": "Come si sceglie l'apertura della cava V in base allo spessore?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Per l'acciaio al carbonio (Fe360/S235) la regola standard prevede V = 6÷8 volte lo spessore per lamiere fino a 3 mm, e V = 8÷10 volte per spessori superiori. Per l'acciaio Inox si utilizza V = 8÷10 volte lo spessore per compensare l'elevata resistenza a trazione, mentre per l'alluminio si può scendere a V = 6 volte lo spessore."
-        }
-      }]
-    }
-    </script>
-
+    <!-- FAQ structured data omitted until it can be kept aligned with visible FAQ content. -->
     <style>
         input[type="text"]::-webkit-inner-spin-button,
         input[type="text"]::-webkit-outer-spin-button {
@@ -132,7 +103,7 @@
                 <text x="14" y="304" font-size="13" fill="#475569">Bordo libero</text>
                 <text x="232" y="191" font-size="13" fill="#475569">Lato rettilineo</text>
                 <text x="240" y="383" font-size="13" fill="#475569">Lato rettilineo</text>
-              </svg>        </svg>        </svg>
+              </svg>
               <p class="text-xs text-slate-600 leading-relaxed"><strong>Convenzione quote:</strong> la linea di quota A/B è parallela al lato; le linee di richiamo sono perpendicolari al lato e terminano sulla proiezione dell’ingombro esterno. La formula usa OSS = (Ri + s) × tan(angolo di piega / 2), che vale Ri + s per una piega a 90°.</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -228,7 +199,7 @@
                         Con una cava da 24 mm, il raggio interno reale sarà circa 3.8&divide;4.0 mm, non 1.0 mm! Un raggio maggiore comporta un ritiro di piega (<em>Bend Deduction</em>) sensibilmente più alto. Se su una singola piega l'errore è di 0.5 mm, su uno scatolato o profilo omega a 4 pieghe l'errore accumulato supera i <strong>2.0 mm</strong>, rendendo il pezzo inutilizzabile.
                     </p>
                     <div class="bg-slate-100 p-3 rounded font-mono text-xs text-slate-800">
-                        Formula Forza (Aria): F [kN] = (8 &times; R<sub>m</sub> &times; L &times; s&sup2;) / V<br>
+                        Forza di piegatura in aria (stima): F [kN] ≈ 1,42 × R<sub>m</sub> [MPa] × L [m] × s² [mm²] / V [mm]<br>
                         Bend Allowance (BA): &pi; &times; (&beta; / 180) &times; (r<sub>i</sub> + K &times; s)<br>
                         Outside Setback (OSSB): tan(&beta; / 2) &times; (r<sub>i</sub> + s)<br>
                         Bend Deduction (BD): 2 &times; OSSB &minus; BA &nbsp;(dove &beta; = angolo di deviazione)
@@ -243,15 +214,15 @@
             <div class="space-y-4 text-sm text-slate-700">
                 <div>
                     <h4 class="font-bold text-slate-900">Quando si verifica l'effetto "spigolatura" con un punzone troppo acuto?</h4>
-                    <p class="mt-1">Quando il raggio del punzone (R<sub>p</sub>) è inferiore a circa il 63% dello spessore della lamiera (R<sub>p</sub> &lt; 0.63 &times; s), la punta tende a incidere e solcare la fibra interna del metallo anziché accompagnarla in flessione, alterando il Fattore K e aumentando il rischio di cricche sull'esterno piega.</p>
+                    <p class="mt-1">Il rapporto tra raggio del punzone e spessore è un indicatore pratico, non una soglia universale. Un punzone molto acuto può concentrare la deformazione e lasciare segni sulla superficie interna; il rischio dipende anche da materiale, duttilità, angolo, gioco utensile e metodo di piega. Il valore R<sub>p</sub> &lt; 0,63 × s va trattato come regola orientativa da verificare, non come limite fisico valido per tutti i materiali.</p>
                 </div>
                 <div>
                     <h4 class="font-bold text-slate-900">Come influisce il senso di laminazione sulla piegatura?</h4>
-                    <p class="mt-1">Piegare perpendicolarmente alla fibra di laminazione richiede una forza leggermente superiore ma garantisce la massima resistenza alle fessurazioni, permettendo raggi più stretti. Piegando parallelamente alla vena di laminazione il ritorno elastico è inferiore, ma su acciai ad alta resistenza o alluminio serie 6000 aumenta il rischio di rottura superficiale.</p>
+                    <p class="mt-1">La direzione di laminazione può influire sulla duttilità e sul rischio di cricche, soprattutto con raggi interni ridotti e materiali ad alta resistenza. In molti casi piegare con la linea di piega perpendicolare alla direzione di laminazione riduce il rischio di fessurazione rispetto a una piega parallela, ma il comportamento dipende da lega, stato metallurgico, spessore, raggio e specifiche del materiale. Non è corretto assumere che una direzione richieda sempre più forza o produca sempre meno ritorno elastico: verificare le indicazioni del materiale e fare una prova quando il rischio di cricca è rilevante.</p>
                 </div>
                 <div>
                     <h4 class="font-bold text-slate-900">Qual è la differenza tra Bend Allowance (BA) e Bend Deduction (BD)?</h4>
-                    <p class="mt-1">La <em>Bend Allowance</em> rappresenta la lunghezza effettiva dell'arco lungo l'asse neutro nella zona piegata (si somma alle lunghezze piane prima dell'inizio del raggio). La <em>Bend Deduction</em> (o ritiro di piega) è invece il valore totale da sottrarre alla somma delle quote esterne a spigolo vivo (L = A + B &minus; N &times; BD).</p>
+                    <p class="mt-1">La <em>Bend Allowance</em> (BA) è la lunghezza dell'arco sull'asse neutro nella zona piegata. La <em>Bend Deduction</em> (BD) è la quantità da sottrarre alla somma delle quote esterne fino agli spigoli teorici per ottenere lo sviluppo: per un profilo con N pieghe, L piano = somma delle quote esterne − somma delle BD. BA e BD non sono intercambiabili e dipendono dalla geometria, dall'angolo, dal raggio interno e dal fattore K adottato.</p>
                 </div>
             </div>
         </section>
