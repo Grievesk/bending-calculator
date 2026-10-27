@@ -8,36 +8,7 @@
     <link rel="canonical" href="https://grieveskbend.com/en/" />
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- JSON-LD Schema.org per SEO e Google Rich Snippets -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [{
-        "@type": "Question",
-        "name": "Why does the flat pattern calculated by CAD differ from the real result on the shop floor?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "CAD software often uses a fixed default inside radius (e.g. 1 mm) and a static K-factor. In air bending, the actual inside radius depends directly on the V-die opening (about V/6 for carbon steel) and the material's springback. If the CAD radius does not match the radius produced by the V-die used on the press brake, the bend deduction will be wrong and the error will accumulate with every bend in the part."
-        }
-      }, {
-        "@type": "Question",
-        "name": "How do rotating dies such as WingBend or Rolla-V differ from conventional dies?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "With rotating-wing dies (WingBend / Rolla-V), the sheet rests on moving inserts that rotate with the punch. This eliminates sliding friction, helps prevent surface marks, reduces the minimum bendable flange to as little as 0.45 × V, and keeps the inside radius close to the punch-tip radius."
-        }
-      }, {
-        "@type": "Question",
-        "name": "How should the V-die opening be selected based on sheet thickness?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "For carbon steel (Fe360/S235), a common rule of thumb is V = 6–8 times the thickness for sheet up to 3 mm, and V = 8–10 times the thickness for thicker material. Stainless steel commonly uses V = 8–10 times the thickness to account for its higher tensile strength, while aluminium may use V = 6 times the thickness."
-        }
-      }]
-    }
-    </script>
-
+    <!-- FAQ structured data omitted until it can be kept aligned with visible FAQ content. -->
     <style>
         input[type="text"]::-webkit-inner-spin-button,
         input[type="text"]::-webkit-outer-spin-button {
@@ -213,14 +184,14 @@
 <h3 class="text-base font-bold text-slate-900">2. Why CAD Flat Patterns Can Be Wrong (Especially for Multi-Bend Parts)</h3>
 <p>Many designers create 3D models using their software's default parameters (e.g. r<sub>i</sub> = 1.0 mm and K = 0.33 or 0.44). On the shop floor, the operator selects the die based on material thickness; for example, a 3 mm sheet may be bent using a V = 24 mm opening.</p>
 <p>With a 24 mm V-die opening, the actual inside radius may be about 3.8–4.0 mm, not 1.0 mm. A larger radius changes the bend deduction significantly. If the error is 0.5 mm per bend, a box or omega profile with four bends can accumulate an error exceeding <strong>2.0 mm</strong>, potentially making the part unusable.</p>
-<div class="bg-slate-100 p-3 rounded font-mono text-xs text-slate-800">Air-bending force: F [kN] = (8 &times; R<sub>m</sub> &times; L &times; s&sup2;) / V<br>Bend Allowance (BA): &pi; &times; (&beta; / 180) &times; (r<sub>i</sub> + K &times; s)<br>Outside Setback (OSS): tan(&beta; / 2) &times; (r<sub>i</sub> + s)<br>Bend Deduction (BD): 2 &times; OSS &minus; BA &nbsp;(where &beta; is the bend angle)</div>
+<div class="bg-slate-100 p-3 rounded font-mono text-xs text-slate-800">Indicative air-bending force: F [kN] ≈ 1.42 × R<sub>m</sub> [MPa] × L [m] × s² [mm²] / V [mm]<br>Bend Allowance (BA): &pi; &times; (&beta; / 180) &times; (r<sub>i</sub> + K &times; s)<br>Outside Setback (OSS): tan(&beta; / 2) &times; (r<sub>i</sub> + s)<br>Bend Deduction (BD): 2 &times; OSS &minus; BA &nbsp;(where &beta; is the bend angle)</div>
 </div></div></section>
 <section id="faq" class="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-200 space-y-4">
 <h2 class="text-xl font-bold text-slate-900 border-b pb-3">Frequently Asked Questions (FAQ)</h2>
 <div class="space-y-4 text-sm text-slate-700">
-<div><h4 class="font-bold text-slate-900">When can a punch that is too sharp cause a scoring effect?</h4><p class="mt-1">When the punch radius (R<sub>p</sub>) is less than about 63% of the sheet thickness (R<sub>p</sub> &lt; 0.63 &times; s), the tip may indent or score the inner surface instead of allowing it to bend smoothly. This can affect the K-factor and increase the risk of cracking on the outside of the bend.</p></div>
-<div><h4 class="font-bold text-slate-900">How does the rolling direction affect bending?</h4><p class="mt-1">Bending perpendicular to the rolling direction may require slightly more force but generally improves resistance to cracking and can allow tighter radii. Bending parallel to the rolling direction may reduce springback, but can increase the risk of surface cracking in high-strength steels or 6000-series aluminium.</p></div>
-<div><h4 class="font-bold text-slate-900">What is the difference between Bend Allowance (BA) and Bend Deduction (BD)?</h4><p class="mt-1">The <em>Bend Allowance</em> is the arc length along the neutral axis within the bend region; it is used with the straight portions to calculate the flat length. The <em>Bend Deduction</em> is the amount subtracted from the sum of outside dimensions measured to theoretical sharp corners (L = A + B &minus; N &times; BD).</p></div>
+<div><h4 class="font-bold text-slate-900">When can a punch that is too sharp cause a scoring effect?</h4><p class="mt-1">The punch-radius-to-thickness ratio is a practical indicator, not a universal threshold. A very sharp punch can concentrate deformation and mark the inside surface; risk also depends on material, ductility, angle, tooling clearance and bending method. Treat R<sub>p</sub> &lt; 0.63 × s as a rule of thumb to investigate, not a physical limit that applies to every material.</p></div>
+<div><h4 class="font-bold text-slate-900">How does the rolling direction affect bending?</h4><p class="mt-1">Rolling direction can affect ductility and cracking risk, particularly with tight inside radii and high-strength materials. In many cases, orienting the bend line perpendicular to the rolling direction reduces cracking risk compared with a parallel bend, but behaviour depends on alloy, temper, thickness, radius and material specifications. It is not safe to assume that one orientation always requires more force or always produces less springback; check material guidance and test when cracking risk matters.</p></div>
+<div><h4 class="font-bold text-slate-900">What is the difference between Bend Allowance (BA) and Bend Deduction (BD)?</h4><p class="mt-1">The <em>Bend Allowance</em> (BA) is the arc length along the neutral axis within the bend region. The <em>Bend Deduction</em> (BD) is subtracted from the sum of outside dimensions measured to theoretical sharp corners to obtain the flat pattern: for a profile with N bends, flat length = sum of outside dimensions − sum of BD values. BA and BD are not interchangeable and depend on geometry, angle, inside radius and the selected K-factor.</p></div>
 </div></section>
 
 
