@@ -6,6 +6,15 @@
     <title>Grievesk Bend | Regolo di Piegatura Lamiera, Sviluppo CAD & Fattore K</title>
     <meta name="description" content="Grievesk Bend: calcolatore tecnico per piegatura lamiera. Forza di piega, scelta cava V, raggio interno reale, WingBend, ritiro di piega (Bend Deduction) e condivisione di configurazioni e consultazione dei riferimenti S/V/F.">
     <link rel="canonical" href="https://grieveskbend.com/" />
+    <link rel="alternate" hreflang="it" href="https://grieveskbend.com/" />
+    <link rel="alternate" hreflang="en" href="https://grieveskbend.com/en/" />
+    <link rel="alternate" hreflang="x-default" href="https://grieveskbend.com/" />
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Grievesk Bend">
+    <meta property="og:title" content="Grievesk Bend | Regolo di Piegatura Lamiera, Sviluppo CAD & Fattore K">
+    <meta property="og:description" content="Strumenti tecnici gratuiti per la piegatura lamiera: fattore K da campioni misurati, stima dello sviluppo e tabella S/V/F.">
+    <meta property="og:url" content="https://grieveskbend.com/">
+    <meta name="twitter:card" content="summary">
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- FAQ structured data omitted until it can be kept aligned with visible FAQ content. -->
@@ -22,6 +31,9 @@
         }
         [role="tab"] { min-height: 52px; line-height: 1.25; }
         input, select { min-height: 42px; }
+        :focus-visible { outline: 3px solid #f59e0b; outline-offset: 3px; }
+        [id] { scroll-margin-top: 8rem; }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; } }
         /* Prevent iOS Safari from auto-zooming when form controls receive focus. */
         @media (max-width: 767px) {
             input, select, textarea { font-size: 16px; }
@@ -165,10 +177,11 @@
           <div class="overflow-x-auto"><table class="w-full text-center text-xs border-collapse" id="interactiveMatrix"><!-- Generata dinamicamente via JavaScript --></table></div>
           <div class="flex flex-wrap gap-3 text-xs text-slate-600 pt-2"><span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 bg-emerald-100 border border-emerald-400 rounded"></span> Rapporto V/s nella fascia pratica suggerita</span><span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 bg-slate-50 border border-slate-200 rounded"></span> Valore da verificare sulla tabella utensile</span></div>
         </section>
-        <!-- Spazio Banner AdSense In-Content -->
-        <div class="bg-slate-200/70 border border-dashed border-slate-300 rounded text-center py-4 text-xs text-slate-500">
-            Spazio riservato agli annunci. Gli annunci saranno attivati solo dopo la configurazione e l'approvazione di Google AdSense.
-        </div>
+        <!-- Nota di trasparenza tecnica al posto di un segnaposto pubblicitario vuoto. -->
+        <aside class="rounded-xl border border-blue-200 bg-blue-50 p-4 sm:p-5 text-sm text-slate-700" aria-label="Limiti del modello">
+          <h2 class="font-bold text-slate-900">Prima di usare un valore calcolato in produzione</h2>
+          <p class="mt-1 leading-relaxed">Il calcolo del campione ricava K dalle quote inserite. Il calcolatore dello sviluppo usa un modello indicativo, non un risultato calibrato per ogni materiale, utensile e macchina. Verifica i carichi ammissibili e i dati del costruttore, quindi convalida la configurazione con una prova di piega prima della produzione. I valori del modello non sostituiscono i dati misurati in officina.</p>
+        </aside>
 
         <!-- SEZIONE GUIDA TECNICA E FORMULE -->
         <section id="guida" class="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-200 space-y-6">
