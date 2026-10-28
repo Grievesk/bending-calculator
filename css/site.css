@@ -104,3 +104,9 @@ a{transition:color .18s ease,background-color .18s ease,border-color .18s ease}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.gb-fade-in{animation:none}*{transition:none!important}}
 
 @media(max-width:767px){.gb-mobile-nav{display:flex;gap:8px;align-items:center;overflow-x:auto;width:100%;padding:9px 0 2px;white-space:nowrap;scrollbar-width:none}.gb-mobile-nav::-webkit-scrollbar{display:none}.gb-mobile-nav a{font-size:.75rem;color:#d2dee8;text-decoration:none;border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:7px 11px}.gb-mobile-nav a:first-child{border-color:rgba(80,213,208,.7);color:#7be7dc}}
+
+/* Ensure brand/navigation contrast on every editorial and legal page. */
+.gb-site-header nav a{color:#d5e0ea;text-decoration:none}
+.gb-site-header nav a:hover{color:var(--gb-teal)}
+.gb-site-header .gb-mobile-nav a{color:#d2dee8}
+.gb-site-header .gb-mobile-nav a:first-child{color:#7be7dc}
