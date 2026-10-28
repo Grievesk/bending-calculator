@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quando il raggio reale cambia l'accoppiamento | Grievesk Bend</title>
+<meta name="description" content="Perché il raggio interno ottenuto in piegatura può differire dal CAD e influire sull'accoppiamento tra componenti. Un caso tecnico da approfondire con dati reali.">
+<link rel="canonical" href="https://grieveskbend.com/pillole/raggio-reale-vs-cad.html">
+<link rel="alternate" hreflang="it" href="https://grieveskbend.com/pillole/raggio-reale-vs-cad.html">
+<link rel="alternate" hreflang="en" href="https://grieveskbend.com/en/technical-notes/real-radius-and-fit.html">
+<script src="https://cdn.tailwindcss.com"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9851645646686111" crossorigin="anonymous"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+<header class="bg-slate-900 text-white"><div class="max-w-4xl mx-auto px-4 py-5 flex justify-between items-center gap-4"><a href="/" class="font-bold text-xl">Grievesk Bend</a><nav class="flex gap-4 text-sm"><a class="underline" href="/pillole/">Pillole tecniche</a><a class="underline" href="/en/technical-notes/real-radius-and-fit.html">English</a></nav></div></header>
+<main class="max-w-4xl mx-auto px-4 py-8"><article class="bg-white border border-slate-200 rounded-xl p-5 sm:p-8 space-y-5 leading-relaxed">
+<p class="text-sm font-semibold uppercase tracking-wide text-blue-700">Caso 01 · Raggio interno e accoppiamento</p>
+<h1 class="text-3xl sm:text-4xl font-bold text-slate-900">Quando il raggio reale cambia l'accoppiamento</h1>
+<p class="text-lg text-slate-600">Il raggio interno della piega influenza la geometria del componente. Quando due pezzi devono combaciare, una differenza apparentemente piccola può diventare evidente nell'assemblaggio.</p>
+<h2 class="text-2xl font-bold">Il problema da osservare</h2>
+<p>Nel progetto CAD il raggio interno è un parametro geometrico definito. In produzione, il raggio ottenuto dipende anche da materiale, spessore effettivo, apertura e geometria della matrice, punzone, angolo richiesto e processo di piegatura. Il raggio nominale dell'utensile non coincide necessariamente con quello finale della lamiera.</p>
+<p>Se il modello di sviluppo assume un raggio non rappresentativo del pezzo piegato, anche un fattore K matematicamente coerente con quel presupposto può portare a una previsione non soddisfacente della geometria finale. È questo il motivo per cui Grievesk Bend vuole partire dalla stima del raggio interno e ricavare successivamente il fattore K.</p>
+<figure class="space-y-2">
+<img src="/images/raggio-reale-accoppiamento.jpg" alt="Primo piano di un componente in lamiera piegato: sono visibili la curva interna e il bordo di accoppiamento" class="w-full h-auto rounded-lg border border-slate-200" width="1280" height="960" loading="lazy" decoding="async">
+<figcaption class="text-sm text-slate-500">Dettaglio del componente piegato. L'immagine è stata ridimensionata mantenendo il rapporto d'aspetto e i dettagli del bordo di accoppiamento.</figcaption>
+</figure>
+<h2 class="text-2xl font-bold">Cosa possiamo concludere — e cosa no</h2>
+<p>La fotografia mostra il dettaglio della piega e del bordo del componente, ma da sola non permette di determinare con precisione il raggio interno, lo spessore effettivo o lo scostamento rispetto al CAD. Per una verifica quantitativa servono quote o misure confrontabili e le condizioni di piegatura.</p>
+<p>Per non trasformare un'osservazione in una conclusione non dimostrata, questo caso viene trattato come punto di partenza per la raccolta dei dati. Quando saranno disponibili le misure e i parametri di processo, potremo confrontare il raggio previsto dal modello con quello ricavato dal pezzo e valutare l'effetto sull'accoppiamento.</p>
+<h2 class="text-2xl font-bold">Dati utili per completare il caso</h2>
+<ul class="list-disc pl-6 space-y-1"><li>Spessore e materiale della lamiera.</li><li>Raggio interno nominale CAD e tolleranza prevista.</li><li>Punzone, apertura V e angolo finale.</li><li>Raggio interno misurato o ricavato da una sezione verificabile.</li><li>Descrizione dello scostamento osservato nell'accoppiamento.</li></ul>
+<p>Non assegniamo valori numerici non misurati. La raccolta crescerà con testimonianze reali e dati tracciabili, distinguendo sempre misure dirette, dati CAD/CAM e stime.</p>
+<div class="rounded-lg bg-slate-50 border border-slate-200 p-4"><h2 class="font-bold text-lg">Il principio di Grievesk Bend</h2><p class="mt-2">Stimare prima il raggio interno finale, poi ricavare un fattore K coerente con la geometria e verificare lo sviluppo risultante. Il confronto con i casi reali è ciò che permette di capire dove il modello funziona e dove deve migliorare.</p><a class="inline-block mt-3 text-blue-700 underline" href="/#calcolatore">Apri il calcolatore</a></div>
+<p class="text-sm border-t border-slate-200 pt-4"><a class="text-blue-700 underline" href="/pillole/">Tutte le pillole tecniche</a> · <a class="text-blue-700 underline" href="/about.html">Il progetto</a> · <a class="text-blue-700 underline" href="/privacy.html">Privacy &amp; Cookie</a> · <a class="text-blue-700 underline" href="/terms.html">Termini di utilizzo</a></p>
+</article></main><footer class="text-sm text-slate-500 text-center pb-8">© 2026 Grievesk Bend</footer></body></html>
