@@ -7,6 +7,7 @@
     <meta name="description" content="Grievesk Bend: technical sheet metal bending calculator. Bending force, V-die selection, actual inside radius, WingBend, bend deduction, configuration sharing, and S/V/F reference tables.">
     <link rel="canonical" href="https://grieveskbend.com/en/" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/site.css">
     
     <!-- JSON-LD Schema.org per SEO e Google Rich Snippets -->
     <script type="application/ld+json">
@@ -63,31 +64,25 @@
 <body class="bg-slate-50 text-slate-800 font-sans antialiased">
 
     <!-- Header -->
-    <header class="bg-slate-900 text-white border-b border-slate-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
-            <div class="flex items-center">
-                <a href="/en/" class="flex items-center shrink-0" aria-label="Grievesk Bend — home"><img src="/grievesk-bend-logo.png" alt="Grievesk Bend — K-factor and sheet metal flat pattern calculator" class="h-11 w-auto max-w-[220px] object-contain" fetchpriority="high"></a>
-            </div>
-            <div class="flex items-center space-x-3"><label class="text-xs text-slate-200 flex items-center gap-1">Units <select id="unitSystem" class="text-slate-900 rounded px-2 py-1" aria-label="Units of measurement" onchange="changeUnitSystem(this.value)"><option value="mm">mm</option><option value="in">in (inches)</option></select></label><a href="/" class="text-xs underline hover:text-blue-300" lang="it">Italiano</a><div class="flex items-center space-x-4">
-                <nav class="hidden md:flex space-x-4 text-sm">
-                    <a href="#calcolatore" onclick="switchTab('sample')" class="hover:text-blue-400 transition">K-Factor</a>
-                    <a href="#calcolatore" onclick="switchTab('matrix')" class="hover:text-blue-400 transition">S/V/F Table</a>
-                    <a href="#guida" class="hover:text-blue-400 transition">Theory &amp; Formulas</a>
-                    <a href="#faq" class="hover:text-blue-400 transition">FAQ</a>
-                    <a href="/en/technical-notes/" class="hover:text-blue-400 transition">Technical Notes</a>
-                </nav>
-                <button onclick="copyShareLink()" id="shareBtnHeader" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-3 py-2 rounded-lg transition flex items-center gap-1.5 shadow-sm">
-                    <span>🔗 Share Setup</span>
-                </button>
-            </div></div>
-        </div>
-    </header>
+    <header class="gb-site-header sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-x-5 gap-y-2">
+    <a href="/en/" class="gb-brand" aria-label="Grievesk Bend home"><img src="/grievesk-bend-mark.svg" alt="" class="gb-brand-mark"><span><span class="gb-brand-name">Grievesk Bend</span><span class="gb-brand-sub">Bending, grounded in reality</span></span></a>
+    <div class="flex items-center gap-3 ml-auto">
+      <label class="text-xs text-slate-200 flex items-center gap-1">Units <select id="unitSystem" class="text-slate-900 rounded px-2 py-1" aria-label="Units of measurement" onchange="changeUnitSystem(this.value)"><option value="mm">mm</option><option value="in">in (inches)</option></select></label>
+      <a href="/" class="text-xs underline hover:text-blue-300" lang="it">Italiano</a>
+      <button onclick="copyShareLink()" id="shareBtnHeader" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-3 py-2 rounded-lg transition flex items-center gap-1.5 shadow-sm"><span>↗ Share setup</span></button>
+    </div>
+    <nav class="hidden md:flex items-center gap-5 text-sm" aria-label="Main navigation">
+      <a href="#calcolatore" onclick="switchTab('sample')">Calculator</a><a href="/en/technical-notes/">Real cases</a><a href="#guida">Method &amp; formulas</a><a href="#faq">FAQ</a>
+    </nav>
+    <nav class="gb-mobile-nav md:hidden" aria-label="Quick navigation"><a href="#calcolatore" onclick="switchTab('sample')">Use calculator</a><a href="/en/technical-notes/">Real cases</a><a href="#guida">The method</a></nav>
+  </div>
+</header>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 py-6 space-y-12" id="calcolatore">
+    <main class="max-w-7xl mx-auto px-4 py-7 space-y-9">
 
-        <!-- Main navigation: the editorial content below remains static -->
-        <div class="sticky top-[68px] z-40 -mx-1 bg-slate-50/95 pt-1 backdrop-blur">
+
           <div class="grid grid-cols-3 border-b border-slate-300 bg-white rounded-t-xl shadow-sm overflow-hidden" role="tablist" aria-label="Grievesk Bend calculators">
             <button type="button" role="tab" aria-selected="true" onclick="switchTab('sample')" id="tab-btn-sample" class="tab-active px-2 sm:px-5 py-3 text-xs sm:text-sm font-semibold transition">1. Calculate K from sample</button>
             <button type="button" role="tab" aria-selected="false" onclick="switchTab('development')" id="tab-btn-development" class="px-2 sm:px-5 py-3 text-xs sm:text-sm text-slate-600 transition">2. Calculate flat pattern</button>
@@ -228,7 +223,7 @@
     </main>
 
     <!-- Footer and legal notes -->
-    <footer class="bg-slate-900 text-slate-400 text-xs mt-16 border-t border-slate-800">
+    <footer class="gb-site-footer text-xs mt-16 border-t border-slate-800">
         <div class="max-w-7xl mx-auto px-4 py-8 space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
