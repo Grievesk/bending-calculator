@@ -126,28 +126,20 @@
 <section class="gb-section" aria-labelledby="featured-case-title">
   <div class="gb-section-head"><div><span class="gb-section-kicker">Diario di officina · Caso 01</span><h2 class="gb-section-title" id="featured-case-title">Un problema di accoppiamento. Una domanda migliore.</h2><p class="gb-section-intro">Un componente non accoppia come previsto. Il disegno indica R0,8; il punzone è R0,5. La foto documenta il problema, ma il raggio effettivo deve ancora essere misurato.</p></div><a class="gb-text-link" href="/pillole/">Esplora tutti i casi ↗</a></div>
   <div class="gb-case-feature"><div class="gb-case-visual"><svg viewBox="0 0 560 390" role="img" aria-labelledby="fitTitle fitDesc" style="display:block;width:100%;height:auto;max-width:620px;margin-inline:auto">
-<title id="fitTitle">Tangenza a 45 gradi tra profilo a L e quadrato raccordato</title>
-<desc id="fitDesc">Un profilo a L presenta un raggio interno R di 90 unità schematiche. Un quadrato con quattro raccordi uguali di raggio 45 è collocato nello spazio libero. Il suo angolo inferiore sinistro è tangente a 45 gradi al raggio interno della L. Il quadrato non interseca il profilo.</desc>
-<defs><linearGradient id="profileGradIt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e7edf2"/><stop offset="1" stop-color="#aab9c6"/></linearGradient><linearGradient id="squareGradIt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9f5ee"/><stop offset="1" stop-color="#6bc9bf"/></linearGradient></defs>
+<title id="fitTitle">Profilo piegato e tranciato</title>
+<desc id="fitDesc">Un profilo piegato a L e un tranciato quadrato raccordato, disposti in tangenza a 45 gradi.</desc>
+<defs>
+<linearGradient id="profileGradIt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e7edf2"/><stop offset="1" stop-color="#aab9c6"/></linearGradient>
+<linearGradient id="squareGradIt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9f5ee"/><stop offset="1" stop-color="#6bc9bf"/></linearGradient>
+</defs>
 <rect x="8" y="8" width="544" height="374" rx="24" fill="#f3f7f9" stroke="#dce4e9"/>
-<text x="34" y="42" fill="#586b7d" font-size="14" font-weight="800" letter-spacing="2">SEZIONE · SCHEMA CONCETTUALE</text>
-<!-- L: inner radius 90, outer radius 120, constant 30-unit wall -->
+<!-- L profile: inside radius 90, outside radius 120 -->
 <path d="M70 65 H100 V150 A90 90 0 0 0 190 240 H500 V270 H190 A120 120 0 0 1 70 150 Z" fill="url(#profileGradIt)" stroke="#607587" stroke-width="3" stroke-linejoin="round"/>
-<!-- Square 150 x 150; all four corner radii 45. Bottom-left corner centre Q=(158.18,181.82). -->
+<!-- Rounded square blank, four equal corner radii; lower-left corner tangent at 45 degrees -->
 <path d="M158.18 76.82 H218.18 A45 45 0 0 1 263.18 121.82 V181.82 A45 45 0 0 1 218.18 226.82 H158.18 A45 45 0 0 1 113.18 181.82 V121.82 A45 45 0 0 1 158.18 76.82 Z" fill="url(#squareGradIt)" stroke="#087f83" stroke-width="3"/>
-<!-- Exact 45-degree tangency: L circle centre C=(190,150), R=90; square corner centre Q=(158.18,181.82), r=45; P=(126.36,213.64). -->
-<path d="M190 150 L126.36 213.64 L158.18 181.82" fill="none" stroke="#e69b51" stroke-width="2" stroke-dasharray="5 5"/>
-<circle cx="126.36" cy="213.64" r="5.5" fill="#f4aa61" stroke="#ffffff" stroke-width="2"/>
-<path d="M126.36 213.64 L68 290" fill="none" stroke="#b87436" stroke-width="1.8"/>
-<rect x="25" y="290" width="184" height="42" rx="9" fill="#fff5e9" stroke="#e7ad73"/>
-<text x="117" y="307" text-anchor="middle" fill="#8c5125" font-size="12" font-weight="700">Raggio interno L</text><text x="117" y="322" text-anchor="middle" fill="#8c5125" font-size="11">R = 90</text>
-<path d="M158.18 181.82 L265 290" fill="none" stroke="#087f83" stroke-width="1.8"/>
-<rect x="218" y="290" width="190" height="42" rx="9" fill="#e5f8f5" stroke="#8fd5cc"/>
-<text x="313" y="307" text-anchor="middle" fill="#087f83" font-size="12" font-weight="700">Raggio angoli quadrato</text><text x="313" y="322" text-anchor="middle" fill="#087f83" font-size="11">r = 45 · r = R/2</text>
-<path d="M126.36 213.64 L333 246" fill="none" stroke="#e69b51" stroke-width="1.8"/>
-<rect x="333" y="226" width="190" height="40" rx="9" fill="#fff5e9" stroke="#e7ad73"/>
-<text x="428" y="251" text-anchor="middle" fill="#8c5125" font-size="12" font-weight="700">TANGENZA A 45° · NO SOVRAPPOSIZIONE</text>
-<text x="280" y="360" text-anchor="middle" fill="#586b7d" font-size="11" font-weight="700" letter-spacing="1">LATI DEL QUADRATO PARALLELI ALLA L</text></svg></div>
+<text x="84" y="48" fill="#526779" font-size="15" font-weight="800" letter-spacing="1.2">PROFILO PIEGATO</text>
+<text x="315" y="310" text-anchor="middle" fill="#087f83" font-size="15" font-weight="800" letter-spacing="1.2">TRANCIATO</text>
+</svg></div>
     <div class="gb-case-content"><span class="gb-evidence-label">Osservazione reale di produzione</span><h3>Quando il raggio reale cambia l'accoppiamento</h3><p>Piegatura in aria · acciaio dolce decapato da 2 mm · matrice V10 a 30° · punzone R0,5 · angoli interni 90° e 120°.</p><div class="gb-meta-row"><span class="gb-meta-chip">Raggio a disegno R0,8</span><span class="gb-meta-chip">Raggio reale non misurato</span><span class="gb-meta-chip">Problema documentato in foto</span></div><a class="gb-button-primary" href="/pillole/raggio-reale-vs-cad.html">Leggi il caso <span aria-hidden="true">↗</span></a></div>
   </div>
 </section>
