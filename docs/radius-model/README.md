@@ -2,7 +2,7 @@
 
 **Stato:** ricerca/calibrazione in corso. Non implementato nel motore pubblico.  
 **Ultimo aggiornamento:** 2026-11-07  
-**Dataset:** 19 campioni ordinari Bysoft riportati in \x60Bysoft Cam 2.txt\x60, più le tabelle software \x60TABLE\x60 e \x60Table Entry\x60. Il campione di orlo schiacciato (Ri = 0,05 mm) è escluso dal modello ordinario perché è una condizione di processo distinta. I valori originali Bysoft non vengono modificati.
+**Dataset:** 19 campioni ordinari Bysoft riportati in `Bysoft Cam 2.txt`, più le tabelle software `TABLE` e `Table Entry`. Il campione di orlo schiacciato (Ri = 0,05 mm) è escluso dal modello ordinario perché è una condizione di processo distinta. I valori originali Bysoft non vengono modificati.
 
 ## Obiettivo e ordine di lavoro
 
@@ -17,14 +17,14 @@ Non usare la formula di deduzione precedentemente presente nel sito come riferim
 
 ## Dati e convenzioni
 
-- \x60s\x60: spessore lamiera, mm.
-- \x60V\x60: apertura nominale matrice, mm.
-- \x60Rp\x60: raggio punzone, mm.
-- \x60alpha\x60: angolo interno della piega, gradi. Il segno, se presente nei dati originali, indica il verso e non rende negativo l’angolo fisico.
-- \x60beta\x60: angolo nominale della matrice, gradi.
-- \x60Rm\x60: resistenza a trazione del materiale, N/mm².
-- \x60Ri\x60: raggio interno misurato/riportato da Bysoft, mm.
-- \x60Re\x60: raggio ingresso matrice. In assenza del dato del costruttore si usa l’approssimazione concordata (Re = V/9).
+- `s`: spessore lamiera, mm.
+- `V`: apertura nominale matrice, mm.
+- `Rp`: raggio punzone, mm.
+- `alpha`: angolo interno della piega, gradi. Il segno, se presente nei dati originali, indica il verso e non rende negativo l’angolo fisico.
+- `beta`: angolo nominale della matrice, gradi.
+- `Rm`: resistenza a trazione del materiale, N/mm².
+- `Ri`: raggio interno misurato/riportato da Bysoft, mm.
+- `Re`: raggio ingresso matrice. In assenza del dato del costruttore si usa l’approssimazione concordata (Re = V/9).
 
 Tutti i 19 campioni Bysoft attualmente disponibili hanno Rm = 420 N/mm² e Rp = 1 mm. Di conseguenza l’effetto indipendente di Rm e Rp non è identificabile in modo affidabile da quel solo dataset.
 
@@ -34,16 +34,16 @@ Le esportazioni Excel rappresentano due livelli collegati nell’interfaccia del
 
 ### Livello 1: TABLE
 
-La tabella superiore si chiama semplicemente \x60TABLE\x60. È stata esportata per i diversi materiali e contiene una riga per una configurazione di materiale e utensile.
+La tabella superiore si chiama semplicemente `TABLE`. È stata esportata per i diversi materiali e contiene una riga per una configurazione di materiale e utensile.
 
 Le colonne sono:
 
 | Colonna | Significato operativo |
 |---|---|
-| Sheet thickness [mm] | spessore \x60s\x60 |
-| Top tool radius [mm] | raggio punzone \x60Rp\x60 |
-| Infeed width of die [mm] | larghezza/apertura d’ingresso della matrice, candidata a rappresentare \x60V\x60 |
-| Infeed radius of die [mm] | raggio d’ingresso della matrice, candidato a rappresentare \x60Re\x60 |
+| Sheet thickness [mm] | spessore `s` |
+| Top tool radius [mm] | raggio punzone `Rp` |
+| Infeed width of die [mm] | larghezza/apertura d’ingresso della matrice, candidata a rappresentare `V` |
+| Infeed radius of die [mm] | raggio d’ingresso della matrice, candidato a rappresentare `Re` |
 | Radius factor | fattore di riferimento della configurazione |
 | Radius factor, angle measurement system | secondo fattore associato al sistema di misura dell’angolo |
 
@@ -51,7 +51,7 @@ Il materiale e la resistenza nominale sono indicati dal nome del workbook, non d
 
 ### Livello 2: Table Entry
 
-La tabella inferiore si chiama \x60Table Entry\x60. Non è una tabella indipendente: cambia quando viene selezionata una riga di \x60TABLE\x60.
+La tabella inferiore si chiama `Table Entry`. Non è una tabella indipendente: cambia quando viene selezionata una riga di `TABLE`.
 
 La sua struttura osservata è:
 
@@ -62,27 +62,27 @@ La sua struttura osservata è:
 | W-Gamma [mm] | correzione o termine geometrico aggiuntivo |
 | Radius factor | fattore dipendente dall’angolo per la riga selezionata |
 
-La chiave corretta non è quindi soltanto l’angolo. Ogni riga di \x60Table Entry\x60 deve essere identificata da:
+La chiave corretta non è quindi soltanto l’angolo. Ogni riga di `Table Entry` deve essere identificata da:
 
 \[
 (\text{materiale},s,Rp,V,Re,\text{fattori TABLE},\alpha)
 \]
 
-L’esportazione completa richiesta per la calibrazione dovrà riportare i parametri della riga \x60TABLE\x60 accanto a ogni riga \x60Table Entry\x60. Non è sufficiente conservare soltanto il file figlio, perché altrimenti si perde il collegamento con materiale e utensile.
+L’esportazione completa richiesta per la calibrazione dovrà riportare i parametri della riga `TABLE` accanto a ogni riga `Table Entry`. Non è sufficiente conservare soltanto il file figlio, perché altrimenti si perde il collegamento con materiale e utensile.
 
 ## Prima verifica della relazione TABLE–Table Entry
 
-Il file \x60Steel-420Nmm2-TableEntry.xlsx\x60 contiene gli angoli 60°, 70°, 80°, 90°, 105°, 120° e 135°.
+Il file `Steel-420Nmm2-TableEntry.xlsx` contiene gli angoli 60°, 70°, 80°, 90°, 105°, 120° e 135°.
 
-Per la prima riga di \x60Steel-420Nmm2.xlsx\x60:
+Per la prima riga di `Steel-420Nmm2.xlsx`:
 
 \[
 s=0,5,\quad Rp=0,5,\quad V=11,5,\quad Re=1,5
 \]
 
-il \x60Radius factor\x60 della tabella superiore è 0,239.
+il `Radius factor` della tabella superiore è 0,239.
 
-Nel relativo \x60Table Entry\x60 il fattore è:
+Nel relativo `Table Entry` il fattore è:
 
 | Angolo | Radius factor |
 |---:|---:|
@@ -104,9 +104,9 @@ La coincidenza:
 0,239
 \]
 
-è un’evidenza forte che il valore della tabella superiore sia un riferimento a 90° e che \x60Table Entry\x60 contenga la variazione angolare dello stesso fattore.
+è un’evidenza forte che il valore della tabella superiore sia un riferimento a 90° e che `Table Entry` contenga la variazione angolare dello stesso fattore.
 
-Non è ancora una dimostrazione generale. Va verificata su più righe \x60TABLE\x60, mantenendo gli stessi parametri di materiale e utensile.
+Non è ancora una dimostrazione generale. Va verificata su più righe `TABLE`, mantenendo gli stessi parametri di materiale e utensile.
 
 ## Impatto sul modello di Ri
 
@@ -140,29 +140,29 @@ e il raggio previsto:
 Ri=Rp+C(V_{eff}/2-Rp), \qquad 0\le C\le1
 \]
 
-Le nuove tabelle suggeriscono che il fattore angolare non debba essere rappresentato soltanto da una funzione teorica \x60G(alpha)\x60. È possibile che il software usi direttamente una funzione tabellare:
+Le nuove tabelle suggeriscono che il fattore angolare non debba essere rappresentato soltanto da una funzione teorica `G(alpha)`. È possibile che il software usi direttamente una funzione tabellare:
 
 \[
 F = F(s,Rp,V,Re,Rm,\alpha)
 \]
 
-dove \x60F\x60 è il \x60Radius factor\x60 di \x60Table Entry\x60.
+dove `F` è il `Radius factor` di `Table Entry`.
 
-Prima di scegliere tra una regressione continua e una lookup table interpolata, occorre verificare come \x60F\x60 viene trasformato in \x60Ri\x60. Non è ancora dimostrato che:
+Prima di scegliere tra una regressione continua e una lookup table interpolata, occorre verificare come `F` viene trasformato in `Ri`. Non è ancora dimostrato che:
 
 \[
 Ri = F \cdot V
 \]
 
-né che \x60F\x60 sia direttamente sostituibile al coefficiente logistico \x60C\x60. Il fattore potrebbe essere un termine intermedio del calcolo software.
+né che `F` sia direttamente sostituibile al coefficiente logistico `C`. Il fattore potrebbe essere un termine intermedio del calcolo software.
 
 ## Utilità per la formula di K
 
-Le tabelle non contengono direttamente K, BA o deduzione. Tuttavia \x60Table Entry\x60 può essere utile per K in due modi.
+Le tabelle non contengono direttamente K, BA o deduzione. Tuttavia `Table Entry` può essere utile per K in due modi.
 
 ### 1. Miglioramento indiretto tramite Ri
 
-Il fattore K dipende dalla posizione della linea neutra e quindi dal raggio interno usato nel calcolo della BA. Se \x60Table Entry\x60 permette di prevedere meglio Ri in funzione dell’angolo, la stima di K sarà meno influenzata da un errore del raggio.
+Il fattore K dipende dalla posizione della linea neutra e quindi dal raggio interno usato nel calcolo della BA. Se `Table Entry` permette di prevedere meglio Ri in funzione dell’angolo, la stima di K sarà meno influenzata da un errore del raggio.
 
 La sequenza corretta resta:
 
@@ -174,11 +174,11 @@ La sequenza corretta resta:
 \longrightarrow \text{deduzione}
 \]
 
-Non bisogna calibrare K direttamente sui valori di \x60Radius factor\x60 finché non è chiarita la formula software che collega il fattore a Ri.
+Non bisogna calibrare K direttamente sui valori di `Radius factor` finché non è chiarita la formula software che collega il fattore a Ri.
 
 ### 2. Possibile informazione geometrica diretta
 
-Le colonne \x60Delta X\x60 e \x60W-Gamma\x60 potrebbero contenere componenti geometriche della deduzione o della posizione della linea neutra. Il nome \x60Delta X\x60 è compatibile con uno spostamento geometrico, ma non è sufficiente per assegnargli un significato fisico definitivo.
+Le colonne `Delta X` e `W-Gamma` potrebbero contenere componenti geometriche della deduzione o della posizione della linea neutra. Il nome `Delta X` è compatibile con uno spostamento geometrico, ma non è sufficiente per assegnargli un significato fisico definitivo.
 
 Queste colonne diventano utilizzabili per K solo dopo aver verificato:
 
@@ -189,18 +189,18 @@ Queste colonne diventano utilizzabili per K solo dopo aver verificato:
 - presenza o assenza del raggio interno nel calcolo;
 - comportamento a 90° e agli angoli ottusi.
 
-Nel file osservato \x60W-Gamma\x60 vale sempre zero. Questo campione non consente quindi di stimarne l’effetto.
+Nel file osservato `W-Gamma` vale sempre zero. Questo campione non consente quindi di stimarne l’effetto.
 
 ## Variabili candidate per C o per il fattore F
 
 Per rendere confrontabili utensili di dimensioni diverse, usare variabili adimensionali:
 
-- \x60u=(alpha-90)/90\x60: angolo interno normalizzato;
-- \x60x=s/V\x60: spessore relativo all’apertura;
-- \x60y=Rp/V\x60: raggio punzone relativo all’apertura;
-- \x60e=Re/V\x60: raggio d’ingresso relativo;
-- \x60b=(beta-30)/60\x60: angolo matrice normalizzato;
-- \x60z=Rm/420\x60: resistenza normalizzata.
+- `u=(alpha-90)/90`: angolo interno normalizzato;
+- `x=s/V`: spessore relativo all’apertura;
+- `y=Rp/V`: raggio punzone relativo all’apertura;
+- `e=Re/V`: raggio d’ingresso relativo;
+- `b=(beta-30)/60`: angolo matrice normalizzato;
+- `z=Rm/420`: resistenza normalizzata.
 
 Una possibile forma limitata resta logistica:
 
@@ -208,9 +208,9 @@ Una possibile forma limitata resta logistica:
 C=\frac{1}{1+e^{-Q}}
 \]
 
-con \x60Q\x60 funzione da calibrare su \x60u\x60, \x60x\x60, \x60y\x60, \x60e\x60, \x60b\x60, \x60z\x60 e interazioni motivate dai dati.
+con `Q` funzione da calibrare su `u`, `x`, `y`, `e`, `b`, `z` e interazioni motivate dai dati.
 
-La nuova alternativa è trattare \x60Table Entry\x60 come una sorgente di osservazioni per \x60F(alpha)\x60 e usare una regressione o interpolazione vincolata:
+La nuova alternativa è trattare `Table Entry` come una sorgente di osservazioni per `F(alpha)` e usare una regressione o interpolazione vincolata:
 
 \[
 F(\alpha\mid s,Rp,V,Re,Rm)
@@ -220,7 +220,7 @@ Questa strada è preferibile soltanto se le entry sono confermate come valori de
 
 ## Piano di esportazione completo
 
-Per ogni riga della \x60TABLE\x60 occorre esportare tutte le righe della relativa \x60Table Entry\x60 e creare un dataset lungo con almeno queste colonne:
+Per ogni riga della `TABLE` occorre esportare tutte le righe della relativa `Table Entry` e creare un dataset lungo con almeno queste colonne:
 
 | Campo | Origine |
 |---|---|
@@ -250,17 +250,17 @@ Per la prima fase non è necessario esportare tutte le righe dei materiali. È p
 
 ## Verifiche necessarie prima della calibrazione
 
-1. Verificare che il valore a 90° della \x60Table Entry\x60 coincida con il fattore \x60TABLE\x60 per più configurazioni.
+1. Verificare che il valore a 90° della `Table Entry` coincida con il fattore `TABLE` per più configurazioni.
 
-2. Verificare se \x60Bend angle\x60 usa la stessa convenzione dell’angolo \x60alpha\x60 dei campioni Bysoft.
+2. Verificare se `Bend angle` usa la stessa convenzione dell’angolo `alpha` dei campioni Bysoft.
 
-3. Verificare se \x60Infeed width of die\x60 equivale davvero a V.
+3. Verificare se `Infeed width of die` equivale davvero a V.
 
-4. Verificare se \x60Infeed radius of die\x60 equivale davvero a Re.
+4. Verificare se `Infeed radius of die` equivale davvero a Re.
 
-5. Ricostruire la formula che trasforma \x60Radius factor\x60 in Ri.
+5. Ricostruire la formula che trasforma `Radius factor` in Ri.
 
-6. Verificare il significato di \x60Delta X\x60 e \x60W-Gamma\x60 tramite una configurazione in cui il programma mostri anche deduzione, BA o BD.
+6. Verificare il significato di `Delta X` e `W-Gamma` tramite una configurazione in cui il programma mostri anche deduzione, BA o BD.
 
 7. Esportare almeno due Table Entry per la stessa geometria con materiali diversi.
 
@@ -272,7 +272,7 @@ Per la prima fase non è necessario esportare tutte le righe dei materiali. È p
 
 ## Verifica numerica riproducibile — modello esplorativo
 
-È stata verificata una prima regressione logistica con \x60p=0,5\x60 e:
+È stata verificata una prima regressione logistica con `p=0,5` e:
 
 \[
 Q=a_0+a_1u+a_2u^2+a_3x+a_4b+a_5ux
@@ -331,18 +331,18 @@ Il campione di orlo schiacciato è conservato nella fonte originale ma non usato
 
 ## Prossimi passi
 
-- Esportare le \x60Table Entry\x60 per tutte le righe dell’acciaio 420, mantenendo il legame con la riga \x60TABLE\x60.
+- Esportare le `Table Entry` per tutte le righe dell’acciaio 420, mantenendo il legame con la riga `TABLE`.
 - Verificare prima la coincidenza a 90° tra i due livelli.
-- Ricostruire la trasformazione del \x60Radius factor\x60 in Ri.
-- Verificare \x60Delta X\x60 e \x60W-Gamma\x60 contro deduzione, BA e BD.
+- Ricostruire la trasformazione del `Radius factor` in Ri.
+- Verificare `Delta X` e `W-Gamma` contro deduzione, BA e BD.
 - Solo dopo questa verifica estendere l’analisi alla formula di K.
 - Preferire modelli con pochi parametri e validazione leave-one-out o nuovi campioni indipendenti.
-- Non modificare \x60js/engine.js\x60 né il calcolo della deduzione finché la formula Ri e la relazione con K non sono validate.
+- Non modificare `js/engine.js` né il calcolo della deduzione finché la formula Ri e la relazione con K non sono validate.
 
 ## File sorgente e implementazione
 
-- Dati grezzi Bysoft: \x60Bysoft Cam 2.txt\x60.
-- Tabelle principali: file \x60*Nm2.xlsx\x60 esportati dal programma.
+- Dati grezzi Bysoft: `Bysoft Cam 2.txt`.
+- Tabelle principali: file `*Nm2.xlsx` esportati dal programma.
 - Table Entry: esportazioni dipendenti dalla riga selezionata della TABLE.
-- Motore attuale: \x60js/engine.js\x60.
+- Motore attuale: `js/engine.js`.
 - Questa documentazione registra la ricerca; non introduce modifiche al motore o alla pagina pubblica.
