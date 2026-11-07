@@ -112,6 +112,12 @@
                     action: language ? 'Open table ↑' : 'Vai alla tabella ↑'
                 }
             };
+            // Keep the floating summary out of the opening hero; show it only
+            // after the visitor has moved down toward the calculator.
+            if (window.matchMedia('(max-width: 640px)').matches && window.scrollY < 260) {
+                bar.hidden = true;
+                return;
+            }
             const state = states[activeCalculatorTab] || states.development;
             label.textContent = state.label;
             value.textContent = state.value.trim() && state.value.trim() !== '—'
@@ -402,6 +408,10 @@
             }
             updateMobileResultBar();
         }
+
+        window.addEventListener('scroll', () => {
+            if (window.matchMedia('(max-width: 640px)').matches) updateMobileResultBar();
+        }, { passive: true });
 
         window.addEventListener('DOMContentLoaded', () => {
             try { toggleTheme(localStorage.getItem('gb-theme') === 'dark'); } catch (_) { toggleTheme(false); }
