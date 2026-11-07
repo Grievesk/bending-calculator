@@ -362,16 +362,19 @@
 
             let vFactor = rm >= 650 ? 0.20 : (rm <= 280 ? 0.14 : 0.16);
 
-            let html = `<thead><tr class="bg-slate-900 text-white">
-                <th class="p-2.5 border border-slate-700 sticky left-0 bg-slate-900">s / V</th>`;
+            let html = `<colgroup><col class="matrix-thickness-col">`;
+            dies.forEach(() => { html += `<col class="matrix-value-col">`; });
+            html += `</colgroup><thead><tr class="bg-slate-900 text-white">
+                <th scope="col" class="matrix-corner-cell p-2 border border-slate-700 sticky left-0 bg-slate-900">s / V</th>`;
             dies.forEach(v => {
-                html += `<th class="p-2.5 border border-slate-700 font-mono">V = ${currentUnit() === 'in' ? (v / INCH_TO_MM).toFixed(3) + ' in' : v + ' mm'}</th>`;
+                const vLabel = currentUnit() === 'in' ? (v / INCH_TO_MM).toFixed(3) + ' in' : v + ' mm';
+                html += `<th scope="col" class="matrix-v-header p-2 border border-slate-700 font-mono">V = ${vLabel}</th>`;
             });
             html += `</tr></thead><tbody>`;
 
             thicknesses.forEach(s => {
                 html += `<tr onclick="this.classList.toggle('ring-2'); this.classList.toggle('ring-blue-600')" class="cursor-pointer hover:bg-blue-50/40 transition">
-                    <td class="p-2.5 border border-slate-300 font-bold font-mono bg-slate-100 sticky left-0">${currentUnit() === 'in' ? (s / INCH_TO_MM).toFixed(3) : s.toFixed(1)} ${currentUnit() === 'in' ? 'in' : 'mm'}</td>`;
+                    <th scope="row" class="matrix-thickness-cell p-2 border border-slate-300 font-bold font-mono bg-slate-100 sticky left-0">${currentUnit() === 'in' ? (s / INCH_TO_MM).toFixed(3) : s.toFixed(1)} ${currentUnit() === 'in' ? 'in' : 'mm'}</th>`;
 
                 dies.forEach(v => {
                     const cell = GrieveskBendEngine.matrixCell({ thickness: s, v, tensileStrength: rm });
