@@ -524,3 +524,78 @@ body.gb-dark #interactiveMatrix td[class~="bg-emerald-50/90"]{background:#23413f
   #interactiveMatrix thead th{height:56px;min-height:56px;font-size:.68rem}
   #interactiveMatrix tbody .matrix-thickness-cell{font-size:.68rem}
 }
+
+
+/* Matrix mobile correction: preserve the V header and reduce the frozen thickness column. */
+#tab-matrix .matrix-scroll-wrap{
+  max-height:min(68vh,720px);
+  overflow:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-gutter:auto;
+}
+#interactiveMatrix{
+  width:max-content!important;
+  min-width:0!important;
+  table-layout:fixed;
+  border-collapse:separate;
+  border-spacing:0;
+}
+#interactiveMatrix .matrix-thickness-col,
+#interactiveMatrix thead .matrix-corner-cell,
+#interactiveMatrix tbody .matrix-thickness-cell{
+  width:58px!important;
+  min-width:58px!important;
+  max-width:58px!important;
+}
+#interactiveMatrix .matrix-value-col,
+#interactiveMatrix tbody td{
+  width:76px;
+  min-width:76px!important;
+  max-width:76px!important;
+}
+#interactiveMatrix thead th{
+  position:sticky!important;
+  top:0!important;
+  z-index:8!important;
+  height:54px;
+  min-height:54px;
+  padding:6px 3px!important;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  line-height:1.15;
+  background:#27343a!important;
+  color:#fff!important;
+}
+#interactiveMatrix thead .matrix-corner-cell{
+  left:0!important;
+  z-index:10!important;
+  font-size:.62rem!important;
+}
+#interactiveMatrix tbody .matrix-thickness-cell{
+  left:0!important;
+  z-index:6!important;
+  padding:6px 3px!important;
+  font-size:.64rem!important;
+  line-height:1.2;
+  overflow-wrap:normal;
+  white-space:nowrap;
+}
+#interactiveMatrix tbody td{
+  padding:7px 3px!important;
+  font-size:.69rem!important;
+}
+#interactiveMatrix tbody td>div:first-child{font-size:.75rem!important;line-height:1.2}
+#interactiveMatrix tbody td>div+div{font-size:.58rem!important;line-height:1.25}
+@media(max-width:640px){
+  .matrix-scroll-wrap{max-height:68vh!important}
+  #interactiveMatrix .matrix-thickness-col,
+  #interactiveMatrix thead .matrix-corner-cell,
+  #interactiveMatrix tbody .matrix-thickness-cell{
+    width:56px!important;min-width:56px!important;max-width:56px!important
+  }
+  #interactiveMatrix .matrix-value-col,
+  #interactiveMatrix tbody td{
+    width:74px;min-width:74px!important;max-width:74px!important
+  }
+}
