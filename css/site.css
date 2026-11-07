@@ -374,3 +374,30 @@ body.gb-dark #tab-matrix th{background:#101923!important}
   .gb-unit-control select{width:52px}
   .gb-language-link{font-size:.65rem}
 }
+
+
+/* Final mobile usability pass: matrix guidance, dark-mode coverage and sticky-bar clearance. */
+.gb-matrix-scroll-hint{display:none}
+#tab-matrix .overflow-x-auto{position:relative;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:#ad5d2d #eee8df}
+@media(max-width:640px){
+  .gb-matrix-scroll-hint{display:flex;align-items:center;gap:8px;margin:-4px 0 10px;padding:9px 11px;border:1px solid #e4d7c8;border-radius:10px;background:#fbf3e9;color:#80502f;font-size:.76rem;line-height:1.35}
+  .gb-matrix-scroll-hint::before{content:"↔";font-size:1.1rem;font-weight:800}
+  body{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
+  #tab-matrix .overflow-x-auto{margin-bottom:8px}
+}
+body.gb-dark main .bg-white{background:#182632!important;border-color:#344956!important;color:#e4edf3}
+body.gb-dark main .bg-slate-50{background:#213440!important}
+body.gb-dark main .bg-slate-100{background:#263945!important}
+body.gb-dark main .text-slate-900{color:#e8f0f4!important}
+body.gb-dark main .text-slate-800{color:#dce7ec!important}
+body.gb-dark main .text-slate-700,body.gb-dark main .text-slate-600{color:#bdcbd3!important}
+body.gb-dark main .text-slate-500{color:#9fb2bd!important}
+body.gb-dark #interactiveMatrix th{background:#101923!important;border-color:#344956!important;color:#edf4f7!important}
+body.gb-dark #interactiveMatrix td{background:#182632!important;border-color:#344956!important;color:#e4edf3!important}
+body.gb-dark #interactiveMatrix td.bg-slate-100{background:#263945!important}
+body.gb-dark #interactiveMatrix td.bg-slate-50{background:#14232d!important;color:#9fb2bd!important}
+body.gb-dark #interactiveMatrix td .text-slate-900{color:#edf4f7!important}
+body.gb-dark #interactiveMatrix td .text-slate-500{color:#a9bbc5!important}
+body.gb-dark #interactiveMatrix td.bg-emerald-50\\/90{background:#23413f!important;border-color:#4c8b7e!important}
+body.gb-dark .gb-matrix-scroll-hint{background:#263945;border-color:#526775;color:#f0c18d}
+body.gb-dark #tab-matrix .overflow-x-auto{border-color:#344956;scrollbar-color:#d18a50 #213440}
