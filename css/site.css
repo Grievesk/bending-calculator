@@ -116,3 +116,61 @@ a{transition:color .18s ease,background-color .18s ease,border-color .18s ease}
 .gb-case-photo{margin:28px 0 34px;background:#f4f7f9;border:1px solid var(--gb-line);border-radius:18px;overflow:hidden}
 .gb-case-photo img{display:block;width:100%;max-height:680px;object-fit:contain;background:#e9eef1}
 .gb-case-photo figcaption{padding:11px 16px;color:var(--gb-muted);font-size:.78rem;line-height:1.5}
+
+
+/* Calculator-first redesign */
+:root{
+  --gb-blue:var(--gb-teal-dark);
+  --gb-radius:16px;
+}
+.gb-header-inner{min-height:62px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.gb-header-tools{display:flex;align-items:center;gap:clamp(8px,1.8vw,20px)}
+.gb-unit-control{display:flex;align-items:center;gap:7px;color:#cbd7e1;font-size:.72rem}
+.gb-unit-control select{background:#fff;color:#142334;border:1px solid #647587;border-radius:8px;padding:6px 8px;min-height:36px}
+.gb-language-link{color:#e0eaf1;font-size:.78rem;text-decoration:underline;text-underline-offset:3px}
+.gb-share-link{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:8px 12px;border:1px solid rgba(80,213,208,.55);border-radius:10px;background:var(--gb-teal);color:#071c22;font-size:.76rem;font-weight:800}
+.gb-share-link:hover{background:#a0f4e9;color:#071c22}
+.gb-hero-compact{padding:clamp(22px,3.5vw,38px) clamp(22px,4vw,48px);border-radius:20px;box-shadow:0 12px 32px rgba(13,27,43,.09)}
+.gb-hero-compact .gb-hero-grid{display:block}
+.gb-hero-compact h1{font-size:clamp(2rem,4vw,3.25rem);line-height:1.04;max-width:19ch;margin:10px 0 12px}
+.gb-hero-compact .gb-hero-copy{font-size:clamp(.94rem,1.4vw,1.08rem);max-width:65ch;line-height:1.5}
+.gb-hero-compact .gb-hero-actions{margin-top:16px}
+.gb-hero-compact .gb-button-primary{min-height:44px}
+.gb-tool-intro-compact{padding:16px 0 10px;margin:0 0 10px}
+#calcolatore{top:62px!important;scroll-margin-top:76px}
+#calcolatore [role=tablist]{border:1px solid var(--gb-line);border-radius:14px;box-shadow:0 5px 16px rgba(18,35,52,.06)}
+#calcolatore [role=tab]{min-height:48px;font-size:.86rem;letter-spacing:-.01em}
+#calcolatore .tab-active{border-bottom:3px solid var(--gb-teal-dark);color:var(--gb-teal-dark);background:#eaf8f6}
+#tab-development,#tab-sample,#tab-matrix{scroll-margin-top:118px}
+#tab-development>div:first-child,#tab-sample>div:first-child{border-radius:16px;box-shadow:0 6px 24px rgba(18,35,52,.045)}
+#tab-development>div:last-child{position:relative}
+#tab-development .bg-slate-900{background:#14232d!important}
+#tab-development .text-blue-300{color:#83e8dc!important}
+#tab-development .bg-emerald-50{background:#eaf8f6!important;border-color:#b8e4dc!important}
+#tab-development .text-emerald-950{color:#123d3a!important}
+#tab-development button[onclick*="copyShareLink"]{background:var(--gb-teal-dark)!important;min-height:46px}
+#tab-development input,#tab-development select,#tab-sample input,#tab-sample select{min-height:46px;border-radius:10px}
+#tab-development label,#tab-sample label{line-height:1.45}
+#tab-development .text-xs.uppercase,#tab-sample .text-xs.uppercase{letter-spacing:.035em}
+.gb-section{margin-top:44px}
+@media(max-width:640px){
+  .gb-header-inner{min-height:58px;gap:8px}
+  .gb-brand{gap:8px}
+  .gb-brand-mark{width:33px;height:33px}
+  .gb-brand-name{font-size:.91rem}
+  .gb-brand-sub{font-size:.5rem;letter-spacing:.11em}
+  .gb-header-tools{gap:9px}
+  .gb-unit-control{font-size:0}
+  .gb-unit-control select{font-size:.72rem;padding:5px 6px;min-height:36px}
+  .gb-language-link{font-size:.7rem}
+  .gb-share-link{width:38px;height:38px;min-height:38px;justify-content:center;padding:0;font-size:1rem}
+  .gb-share-link span{display:none}
+  .gb-hero-compact{padding:22px 19px;border-radius:16px}
+  .gb-hero-compact h1{font-size:clamp(2rem,9vw,2.8rem);max-width:15ch}
+  .gb-hero-compact .gb-hero-copy{font-size:.92rem}
+  .gb-hero-compact .gb-hero-actions a{width:auto}
+  #calcolatore [role=tab]{padding:10px 5px;font-size:.75rem;line-height:1.15}
+  #tab-development>div:first-child,#tab-sample>div:first-child{padding:17px}
+  #tab-development .grid-cols-2{gap:9px}
+}
+@media(prefers-reduced-motion:reduce){.gb-hero-compact{animation:none}}
