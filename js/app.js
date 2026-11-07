@@ -271,6 +271,9 @@
             document.getElementById('devResultBA').textContent = displayLength(ba, 3);
             document.getElementById('devResultBD').textContent = displayLength(bd, 3);
             document.getElementById('devResultFlat').textContent = displayLength(flat, 3);
+            const mobileBar = document.getElementById('mobileResultBar');
+            const mobileValue = document.getElementById('mobileResultValue');
+            if (mobileBar && mobileValue) { mobileValue.textContent = displayLength(flat, 3); mobileBar.hidden = false; }
             updateDevelopmentDiagram({ thickness: s, angle, v, ri });
             document.getElementById('devKSource').textContent = method === 'wing' ? 'Modello geometrico preliminare WingBend: da validare con campioni del modello specifico.' : 'Stima del modello in funzione di Ri/spessore; non è un K fisso letto da tabella.';
             const radiusSourceText = ({'empirical-v-material':'Raggio stimato empiricamente da V e materiale','punch-guided':'Raggio guidato dalla punta: verificare il modello esatto','tooling-dependent':'Ipotesi geometrica da verificare sulla matrice installata','panel-estimate':'Stima indicativa per pannellatrice'})[riSource] || riSource;
@@ -351,8 +354,10 @@
             // Seleziona il valore esistente al focus, così digitare lo sostituisce invece di accodare cifre.
             document.querySelectorAll('input[inputmode="decimal"]').forEach(input => {
                 input.addEventListener('focus', () => {
+                    document.body.classList.add('gb-input-focused');
                     try { input.select(); } catch (_) {}
                 });
+                input.addEventListener('blur', () => document.body.classList.remove('gb-input-focused'));
             });
             initProtectedEmail();
             const unitSelect = document.getElementById("unitSystem");
