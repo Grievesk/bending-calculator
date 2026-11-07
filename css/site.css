@@ -625,3 +625,24 @@ body.gb-dark #interactiveMatrix td[class~="bg-emerald-50/90"]{background:#23413f
     left:0!important;
   }
 }
+
+
+/* Compact unified home intro: hero and tool selector become one block. */
+.gb-hero-tools{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-top:18px;padding-top:13px;border-top:1px solid rgba(148,163,184,.24);
+  color:var(--gb-muted,#64748b);font-size:.78rem;line-height:1.35;
+}
+.gb-hero-tools strong{color:var(--gb-teal-dark)}
+.gb-hero-tools a{color:var(--gb-teal-dark);font-weight:750;text-decoration:none;white-space:nowrap}
+@media(max-width:640px){
+  main.max-w-7xl{padding-top:14px}
+  .gb-hero-compact{padding:18px 18px 16px}
+  .gb-hero-compact h1{font-size:clamp(1.9rem,8.2vw,2.45rem);line-height:1.02;margin:8px 0 9px}
+  .gb-hero-compact .gb-hero-copy{font-size:.86rem;line-height:1.42}
+  .gb-hero-compact .gb-hero-actions{display:grid;grid-template-columns:1fr auto;align-items:center;gap:9px;margin-top:13px}
+  .gb-hero-compact .gb-hero-actions a{width:auto;min-height:42px;padding:10px 14px;font-size:.82rem}
+  .gb-hero-compact .gb-hero-actions .gb-button-secondary{padding-inline:12px;white-space:nowrap}
+  .gb-hero-tools{margin-top:12px;padding-top:10px;font-size:.68rem;gap:8px;flex-wrap:wrap}
+  .gb-hero-tools a{font-size:.68rem}
+}
