@@ -84,7 +84,7 @@
         const STANDARD_DIES = [4, 6, 7, 8, 10, 12, 14, 16, 18, 20, 25, 32, 40, 50, 63, 80, 100, 125, 160, 200, 250];
 
         function switchTab(tab) {
-            if (!['sample', 'development', 'matrix'].includes(tab)) tab = 'sample';
+            if (!['sample', 'development', 'matrix'].includes(tab)) tab = 'development';
             ['sample', 'development', 'matrix'].forEach(key => {
                 const panelId = key === 'sample' ? 'tab-sample' : key === 'development' ? 'tab-development' : 'tab-matrix';
                 const panel = document.getElementById(panelId);
@@ -252,7 +252,7 @@
         function loadFromUrlParams() {
             const p = new URLSearchParams(window.location.search);
             const set = (key, id) => { if (p.has(key)) document.getElementById(id).value = p.get(key); };
-            const tab = p.get('tab') || 'sample';
+            const tab = p.get('tab') || 'development';
             if (tab === 'development') {
                 const map = {material:'devMaterial',rm:'devRm',s:'devThickness',method:'devMethod',v:'devV',rp:'devRp',angle:'devAngle',a:'devFlangeA',b:'devFlangeB'};
                 Object.entries(map).forEach(([key,id]) => set(key,id));
