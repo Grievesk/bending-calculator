@@ -398,6 +398,6 @@ body.gb-dark #interactiveMatrix td.bg-slate-100{background:#263945!important}
 body.gb-dark #interactiveMatrix td.bg-slate-50{background:#14232d!important;color:#9fb2bd!important}
 body.gb-dark #interactiveMatrix td .text-slate-900{color:#edf4f7!important}
 body.gb-dark #interactiveMatrix td .text-slate-500{color:#a9bbc5!important}
-body.gb-dark #interactiveMatrix td.bg-emerald-50\\/90{background:#23413f!important;border-color:#4c8b7e!important}
+body.gb-dark #interactiveMatrix td[class~="bg-emerald-50/90"]{background:#23413f!important;border-color:#4c8b7e!important}
 body.gb-dark .gb-matrix-scroll-hint{background:#263945;border-color:#526775;color:#f0c18d}
 body.gb-dark #tab-matrix .overflow-x-auto{border-color:#344956;scrollbar-color:#d18a50 #213440}
