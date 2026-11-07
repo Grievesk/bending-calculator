@@ -90,7 +90,7 @@
     <span class="gb-eyebrow">Calcolatore tecnico gratuito</span>
     <h1 id="home-title">Calcola lo sviluppo della tua <em>lamiera.</em></h1>
     <p class="gb-hero-copy">Imposta materiale, utensili e geometria della piega. Ottieni i parametri di lavorazione con ipotesi e limiti del modello sempre dichiarati.</p>
-    <div class="gb-hero-actions"><a class="gb-button-primary" href="#calcolatore" onclick="switchTab('development')">Vai al calcolatore <span aria-hidden="true">↓</span></a><a class="gb-button-secondary" href="#featured-case">Impara dagli errori reali <span aria-hidden="true">↗</span></a></div>
+    <div class="gb-hero-actions"><a class="gb-button-primary" href="#calcolatore" onclick="switchTab('development')">Vai al calcolatore <span aria-hidden="true">↓</span></a><a class="gb-button-secondary" href="/pillole/">Pillole &amp; casi reali <span aria-hidden="true">↗</span></a></div>
   </div></div>
 </section>
 <div class="gb-tool-intro gb-tool-intro-compact"><div><span class="gb-section-kicker">Tre strumenti · un unico spazio di lavoro</span><h2 id="calculator-title">Scegli il calcolo</h2><p>Lo sviluppo è aperto all’ingresso. Puoi passare in qualsiasi momento al calcolo del fattore K o alla tabella S/V/F.</p></div><a class="gb-text-link" href="#guida">Metodo e formule ↘</a></div>
@@ -347,5 +347,9 @@
     <!-- Shared calculation engine and Italian interface -->
     <script src="/js/engine.js" defer></script>
     <script src="/js/app.js" defer></script>
+<div id="mobileResultBar" class="gb-mobile-result-bar" aria-live="polite" hidden>
+  <div><span>Sviluppo piano</span><strong id="mobileResultValue">—</strong></div>
+  <a href="#tab-development">Vai al risultato ↑</a>
+</div>
 </body>
 </html>
