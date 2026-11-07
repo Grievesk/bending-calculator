@@ -5,6 +5,7 @@
         const INCH_TO_MM = 25.4;
         const DIMENSIONAL_INPUTS = ['skThickness','skRi','skFlat','skFlangeA','skFlangeB','skRpReference','devThickness','devRp','devFlangeA','devFlangeB'];
         let activeUnit = 'mm';
+        let activeCalculatorTab = 'sample';
         function currentUnit() { return activeUnit; }
         function displayLength(mm, digits=3) {
             const n = currentUnit() === 'in' ? mm / INCH_TO_MM : mm;
@@ -83,8 +84,29 @@
 
         const STANDARD_DIES = [4, 6, 7, 8, 10, 12, 14, 16, 18, 20, 25, 32, 40, 50, 63, 80, 100, 125, 160, 200, 250];
 
+        function updateMobileResultBar() {
+            const bar = document.getElementById('mobileResultBar');
+            const label = document.getElementById('mobileResultLabel');
+            const value = document.getElementById('mobileResultValue');
+            const link = document.getElementById('mobileResultLink');
+            if (!bar || !label || !value || !link) return;
+            const states = {
+                development: { label: 'FLAT PATTERN LENGTH', value: document.getElementById('devResultFlat')?.textContent || '—', href: '#developmentResultCard', action: 'View result ↑' },
+                sample: { label: 'SAMPLE K-FACTOR', value: document.getElementById('skResultK')?.textContent || '—', href: '#sampleResultCard', action: 'View result ↑' },
+                matrix: { label: 'S / V / F REFERENCE', value: document.getElementById('tableMaterial')?.selectedOptions[0]?.textContent || '—', href: '#tab-matrix', action: 'Open table ↑' }
+            };
+            const state = states[activeCalculatorTab] || states.sample;
+            label.textContent = state.label;
+            value.textContent = state.value.trim() && state.value.trim() !== '—' ? state.value.trim() : 'Complete the required fields';
+            link.textContent = state.action;
+            link.href = state.href;
+            bar.dataset.mode = activeCalculatorTab;
+            bar.hidden = false;
+        }
+
         function switchTab(tab) {
             if (!['sample', 'development', 'matrix'].includes(tab)) tab = 'sample';
+            activeCalculatorTab = tab;
             ['sample', 'development', 'matrix'].forEach(key => {
                 const panelId = key === 'sample' ? 'tab-sample' : key === 'development' ? 'tab-development' : 'tab-matrix';
                 const panel = document.getElementById(panelId);
@@ -98,6 +120,7 @@
             if (tab === 'matrix') renderMatrixTable();
             if (tab === 'sample') calculateSampleK();
             if (tab === 'development') calculateDevelopment();
+            updateMobileResultBar();
         }
 
         // Formula implementation lives in engine.js and is shared by every locale.
@@ -176,6 +199,7 @@
 
             if (![s, angle, ri, flat, a, b].every(Number.isFinite) || s <= 0 || angle <= 0 || angle >= 180 || ri <= 0 || flat <= 0 || a <= 0 || b <= 0) {
                 clearResults();
+                updateMobileResultBar();
                 warning.textContent = 'Enter positive numeric values for all required geometric fields.';
                 warning.className = 'rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900';
                 return;
@@ -202,6 +226,7 @@
                 warning.textContent = 'K is derived exclusively from the sample geometry. Method, V opening, nominal punch radius and Rm are optional and do not contribute to the calculation.';
                 warning.className = 'rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900';
             }
+            updateMobileResultBar();
         }
 
         const estimatedKFromGeometry = (...args) => GrieveskBendEngine.estimatedKFromGeometry(...args);
@@ -219,6 +244,7 @@
             if (![s, rm, v, rp, angle, a, b].every(Number.isFinite) || s <= 0 || rm <= 0 || v <= 0 || rp <= 0 || angle <= 0 || angle >= 180 || a <= 0 || b <= 0) {
                 warning.textContent = 'Enter numeric values to calculate the flat pattern.';
                 warning.className = 'rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900';
+                updateMobileResultBar();
                 return;
             }
             const result = GrieveskBendEngine.calculateDevelopment({ thickness: s, tensileStrength: rm, method, v, punchRadius: rp, angle, flangeA: a, flangeB: b });
@@ -235,6 +261,7 @@
             document.getElementById('devModelNote').textContent = `${riSource}. The minimum flange is a reference value and must be checked against the installed tool chart.`;
             warning.textContent = method === 'wing' ? 'For WingBend, equivalent V and minimum flange must match the exact manufacturer model; generic values do not replace the technical datasheet.' : '';
             warning.className = method === 'wing' ? 'rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900' : 'hidden rounded-lg border p-3 text-sm';
+            updateMobileResultBar();
         }
 
         function copyShareLink(whichTab = null) {
@@ -302,6 +329,7 @@
 
             html += `</tbody>`;
             document.getElementById('interactiveMatrix').innerHTML = html;
+            updateMobileResultBar();
         }
 
         window.addEventListener('DOMContentLoaded', () => {
