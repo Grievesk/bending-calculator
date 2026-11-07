@@ -599,3 +599,29 @@ body.gb-dark #interactiveMatrix td[class~="bg-emerald-50/90"]{background:#23413f
     width:74px;min-width:74px!important;max-width:74px!important
   }
 }
+
+
+/* Matrix mobile: keep every thickness row in normal page flow.
+   Only the horizontal axis scrolls, so the V headings never disappear
+   while the user moves down to the 10 mm row. */
+@media(max-width:640px){
+  #tab-matrix .matrix-scroll-wrap{
+    height:auto!important;
+    max-height:none!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-x:contain;
+    overscroll-behavior-y:auto;
+    touch-action:pan-x pan-y;
+  }
+  #interactiveMatrix thead th{
+    position:relative!important;
+    top:auto!important;
+  }
+  #interactiveMatrix thead .matrix-corner-cell,
+  #interactiveMatrix tbody .matrix-thickness-cell{
+    position:sticky!important;
+    left:0!important;
+  }
+}
