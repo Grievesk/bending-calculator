@@ -206,6 +206,46 @@
 
         const estimatedKFromGeometry = (...args) => GrieveskBendEngine.estimatedKFromGeometry(...args);
 
+        function toggleTheme(forceDark = null) {
+            const enabled = forceDark === null ? !document.body.classList.contains('gb-dark') : Boolean(forceDark);
+            document.body.classList.toggle('gb-dark', enabled);
+            const button = document.getElementById('themeToggle');
+            if (button) {
+                button.setAttribute('aria-label', enabled ? 'Attiva tema chiaro' : 'Attiva tema scuro');
+                button.setAttribute('title', enabled ? 'Passa al tema chiaro' : 'Passa al tema scuro');
+                button.textContent = enabled ? '☼' : '◐';
+            }
+            try { localStorage.setItem('gb-theme', enabled ? 'dark' : 'light'); } catch (_) {}
+        }
+
+        function updateDevelopmentDiagram({ thickness, angle, v, ri }) {
+            const sheet = document.getElementById('devGeometrySheet');
+            if (!sheet) return;
+            const safeAngle = Math.max(10, Math.min(175, Number(angle) || 90));
+            const radians = safeAngle * Math.PI / 180;
+            const endX = 260 + 135 * Math.cos(Math.PI - radians);
+            const endY = 35 + 135 * Math.sin(Math.PI - radians);
+            const startX = 260 - 175 * Math.cos(radians / 2);
+            const startY = 35 + 175 * Math.sin(radians / 2);
+            sheet.setAttribute('d', `M${startX.toFixed(1)} 35 L260 35 L${endX.toFixed(1)} ${endY.toFixed(1)}`);
+            const arcRadius = 34;
+            const arcEndX = 260 + arcRadius * Math.cos(Math.PI - radians);
+            const arcEndY = 35 + arcRadius * Math.sin(Math.PI - radians);
+            const largeArc = safeAngle > 180 ? 1 : 0;
+            const anglePath = document.getElementById('devGeometryAngle');
+            if (anglePath) anglePath.setAttribute('d', `M${260 - arcRadius} 35 A${arcRadius} ${arcRadius} 0 ${largeArc} 1 ${arcEndX.toFixed(1)} ${arcEndY.toFixed(1)}`);
+            const angleLabel = document.getElementById('devGeometryAngleLabel');
+            if (angleLabel) { angleLabel.textContent = `${safeAngle.toFixed(0)}°`; angleLabel.setAttribute('x', String(300)); angleLabel.setAttribute('y', String(82)); }
+            const thicknessLabel = document.getElementById('devGeometryThicknessLabel');
+            if (thicknessLabel) thicknessLabel.textContent = `s = ${displayLength(thickness, 2)}`;
+            const radiusLabel = document.getElementById('devGeometryRadiusLabel');
+            if (radiusLabel) radiusLabel.textContent = `Ri ≈ ${Number.isFinite(ri) ? displayLength(ri, 2) : '—'}`;
+            const vLabel = document.getElementById('devGeometryVLabel');
+            if (vLabel) vLabel.textContent = `V = ${Number.isFinite(v) ? displayLength(v, 1) : '—'}`;
+            const desc = document.getElementById('devGeometryDesc');
+            if (desc) desc.textContent = `Schema illustrativo della piega con angolo interno ${safeAngle.toFixed(0)} gradi, spessore ${displayLength(thickness, 2)}, apertura V ${displayLength(v, 1)} e raggio interno stimato ${Number.isFinite(ri) ? displayLength(ri, 2) : 'non disponibile'}.`;
+        }
+
         function calculateDevelopment() {
             const s = readNumericField('devThickness');
             const rm = readNumericField('devRm');
@@ -231,6 +271,7 @@
             document.getElementById('devResultBA').textContent = displayLength(ba, 3);
             document.getElementById('devResultBD').textContent = displayLength(bd, 3);
             document.getElementById('devResultFlat').textContent = displayLength(flat, 3);
+            updateDevelopmentDiagram({ thickness: s, angle, v, ri });
             document.getElementById('devKSource').textContent = method === 'wing' ? 'Modello geometrico preliminare WingBend: da validare con campioni del modello specifico.' : 'Stima del modello in funzione di Ri/spessore; non è un K fisso letto da tabella.';
             const radiusSourceText = ({'empirical-v-material':'Raggio stimato empiricamente da V e materiale','punch-guided':'Raggio guidato dalla punta: verificare il modello esatto','tooling-dependent':'Ipotesi geometrica da verificare sulla matrice installata','panel-estimate':'Stima indicativa per pannellatrice'})[riSource] || riSource;
             document.getElementById('devModelNote').textContent = `${radiusSourceText}. Il bordo minimo è mostrato come riferimento non modificabile e deve essere verificato con la tabella dell’utensile installato.`;
@@ -306,6 +347,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            try { toggleTheme(localStorage.getItem('gb-theme') === 'dark'); } catch (_) { toggleTheme(false); }
             // Seleziona il valore esistente al focus, così digitare lo sostituisce invece di accodare cifre.
             document.querySelectorAll('input[inputmode="decimal"]').forEach(input => {
                 input.addEventListener('focus', () => {
