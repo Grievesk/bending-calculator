@@ -438,3 +438,89 @@ body.gb-dark #interactiveMatrix tbody td:first-child{background:#263945!importan
  #interactiveMatrix th:first-child,#interactiveMatrix td:first-child{width:82px;min-width:82px;max-width:82px;padding-left:5px!important;padding-right:5px!important;font-size:.68rem}
  #interactiveMatrix thead th:first-child{font-size:.7rem;line-height:1.2}
 }
+
+
+/* Matrix table: independent two-axis scroller with persistent V headings. */
+.matrix-scroll-wrap{
+  position:relative;
+  max-width:100%;
+  max-height:min(68vh,720px);
+  overflow:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  border:1px solid #d9d5cc;
+  border-radius:14px;
+  scrollbar-width:thin;
+  scrollbar-color:#ad5d2d #eee8df;
+  isolation:isolate;
+}
+#interactiveMatrix{
+  width:max-content;
+  min-width:100%;
+  table-layout:fixed;
+  border-collapse:separate;
+  border-spacing:0;
+  margin:0;
+}
+#interactiveMatrix .matrix-thickness-col{width:76px;min-width:76px;max-width:76px}
+#interactiveMatrix .matrix-value-col{width:82px;min-width:82px;max-width:82px}
+#interactiveMatrix th,#interactiveMatrix td{
+  box-sizing:border-box;
+  overflow-wrap:anywhere;
+  padding:8px 5px;
+  text-align:center;
+  vertical-align:middle;
+}
+#interactiveMatrix thead th{
+  position:sticky;
+  top:0;
+  z-index:5;
+  min-height:58px;
+  height:58px;
+  white-space:normal;
+  line-height:1.2;
+  background:#27343a!important;
+  color:#fff!important;
+  box-shadow:0 2px 0 rgba(0,0,0,.12);
+}
+#interactiveMatrix thead .matrix-corner-cell{
+  left:0;
+  z-index:7;
+  width:76px;
+  min-width:76px;
+  max-width:76px;
+  font-size:.68rem;
+}
+#interactiveMatrix tbody .matrix-thickness-cell{
+  position:sticky;
+  left:0;
+  z-index:3;
+  width:76px;
+  min-width:76px;
+  max-width:76px;
+  background:#e8edf5!important;
+  color:#263445!important;
+  white-space:normal;
+  font-size:.72rem;
+  line-height:1.25;
+  box-shadow:2px 0 0 rgba(39,52,58,.12);
+}
+#interactiveMatrix tbody td{min-width:82px;max-width:82px;font-size:.75rem}
+#interactiveMatrix tbody td>div:first-child{font-size:.83rem;line-height:1.25}
+#interactiveMatrix tbody td>div+div{font-size:.62rem;line-height:1.35;overflow-wrap:anywhere}
+body.gb-dark .matrix-scroll-wrap{border-color:#344956;scrollbar-color:#d18a50 #213440}
+body.gb-dark #interactiveMatrix thead th{background:#101923!important;color:#edf4f7!important}
+body.gb-dark #interactiveMatrix tbody .matrix-thickness-cell{background:#263945!important;color:#e4edf3!important;border-color:#344956!important}
+body.gb-dark #interactiveMatrix td{background:#182632!important;border-color:#344956!important;color:#e4edf3!important}
+body.gb-dark #interactiveMatrix td.bg-slate-50{background:#14232d!important;color:#9fb2bd!important}
+body.gb-dark #interactiveMatrix td[class~="bg-emerald-50/90"]{background:#23413f!important;border-color:#4c8b7e!important}
+@media(max-width:640px){
+  .matrix-scroll-wrap{max-height:62vh;border-radius:12px}
+  #interactiveMatrix .matrix-thickness-col,
+  #interactiveMatrix thead .matrix-corner-cell,
+  #interactiveMatrix tbody .matrix-thickness-cell{width:70px;min-width:70px;max-width:70px}
+  #interactiveMatrix .matrix-value-col{width:80px;min-width:80px;max-width:80px}
+  #interactiveMatrix tbody td{min-width:80px;max-width:80px;padding:7px 4px}
+  #interactiveMatrix thead th{height:56px;min-height:56px;font-size:.68rem}
+  #interactiveMatrix tbody .matrix-thickness-cell{font-size:.68rem}
+}
