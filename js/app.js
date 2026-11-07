@@ -363,7 +363,7 @@
             let vFactor = rm >= 650 ? 0.20 : (rm <= 280 ? 0.14 : 0.16);
 
             let html = `<thead><tr class="bg-slate-900 text-white">
-                <th class="p-2.5 border border-slate-700 sticky left-0 bg-slate-900">Spessore s \\ Cava V</th>`;
+                <th class="p-2.5 border border-slate-700 sticky left-0 bg-slate-900">s / V</th>`;
             dies.forEach(v => {
                 html += `<th class="p-2.5 border border-slate-700 font-mono">V = ${currentUnit() === 'in' ? (v / INCH_TO_MM).toFixed(3) + ' in' : v + ' mm'}</th>`;
             });
