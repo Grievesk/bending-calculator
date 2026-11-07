@@ -401,3 +401,40 @@ body.gb-dark #interactiveMatrix td .text-slate-500{color:#a9bbc5!important}
 body.gb-dark #interactiveMatrix td[class~="bg-emerald-50/90"]{background:#23413f!important;border-color:#4c8b7e!important}
 body.gb-dark .gb-matrix-scroll-hint{background:#263945;border-color:#526775;color:#f0c18d}
 body.gb-dark #tab-matrix .overflow-x-auto{border-color:#344956;scrollbar-color:#d18a50 #213440}
+
+
+/* Shared editorial theme control and complete dark palette. */
+.gb-theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;flex:none;border:1px solid #71818b;border-radius:11px;background:transparent;color:#f0b978;font-size:1.15rem;cursor:pointer}
+.gb-theme-toggle:focus-visible{outline:3px solid #e5a15b;outline-offset:3px}
+.gb-site-header nav{display:flex;align-items:center;gap:clamp(10px,2vw,18px)}
+@media(max-width:640px){.gb-theme-toggle{width:36px;height:36px}.gb-site-header>div{gap:10px!important}.gb-site-header nav{gap:10px!important}}
+body.gb-dark .gb-editorial-shell{color:#e4edf3}
+body.gb-dark .gb-page-hero{background:linear-gradient(132deg,#101923,#193147);border:1px solid #344956}
+body.gb-dark .gb-method-card,body.gb-dark .gb-case-feature,body.gb-dark .gb-editorial-card{background:#182632!important;border-color:#344956!important;color:#e4edf3}
+body.gb-dark .gb-method-card h3,body.gb-dark .gb-case-content h3,body.gb-dark .gb-section-title{color:#e8f0f4}
+body.gb-dark .gb-method-card p,body.gb-dark .gb-section-intro,body.gb-dark .gb-editorial-main p,body.gb-dark .gb-editorial-main ul,body.gb-dark .gb-editorial-lede{color:#bdcbd3!important}
+body.gb-dark .gb-editorial-main strong{color:#f0f4f6}
+body.gb-dark .gb-note-quote{background:#203b42;border-left-color:#e5a15b;color:#e5edf0}
+body.gb-dark .gb-case-table th{background:#213440;color:#e4edf3;border-color:#344956}
+body.gb-dark .gb-case-table td{color:#bdcbd3;border-color:#344956}
+body.gb-dark .gb-evidence-label{background:#203b42;color:#8be5dc}
+body.gb-dark .gb-ad-slot{background:#263945;border-color:#71818b;color:#bdcbd3}
+body.gb-dark .gb-case-photo{background:#182632;border-color:#344956}
+body.gb-dark .gb-case-photo img{background:#101923}
+body.gb-dark .gb-text-link{color:#f0b978}
+body.gb-dark .gb-button-secondary{color:#f0b978;border-color:#d18a50}
+body.gb-dark .gb-site-footer{background:#101923}
+
+/* S/V/F matrix: compact fixed thickness column and a persistent V/s label. */
+#tab-matrix .matrix-scroll-wrap{max-width:100%;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scrollbar-gutter:stable;scrollbar-width:thin}
+#interactiveMatrix{min-width:760px;table-layout:fixed}
+#interactiveMatrix th:first-child,#interactiveMatrix td:first-child{position:sticky;left:0;width:88px;min-width:88px;max-width:88px;z-index:2;white-space:normal;overflow-wrap:anywhere;box-sizing:border-box}
+#interactiveMatrix thead th:first-child{z-index:4;background:#27343a!important;color:#fff}
+#interactiveMatrix tbody td:first-child{background:#eef2f8!important}
+body.gb-dark #interactiveMatrix tbody td:first-child{background:#263945!important;color:#e4edf3!important}
+#interactiveMatrix th:not(:first-child),#interactiveMatrix td:not(:first-child){min-width:56px}
+@media(max-width:640px){
+ #interactiveMatrix{min-width:720px}
+ #interactiveMatrix th:first-child,#interactiveMatrix td:first-child{width:82px;min-width:82px;max-width:82px;padding-left:5px!important;padding-right:5px!important;font-size:.68rem}
+ #interactiveMatrix thead th:first-child{font-size:.7rem;line-height:1.2}
+}
