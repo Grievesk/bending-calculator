@@ -5,6 +5,7 @@
         const INCH_TO_MM = 25.4;
         const DIMENSIONAL_INPUTS = ['skThickness','skRi','skFlat','skFlangeA','skFlangeB','skRpReference','devThickness','devRp','devFlangeA','devFlangeB'];
         let activeUnit = 'mm';
+        let activeCalculatorTab = 'development';
         function currentUnit() { return activeUnit; }
         function displayLength(mm, digits=3) {
             const n = currentUnit() === 'in' ? mm / INCH_TO_MM : mm;
@@ -83,8 +84,48 @@
 
         const STANDARD_DIES = [4, 6, 7, 8, 10, 12, 14, 16, 18, 20, 25, 32, 40, 50, 63, 80, 100, 125, 160, 200, 250];
 
+        function updateMobileResultBar() {
+            const bar = document.getElementById('mobileResultBar');
+            const label = document.getElementById('mobileResultLabel');
+            const value = document.getElementById('mobileResultValue');
+            const link = document.getElementById('mobileResultLink');
+            if (!bar || !label || !value || !link) return;
+
+            const language = document.documentElement.lang === 'en';
+            const states = {
+                development: {
+                    label: language ? 'FLAT PATTERN LENGTH' : 'SVILUPPO PIANO',
+                    value: document.getElementById('devResultFlat')?.textContent || '—',
+                    href: '#developmentResultCard',
+                    action: language ? 'View result ↑' : 'Vai al risultato ↑'
+                },
+                sample: {
+                    label: language ? 'SAMPLE K-FACTOR' : 'FATTORE K CAMPIONE',
+                    value: document.getElementById('skResultK')?.textContent || '—',
+                    href: '#sampleResultCard',
+                    action: language ? 'View result ↑' : 'Vai al risultato ↑'
+                },
+                matrix: {
+                    label: language ? 'S / V / F REFERENCE' : 'RIFERIMENTO S / V / F',
+                    value: document.getElementById('tableMaterial')?.selectedOptions[0]?.textContent || '—',
+                    href: '#tab-matrix',
+                    action: language ? 'Open table ↑' : 'Vai alla tabella ↑'
+                }
+            };
+            const state = states[activeCalculatorTab] || states.development;
+            label.textContent = state.label;
+            value.textContent = state.value.trim() && state.value.trim() !== '—'
+                ? state.value.trim()
+                : (language ? 'Complete the required fields' : 'Completa i dati richiesti');
+            link.textContent = state.action;
+            link.href = state.href;
+            bar.dataset.mode = activeCalculatorTab;
+            bar.hidden = false;
+        }
+
         function switchTab(tab) {
             if (!['sample', 'development', 'matrix'].includes(tab)) tab = 'development';
+            activeCalculatorTab = tab;
             ['sample', 'development', 'matrix'].forEach(key => {
                 const panelId = key === 'sample' ? 'tab-sample' : key === 'development' ? 'tab-development' : 'tab-matrix';
                 const panel = document.getElementById(panelId);
@@ -98,6 +139,7 @@
             if (tab === 'matrix') renderMatrixTable();
             if (tab === 'sample') calculateSampleK();
             if (tab === 'development') calculateDevelopment();
+            updateMobileResultBar();
         }
 
         // Formula implementation lives in engine.js and is shared by every locale.
@@ -176,6 +218,7 @@
 
             if (![s, angle, ri, flat, a, b].every(Number.isFinite) || s <= 0 || angle <= 0 || angle >= 180 || ri <= 0 || flat <= 0 || a <= 0 || b <= 0) {
                 clearResults();
+                updateMobileResultBar();
                 warning.textContent = 'Completa tutti i dati geometrici obbligatori con valori numerici positivi.';
                 warning.className = 'rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900';
                 return;
@@ -202,6 +245,7 @@
                 warning.textContent = 'K ricavato esclusivamente dalle misure geometriche del campione. Metodo, cava V, raggio nominale del punzone e Rm sono dati facoltativi e non contribuiscono al calcolo.';
                 warning.className = 'rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900';
             }
+            updateMobileResultBar();
         }
 
         const estimatedKFromGeometry = (...args) => GrieveskBendEngine.estimatedKFromGeometry(...args);
@@ -259,6 +303,7 @@
             if (![s, rm, v, rp, angle, a, b].every(Number.isFinite) || s <= 0 || rm <= 0 || v <= 0 || rp <= 0 || angle <= 0 || angle >= 180 || a <= 0 || b <= 0) {
                 warning.textContent = 'Completa i campi numerici per calcolare lo sviluppo.';
                 warning.className = 'rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900';
+                updateMobileResultBar();
                 return;
             }
             const result = GrieveskBendEngine.calculateDevelopment({ thickness: s, tensileStrength: rm, method, v, punchRadius: rp, angle, flangeA: a, flangeB: b });
@@ -271,15 +316,13 @@
             document.getElementById('devResultBA').textContent = displayLength(ba, 3);
             document.getElementById('devResultBD').textContent = displayLength(bd, 3);
             document.getElementById('devResultFlat').textContent = displayLength(flat, 3);
-            const mobileBar = document.getElementById('mobileResultBar');
-            const mobileValue = document.getElementById('mobileResultValue');
-            if (mobileBar && mobileValue) { mobileValue.textContent = displayLength(flat, 3); mobileBar.hidden = false; }
             updateDevelopmentDiagram({ thickness: s, angle, v, ri });
             document.getElementById('devKSource').textContent = method === 'wing' ? 'Modello geometrico preliminare WingBend: da validare con campioni del modello specifico.' : 'Stima del modello in funzione di Ri/spessore; non è un K fisso letto da tabella.';
             const radiusSourceText = ({'empirical-v-material':'Raggio stimato empiricamente da V e materiale','punch-guided':'Raggio guidato dalla punta: verificare il modello esatto','tooling-dependent':'Ipotesi geometrica da verificare sulla matrice installata','panel-estimate':'Stima indicativa per pannellatrice'})[riSource] || riSource;
             document.getElementById('devModelNote').textContent = `${radiusSourceText}. Il bordo minimo è mostrato come riferimento non modificabile e deve essere verificato con la tabella dell’utensile installato.`;
             warning.textContent = method === 'wing' ? 'Per WingBend, V equivalente e bordo minimo devono corrispondere all’esatto modello del costruttore: i valori generici non sostituiscono la scheda tecnica.' : '';
             warning.className = method === 'wing' ? 'rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900' : 'hidden rounded-lg border p-3 text-sm';
+            updateMobileResultBar();
         }
 
         function copyShareLink(whichTab = null) {
@@ -347,6 +390,7 @@
 
             html += `</tbody>`;
             document.getElementById('interactiveMatrix').innerHTML = html;
+            updateMobileResultBar();
         }
 
         window.addEventListener('DOMContentLoaded', () => {
