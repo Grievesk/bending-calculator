@@ -174,3 +174,32 @@ a{transition:color .18s ease,background-color .18s ease,border-color .18s ease}
   #tab-development .grid-cols-2{gap:9px}
 }
 @media(prefers-reduced-motion:reduce){.gb-hero-compact{animation:none}}
+
+
+/* Second route: learning from real workshop cases */
+.gb-button-secondary{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;padding:11px 16px;border:1px solid var(--gb-teal-dark);border-radius:999px;color:var(--gb-teal-dark);font-size:.86rem;font-weight:750;text-decoration:none;background:transparent}
+.gb-button-secondary:hover{background:#eaf8f6}
+.gb-geometry-preview{margin-top:20px;padding:16px;border:1px solid var(--gb-line);border-radius:14px;background:#f8fafb}
+.gb-geometry-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.86rem;color:#233747}
+.gb-geometry-heading span{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:#64748b}
+#devGeometryDiagram{display:block;width:100%;height:auto;max-height:220px;margin:8px auto}
+.gb-geometry-preview>p{margin:0;color:#64748b;font-size:.7rem;line-height:1.45}
+.gb-theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid #647587;border-radius:10px;color:#e0eaf1;background:transparent;font-size:1.1rem}
+.gb-theme-toggle:hover{background:rgba(255,255,255,.1)}
+body.gb-dark{background:#101923!important;color:#e4edf3!important;color-scheme:dark}
+body.gb-dark main{color:#e4edf3}
+body.gb-dark .gb-hero-compact,body.gb-dark .gb-tool-intro-compact,body.gb-dark .gb-geometry-preview{background:#182632!important;border-color:#344956!important;color:#e4edf3}
+body.gb-dark .gb-hero-copy,body.gb-dark .gb-section-intro,body.gb-dark .gb-geometry-preview>p{color:#b6c6d0}
+body.gb-dark #calcolatore{background:rgba(16,25,35,.96)!important}
+body.gb-dark #calcolatore [role=tablist],body.gb-dark #tab-development>div:first-child,body.gb-dark #tab-sample>div:first-child,body.gb-dark #tab-matrix>div{background:#182632!important;border-color:#344956!important;color:#e4edf3}
+body.gb-dark #tab-development label,body.gb-dark #tab-sample label{color:#d6e2e9}
+body.gb-dark #tab-development input,body.gb-dark #tab-development select,body.gb-dark #tab-sample input,body.gb-dark #tab-sample select{background:#101923!important;border-color:#526775!important;color:#f3f7fa}
+body.gb-dark #tab-development .bg-white,body.gb-dark #tab-sample .bg-white{background:#182632!important;border-color:#344956!important;color:#e4edf3}
+body.gb-dark #tab-development .bg-slate-50,body.gb-dark #tab-sample .bg-slate-50{background:#213440!important}
+body.gb-dark #tab-development .text-slate-900,body.gb-dark #tab-development .text-slate-600,body.gb-dark #tab-sample .text-slate-900,body.gb-dark #tab-sample .text-slate-600{color:#d9e5eb!important}
+body.gb-dark #tab-development .text-slate-500,body.gb-dark #tab-sample .text-slate-500{color:#a9bbc5!important}
+body.gb-dark .gb-value-item,body.gb-dark .gb-case-feature,body.gb-dark .gb-section-card{background:#182632;border-color:#344956;color:#e4edf3}
+body.gb-dark .gb-section-title,body.gb-dark .gb-section h2{color:#e4edf3}
+body.gb-dark .gb-button-secondary{color:#8be5dc;border-color:#50d5d0}
+body.gb-dark .gb-button-secondary:hover{background:#203b42}
+@media(max-width:640px){.gb-hero-compact .gb-hero-actions{display:flex;flex-direction:column;align-items:stretch}.gb-hero-compact .gb-hero-actions a{width:100%}.gb-geometry-preview{padding:12px}}
