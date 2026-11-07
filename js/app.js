@@ -393,6 +393,13 @@
 
             html += `</tbody>`;
             document.getElementById('interactiveMatrix').innerHTML = html;
+            // Reset the internal scroller after rebuilding the matrix: otherwise iOS Safari
+            // can retain an old vertical offset and reopen the table halfway down, hiding V headers.
+            const matrixScroller = document.querySelector('#tab-matrix .matrix-scroll-wrap');
+            if (matrixScroller) {
+                matrixScroller.scrollTop = 0;
+                matrixScroller.scrollLeft = 0;
+            }
             updateMobileResultBar();
         }
 
