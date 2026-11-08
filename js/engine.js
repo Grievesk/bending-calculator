@@ -28,6 +28,8 @@
   }
 
   function calculateSampleK({ thickness: s, angle, innerRadius: ri, flatLength: flat, flangeA: a, flangeB: b }) {
+    // All supplied bend angles represent the inside angle; the sign is irrelevant.
+    angle = Math.abs(angle);
     if (![s, angle, ri, flat, a, b].every(Number.isFinite) || s <= 0 || angle <= 0 || angle >= 180 || ri <= 0 || flat <= 0 || a <= 0 || b <= 0) {
       return { valid: false, reason: 'invalid-input' };
     }
@@ -44,6 +46,8 @@
   // Coefficients are fitted to the 19 ordinary Bysoft samples documented in
   // docs/radius-model/README.md. This is a candidate model, not yet production-validated.
   function estimateInnerRadiusExperimental({ thickness: s, tensileStrength: rm, dieOpening: v, punchRadius: rp, angle, dieAngle: beta, dieEntryRadius }) {
+    // Angle is always the inside bend angle; ignore its sign, never supplement it.
+    angle = Math.abs(angle);
     if (![s, v, rp, angle, beta].every(Number.isFinite) ||
         s <= 0 || v <= 0 || rp <= 0 || angle <= 0 || angle >= 180 ||
         beta <= 0 || beta >= 180 ||
@@ -84,7 +88,10 @@
   }
 
   function calculateDevelopment({ thickness: s, tensileStrength: rm, method, v, punchRadius: rp, angle, dieAngle = 30, dieEntryRadius, flangeA: a, flangeB: b }) {
-    if (![s, rm, v, rp, angle, dieAngle, a, b].every(Number.isFinite) ||
+    // Angle is always the inside bend angle; ignore its sign, never supplement it.
+    angle = Math.abs(angle);
+    if (!['air', 'wing', 'coining', 'panel'].includes(method) ||
+        ![s, rm, v, rp, angle, dieAngle, a, b].every(Number.isFinite) ||
         s <= 0 || rm <= 0 || v <= 0 || rp <= 0 || angle <= 0 || angle >= 180 ||
         dieAngle <= 0 || dieAngle >= 180 || a <= 0 || b <= 0 ||
         (dieEntryRadius !== undefined && (!Number.isFinite(dieEntryRadius) || dieEntryRadius < 0))) {
