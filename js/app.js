@@ -268,67 +268,86 @@
             try { localStorage.setItem('gb-theme', enabled ? 'dark' : 'light'); } catch (_) {}
         }
 
-        function updateDevelopmentDiagram({ thickness, angle, v, ri }) {
+        function updateDevelopmentDiagram({ thickness, angle, v, ri, rp }) {
             const sheet = document.getElementById('devGeometrySheet');
             if (!sheet) return;
 
-            // Schema illustrativo della piega in aria: utensili e lamiera sono disegnati
-            // in proporzione relativa a V, s e Ri; non è una simulazione FEM né una scala metrologica.
-            const safeAngle = Math.max(10, Math.min(175, Number(angle) || 90));
+            // Sezione illustrativa: V, larghezza esterna matrice (2V), spessore e raggi
+            // condividono la stessa scala grafica. Il disegno resta schematico, non FEM.
+            const safeAngle = Math.max(10, Math.min(175, Math.abs(Number(angle)) || 90));
             const safeV = Number.isFinite(v) && v > 0 ? v : 10;
             const safeS = Number.isFinite(thickness) && thickness > 0 ? thickness : 1;
             const safeRi = Number.isFinite(ri) && ri > 0 ? ri : safeS;
+            const safeRp = Number.isFinite(rp) && rp > 0 ? rp : safeRi;
 
-            const vPx = Math.max(92, Math.min(220, 72 + safeV * 2.15));
-            const half = vPx / 2;
-            const radiusPx = Math.max(5, Math.min(25, 5 + (safeRi / safeS) * 5));
+            // Mantiene la matrice entro il disegno: apertura = V, larghezza esterna = 2V.
+            const pxPerMm = Math.min(6, 190 / safeV);
+            const opening = safeV * pxPerMm;
+            const dieWidth = 2 * opening;
+            const dieHalf = dieWidth / 2;
+            const halfOpening = opening / 2;
             const centerX = 260;
-            const centerY = 165;
+            const dieTop = 172;
+            const dieBottom = 292;
+            const dieDepth = dieBottom - dieTop;
+            const bottomOpening = Math.max(8, opening * 0.24);
+            const bottomHalf = bottomOpening / 2;
+            const leftOuter = centerX - dieHalf;
+            const rightOuter = centerX + dieHalf;
+            const leftInner = centerX - halfOpening;
+            const rightInner = centerX + halfOpening;
+            const leftBottom = centerX - bottomHalf;
+            const rightBottom = centerX + bottomHalf;
+
+            // Il raggio di punta Rp e il raggio interno Ri usano la stessa scala della V.
+            const punchRadius = Math.max(2, Math.min(30, safeRp * pxPerMm));
+            const insideRadius = Math.max(2, Math.min(38, safeRi * pxPerMm));
+            const sheetThicknessPx = Math.max(2, Math.min(12, safeS * pxPerMm));
             const legAngle = (180 - safeAngle) * Math.PI / 360;
-            const rise = Math.max(24, Math.min(78, half * Math.tan(legAngle)));
-            const leftX = centerX - half;
-            const rightX = centerX + half;
-            const leftY = centerY - rise;
-            const rightY = centerY - rise;
-            const tangentOffset = Math.max(8, Math.min(34, radiusPx * 1.25));
-            const sheetThicknessPx = Math.max(3, Math.min(10, safeS * 2.2));
+            const rise = Math.max(10, Math.min(66, halfOpening * Math.tan(legAngle)));
+            const tangentOffset = Math.max(insideRadius * 0.9, Math.min(halfOpening * 0.72, insideRadius * Math.tan(Math.max(0.15, legAngle))));
+            const sheetY = dieTop - rise;
             const leftTangentX = centerX - tangentOffset;
             const rightTangentX = centerX + tangentOffset;
+            const arcDepth = Math.min(insideRadius * 0.9, 24);
 
             sheet.setAttribute('stroke-width', String(sheetThicknessPx));
             sheet.setAttribute('d',
-                `M${leftX.toFixed(1)} ${leftY.toFixed(1)} L${leftTangentX.toFixed(1)} ${(centerY - 2).toFixed(1)} Q${centerX} ${(centerY + radiusPx * .9).toFixed(1)} ${rightTangentX.toFixed(1)} ${(centerY - 2).toFixed(1)} L${rightX.toFixed(1)} ${rightY.toFixed(1)}`);
+                `M${leftInner.toFixed(1)} ${sheetY.toFixed(1)} L${leftTangentX.toFixed(1)} ${(dieTop-2).toFixed(1)} Q${centerX} ${(dieTop+arcDepth).toFixed(1)} ${rightTangentX.toFixed(1)} ${(dieTop-2).toFixed(1)} L${rightInner.toFixed(1)} ${sheetY.toFixed(1)}`);
 
             const dieLeft = document.getElementById('devDieLeft');
             const dieRight = document.getElementById('devDieRight');
-            if (dieLeft) dieLeft.setAttribute('d', `M54 172 H${(centerX-half-8).toFixed(1)} L${(centerX-24).toFixed(1)} 278 H260 V310 H54 Z`);
-            if (dieRight) dieRight.setAttribute('d', `M260 278 H${(centerX+24).toFixed(1)} L${(centerX+half+8).toFixed(1)} 172 H466 V310 H260 Z`);
+            if (dieLeft) dieLeft.setAttribute('d',
+                `M${leftOuter.toFixed(1)} ${dieTop} H${leftInner.toFixed(1)} L${leftBottom.toFixed(1)} ${dieBottom} H${leftOuter.toFixed(1)} Z`);
+            if (dieRight) dieRight.setAttribute('d',
+                `M${rightInner.toFixed(1)} ${dieTop} H${rightOuter.toFixed(1)} V${dieBottom} H${rightBottom.toFixed(1)} Z`);
 
             const punch = document.getElementById('devPunch');
-            const punchWidth = Math.max(52, Math.min(112, 44 + safeV * .55));
+            const punchHalfWidth = Math.max(12, punchRadius * 2.4);
+            const punchTipY = 128;
+            const punchShoulderY = 56;
             if (punch) punch.setAttribute('d',
-                `M${(centerX-punchWidth/2).toFixed(1)} 18 H${(centerX+punchWidth/2).toFixed(1)} V54 L270 112 Q260 128 250 112 L${(centerX-punchWidth/2).toFixed(1)} 54 Z`);
+                `M${(centerX-punchHalfWidth).toFixed(1)} 18 H${(centerX+punchHalfWidth).toFixed(1)} V${punchShoulderY} L${(centerX+punchRadius).toFixed(1)} ${(punchTipY-punchRadius*0.35).toFixed(1)} Q${centerX} ${(punchTipY+punchRadius*0.65).toFixed(1)} ${(centerX-punchRadius).toFixed(1)} ${(punchTipY-punchRadius*0.35).toFixed(1)} L${(centerX-punchHalfWidth).toFixed(1)} ${punchShoulderY} Z`);
 
             const radiusPath = document.getElementById('devGeometryRadius');
             if (radiusPath) radiusPath.setAttribute('d',
-                `M${(centerX-tangentOffset).toFixed(1)} ${(centerY-2).toFixed(1)} Q${centerX} ${(centerY+radiusPx*.9).toFixed(1)} ${(centerX+tangentOffset).toFixed(1)} ${(centerY-2).toFixed(1)}`);
+                `M${leftTangentX.toFixed(1)} ${(dieTop-2).toFixed(1)} Q${centerX} ${(dieTop+arcDepth).toFixed(1)} ${rightTangentX.toFixed(1)} ${(dieTop-2).toFixed(1)}`);
 
             const anglePath = document.getElementById('devGeometryAngle');
-            const arcRadius = 27;
-            const arcRise = Math.min(arcRadius, rise * .55);
+            const arcRadius = Math.max(12, Math.min(28, insideRadius + 8));
             if (anglePath) anglePath.setAttribute('d',
-                `M${(centerX-arcRadius).toFixed(1)} ${(centerY-arcRise).toFixed(1)} Q${centerX} ${(centerY+arcRadius*.55).toFixed(1)} ${(centerX+arcRadius).toFixed(1)} ${(centerY-arcRise).toFixed(1)}`);
+                `M${(centerX-arcRadius).toFixed(1)} ${(dieTop-arcRadius*0.2).toFixed(1)} Q${centerX} ${(dieTop+arcRadius*0.7).toFixed(1)} ${(centerX+arcRadius).toFixed(1)} ${(dieTop-arcRadius*0.2).toFixed(1)}`);
 
             const angleLabel = document.getElementById('devGeometryAngleLabel');
-            if (angleLabel) { angleLabel.textContent = `${safeAngle.toFixed(0)}°`; angleLabel.setAttribute('x', '296'); angleLabel.setAttribute('y', '204'); }
+            if (angleLabel) { angleLabel.textContent = `${safeAngle.toFixed(0)}°`; angleLabel.setAttribute('x', String(Math.min(390, centerX + halfOpening + 10))); angleLabel.setAttribute('y', String(dieTop + 34)); }
             const thicknessLabel = document.getElementById('devGeometryThicknessLabel');
-            if (thicknessLabel) thicknessLabel.textContent = `s = ${displayLength(safeS, 2)}`;
+            if (thicknessLabel) { thicknessLabel.textContent = `s = ${displayLength(safeS, 2)}`; thicknessLabel.setAttribute('x', String(Math.max(18, leftOuter))); }
             const radiusLabel = document.getElementById('devGeometryRadiusLabel');
-            if (radiusLabel) radiusLabel.textContent = `Ri ≈ ${displayLength(safeRi, 2)}`;
+            if (radiusLabel) { radiusLabel.textContent = `Ri ≈ ${displayLength(safeRi, 2)}`; radiusLabel.setAttribute('x', String(Math.min(365, centerX + halfOpening + 10))); }
             const vLabel = document.getElementById('devGeometryVLabel');
-            if (vLabel) vLabel.textContent = `V = ${displayLength(safeV, 1)}`;
+            if (vLabel) { vLabel.textContent = `V = ${displayLength(safeV, 1)}`; vLabel.setAttribute('x', String(Math.min(365, centerX + halfOpening + 10))); }
             const desc = document.getElementById('devGeometryDesc');
-            if (desc) desc.textContent = `Sezione illustrativa della piegatura in aria: punzone, lamiera e matrice a V. Parametri visualizzati: angolo interno ${safeAngle.toFixed(0)} gradi, spessore ${displayLength(safeS, 2)}, apertura V ${displayLength(safeV, 1)} e raggio interno stimato ${displayLength(safeRi, 2)}. Il disegno è proporzionale in modo schematico e non è una simulazione in scala.`;
+            if (desc) desc.textContent = `Sezione illustrativa della piegatura in aria: apertura matrice V ${displayLength(safeV, 1)}, larghezza esterna schematica matrice 2V, spessore ${displayLength(safeS, 2)}, raggio punta punzone Rp ${displayLength(safeRp, 2)}, raggio interno ${displayLength(safeRi, 2)} e angolo interno ${safeAngle.toFixed(0)} gradi. Le dimensioni sono rappresentate con una scala grafica comune; il disegno non è una simulazione fisica né una verifica utensile.`;
         }
 
         function calculateDevelopment() {
@@ -357,7 +376,7 @@
             document.getElementById('devResultBA').textContent = displayLength(ba, 3);
             document.getElementById('devResultBD').textContent = displayLength(bd, 3);
             document.getElementById('devResultFlat').textContent = displayLength(flat, 3);
-            updateDevelopmentDiagram({ thickness: s, angle, v, ri });
+            updateDevelopmentDiagram({ thickness: s, angle, v, ri, rp });
             document.getElementById('devKSource').textContent = method === 'wing' ? 'Modello geometrico preliminare WingBend: da validare con campioni del modello specifico.' : 'Stima del modello in funzione di Ri/spessore; non è un K fisso letto da tabella.';
             const radiusSourceText = ({'empirical-v-material':'Raggio stimato empiricamente da V e materiale','punch-guided':'Raggio guidato dalla punta: verificare il modello esatto','tooling-dependent':'Ipotesi geometrica da verificare sulla matrice installata','panel-estimate':'Stima indicativa per pannellatrice'})[riSource] || riSource;
             document.getElementById('devModelNote').textContent = `${radiusSourceText}. Il bordo minimo è mostrato come riferimento non modificabile e deve essere verificato con la tabella dell’utensile installato.`;
