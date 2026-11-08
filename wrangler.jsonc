@@ -1,0 +1,10 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bending-calculator",
+  "compatibility_date": "2026-11-07",
+  "preview_urls": true,
+  "assets": {
+    "directory": "."
+  },
+  "previews": {}
+}
