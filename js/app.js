@@ -281,7 +281,7 @@
             const safeRp = Number.isFinite(rp) && rp > 0 ? rp : safeRi;
 
             // Mantiene la matrice entro il disegno: apertura = V, larghezza esterna = 2V.
-            const pxPerMm = Math.min(6, 190 / safeV);
+            const pxPerMm = Math.min(6, 190 / safeV, 20 / safeS, 36 / safeRp, 38 / safeRi);
             const opening = safeV * pxPerMm;
             const dieWidth = 2 * opening;
             const dieHalf = dieWidth / 2;
@@ -290,7 +290,7 @@
             const dieTop = 172;
             const dieBottom = 292;
             const dieDepth = dieBottom - dieTop;
-            const bottomOpening = Math.max(8, opening * 0.24);
+            const bottomOpening = Math.max(4, opening * 0.24);
             const bottomHalf = bottomOpening / 2;
             const leftOuter = centerX - dieHalf;
             const rightOuter = centerX + dieHalf;
@@ -300,9 +300,9 @@
             const rightBottom = centerX + bottomHalf;
 
             // Il raggio di punta Rp e il raggio interno Ri usano la stessa scala della V.
-            const punchRadius = Math.max(2, Math.min(30, safeRp * pxPerMm));
-            const insideRadius = Math.max(2, Math.min(38, safeRi * pxPerMm));
-            const sheetThicknessPx = Math.max(2, Math.min(12, safeS * pxPerMm));
+            const punchRadius = Math.max(1, safeRp * pxPerMm);
+            const insideRadius = Math.max(1, safeRi * pxPerMm);
+            const sheetThicknessPx = Math.max(1, safeS * pxPerMm);
             const legAngle = (180 - safeAngle) * Math.PI / 360;
             const rise = Math.max(10, Math.min(66, halfOpening * Math.tan(legAngle)));
             const tangentOffset = Math.max(insideRadius * 0.9, Math.min(halfOpening * 0.72, insideRadius * Math.tan(Math.max(0.15, legAngle))));
@@ -347,7 +347,7 @@
             const vLabel = document.getElementById('devGeometryVLabel');
             if (vLabel) { vLabel.textContent = `V = ${displayLength(safeV, 1)}`; vLabel.setAttribute('x', String(Math.min(365, centerX + halfOpening + 10))); }
             const desc = document.getElementById('devGeometryDesc');
-            if (desc) desc.textContent = `Sezione illustrativa della piegatura in aria: apertura matrice V ${displayLength(safeV, 1)}, larghezza esterna schematica matrice 2V, spessore ${displayLength(safeS, 2)}, raggio punta punzone Rp ${displayLength(safeRp, 2)}, raggio interno ${displayLength(safeRi, 2)} e angolo interno ${safeAngle.toFixed(0)} gradi. Le dimensioni sono rappresentate con una scala grafica comune; il disegno non è una simulazione fisica né una verifica utensile.`;
+            if (desc) desc.textContent = `Sezione illustrativa della piegatura in aria: apertura matrice V ${displayLength(safeV, 1)}, larghezza esterna schematica matrice 2V, spessore ${displayLength(safeS, 2)}, raggio punta punzone Rp ${displayLength(safeRp, 2)}, raggio interno ${displayLength(safeRi, 2)} e angolo interno ${safeAngle.toFixed(0)} gradi. Le dimensioni seguono una scala grafica comune, con limiti di leggibilità; il disegno non è una simulazione fisica né una verifica utensile.`;
         }
 
         function calculateDevelopment() {
