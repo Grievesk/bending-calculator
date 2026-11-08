@@ -64,3 +64,28 @@ for (const angle of [80, 90]) {
   assert.ok(Math.abs(inverse.bendAllowance - development.bendAllowance) < 1e-10);
   assert.ok(Math.abs(inverse.bendDeduction - development.bendDeduction) < 1e-10);
 }
+
+// The sign is irrelevant: negative values represent the same inside angle.
+const positiveAngle = engine.calculateDevelopment({
+  thickness: 1, tensileStrength: 420, method: 'air', v: 8,
+  punchRadius: 1, angle: 80, dieAngle: 30, flangeA: 50, flangeB: 50
+});
+const negativeAngle = engine.calculateDevelopment({
+  thickness: 1, tensileStrength: 420, method: 'air', v: 8,
+  punchRadius: 1, angle: -80, dieAngle: 30, flangeA: 50, flangeB: 50
+});
+assert.equal(negativeAngle.valid, true);
+assert.equal(negativeAngle.innerRadius, positiveAngle.innerRadius);
+assert.equal(negativeAngle.k, positiveAngle.k);
+assert.equal(negativeAngle.flatLength, positiveAngle.flatLength);
+const invalidMethod = engine.calculateDevelopment({
+  thickness: 1, tensileStrength: 420, method: 'unknown', v: 8,
+  punchRadius: 1, angle: 80, dieAngle: 30, flangeA: 50, flangeB: 50
+});
+assert.equal(invalidMethod.valid, false, 'unknown methods must not silently fall through to panel-bending rules');
+const negativeSampleAngle = engine.calculateSampleK({
+  thickness: 1, angle: -80, innerRadius: positiveAngle.innerRadius,
+  flatLength: positiveAngle.flatLength, flangeA: 50, flangeB: 50
+});
+assert.equal(negativeSampleAngle.valid, true);
+assert.ok(Math.abs(negativeSampleAngle.k - positiveAngle.k) < 1e-10);
