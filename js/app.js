@@ -325,6 +325,12 @@
             if (unitSelect) unitSelect.value = activeUnit;
             updateSampleVOptions();
             refreshDevelopmentModel(true);
+            if (!params.has('v')) {
+                document.getElementById('skV').value = '8';
+                document.getElementById('devV').value = '8';
+                calculateSampleK();
+                calculateDevelopment();
+            }
             loadFromUrlParams();
             renderMatrixTable();
             if (params.get("units") === "in" && !params.has("s")) changeUnitSystem("in");
