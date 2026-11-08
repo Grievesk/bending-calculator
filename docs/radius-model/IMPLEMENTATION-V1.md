@@ -1,7 +1,7 @@
 # Experimental Ri model v1 — implementation notes
 
 **Branch:** `feature/radius-model-v1`  
-**Status:** isolated candidate; not connected to the public development calculation.  
+**Status:** connected to the development calculator on the preview branch only; not merged into the public main branch.  
 **Purpose:** make the documented exploratory model executable and testable without changing current site outputs.
 
 ## Formula transcribed from the research document
@@ -37,7 +37,7 @@ R_i=R_p+C(V_{eff}/2-R_p)
 
 - The coefficients come from 19 ordinary Bysoft samples, not an independent validation set.
 - All 19 calibration samples have (Rm=420 N/mm^2) and (R_p=1 mm). Their independent effects cannot be estimated from this dataset. The function accepts the Rm argument only for interface consistency; it does not use it.
-- The function is exposed as `estimateInnerRadiusExperimental`, but `calculateDevelopment` continues to use the existing production logic.
+- `calculateDevelopment` uses this candidate for air bending on the preview branch. Other bending methods retain their previous radius rules.
 - The optional (R_e) input is accepted as a direct mm value. Its interpretation must be confirmed against the upcoming Table Entry exports.
 - Do not present this candidate as validated or use it to replace production calculations before out-of-sample checks.
 
