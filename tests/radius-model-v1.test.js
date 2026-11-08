@@ -5,7 +5,7 @@ const engine = globalThis.GrieveskBendEngine;
 assert.ok(engine, 'shared engine must load');
 
 const sample = engine.estimateInnerRadiusExperimental({
-  thickness: 1, tensileStrength: 420, dieOpening: 8,
+  thickness: 1, tensileStrength: 420, v: 8,
   punchRadius: 1, angle: 90, dieAngle: 30
 });
 assert.equal(sample.valid, true);
@@ -13,7 +13,7 @@ assert.ok(sample.innerRadius >= 1 && sample.innerRadius <= 4);
 assert.equal(sample.model, 'experimental-ri-v1');
 
 const obtuse = engine.estimateInnerRadiusExperimental({
-  thickness: 1, tensileStrength: 420, dieOpening: 8,
+  thickness: 1, tensileStrength: 420, v: 8,
   punchRadius: 1, angle: 120, dieAngle: 30
 });
 assert.equal(obtuse.valid, true);
@@ -26,7 +26,7 @@ const invalid = engine.estimateInnerRadiusExperimental({
 assert.equal(invalid.valid, false);
 
 const integrated = engine.calculateDevelopment({
-  thickness: 1, tensileStrength: 420, method: 'air', dieOpening: 6,
+  thickness: 1, tensileStrength: 420, method: 'air', v: 8,
   punchRadius: 1, angle: 45, dieAngle: 30, flangeA: 50, flangeB: 50
 });
 assert.equal(integrated.valid, true);
@@ -46,3 +46,21 @@ assert.ok(differentDieAngle.innerRadius < referenceDieAngle.innerRadius,
   'die angle must influence the predicted Ri');
 
 console.log('experimental Ri model integration smoke tests passed');
+
+// A development result must be exactly reversible through the sample calculator.
+for (const angle of [80, 90]) {
+  const development = engine.calculateDevelopment({
+    thickness: 1, tensileStrength: 420, method: 'air', v: 8,
+    punchRadius: 1, angle, dieAngle: 30, flangeA: 50, flangeB: 50
+  });
+  assert.equal(development.valid, true);
+  const inverse = engine.calculateSampleK({
+    thickness: 1, angle, innerRadius: development.innerRadius,
+    flatLength: development.flatLength, flangeA: 50, flangeB: 50
+  });
+  assert.equal(inverse.valid, true);
+  assert.ok(Math.abs(inverse.k - development.k) < 1e-10,
+    `K must be reversible at inside angle ${angle}°`);
+  assert.ok(Math.abs(inverse.bendAllowance - development.bendAllowance) < 1e-10);
+  assert.ok(Math.abs(inverse.bendDeduction - development.bendDeduction) < 1e-10);
+}
