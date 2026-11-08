@@ -271,29 +271,64 @@
         function updateDevelopmentDiagram({ thickness, angle, v, ri }) {
             const sheet = document.getElementById('devGeometrySheet');
             if (!sheet) return;
+
+            // Schema illustrativo della piega in aria: utensili e lamiera sono disegnati
+            // in proporzione relativa a V, s e Ri; non è una simulazione FEM né una scala metrologica.
             const safeAngle = Math.max(10, Math.min(175, Number(angle) || 90));
-            const radians = safeAngle * Math.PI / 180;
-            const endX = 260 + 135 * Math.cos(Math.PI - radians);
-            const endY = 35 + 135 * Math.sin(Math.PI - radians);
-            const startX = 260 - 175 * Math.cos(radians / 2);
-            const startY = 35 + 175 * Math.sin(radians / 2);
-            sheet.setAttribute('d', `M${startX.toFixed(1)} 35 L260 35 L${endX.toFixed(1)} ${endY.toFixed(1)}`);
-            const arcRadius = 34;
-            const arcEndX = 260 + arcRadius * Math.cos(Math.PI - radians);
-            const arcEndY = 35 + arcRadius * Math.sin(Math.PI - radians);
-            const largeArc = safeAngle > 180 ? 1 : 0;
+            const safeV = Number.isFinite(v) && v > 0 ? v : 10;
+            const safeS = Number.isFinite(thickness) && thickness > 0 ? thickness : 1;
+            const safeRi = Number.isFinite(ri) && ri > 0 ? ri : safeS;
+
+            const vPx = Math.max(92, Math.min(220, 72 + safeV * 2.15));
+            const half = vPx / 2;
+            const radiusPx = Math.max(5, Math.min(25, 5 + (safeRi / safeS) * 5));
+            const centerX = 260;
+            const centerY = 165;
+            const legAngle = (180 - safeAngle) * Math.PI / 360;
+            const rise = Math.max(24, Math.min(78, half * Math.tan(legAngle)));
+            const leftX = centerX - half;
+            const rightX = centerX + half;
+            const leftY = centerY - rise;
+            const rightY = centerY - rise;
+            const tangentOffset = Math.max(8, Math.min(34, radiusPx * 1.25));
+            const sheetThicknessPx = Math.max(3, Math.min(10, safeS * 2.2));
+            const leftTangentX = centerX - tangentOffset;
+            const rightTangentX = centerX + tangentOffset;
+
+            sheet.setAttribute('stroke-width', String(sheetThicknessPx));
+            sheet.setAttribute('d',
+                `M${leftX.toFixed(1)} ${leftY.toFixed(1)} L${leftTangentX.toFixed(1)} ${(centerY - 2).toFixed(1)} Q${centerX} ${(centerY + radiusPx * .9).toFixed(1)} ${rightTangentX.toFixed(1)} ${(centerY - 2).toFixed(1)} L${rightX.toFixed(1)} ${rightY.toFixed(1)}`);
+
+            const dieLeft = document.getElementById('devDieLeft');
+            const dieRight = document.getElementById('devDieRight');
+            if (dieLeft) dieLeft.setAttribute('d', `M54 172 H${(centerX-half-8).toFixed(1)} L${(centerX-24).toFixed(1)} 278 H260 V310 H54 Z`);
+            if (dieRight) dieRight.setAttribute('d', `M260 278 H${(centerX+24).toFixed(1)} L${(centerX+half+8).toFixed(1)} 172 H466 V310 H260 Z`);
+
+            const punch = document.getElementById('devPunch');
+            const punchWidth = Math.max(52, Math.min(112, 44 + safeV * .55));
+            if (punch) punch.setAttribute('d',
+                `M${(centerX-punchWidth/2).toFixed(1)} 18 H${(centerX+punchWidth/2).toFixed(1)} V54 L270 112 Q260 128 250 112 L${(centerX-punchWidth/2).toFixed(1)} 54 Z`);
+
+            const radiusPath = document.getElementById('devGeometryRadius');
+            if (radiusPath) radiusPath.setAttribute('d',
+                `M${(centerX-tangentOffset).toFixed(1)} ${(centerY-2).toFixed(1)} Q${centerX} ${(centerY+radiusPx*.9).toFixed(1)} ${(centerX+tangentOffset).toFixed(1)} ${(centerY-2).toFixed(1)}`);
+
             const anglePath = document.getElementById('devGeometryAngle');
-            if (anglePath) anglePath.setAttribute('d', `M${260 - arcRadius} 35 A${arcRadius} ${arcRadius} 0 ${largeArc} 1 ${arcEndX.toFixed(1)} ${arcEndY.toFixed(1)}`);
+            const arcRadius = 27;
+            const arcRise = Math.min(arcRadius, rise * .55);
+            if (anglePath) anglePath.setAttribute('d',
+                `M${(centerX-arcRadius).toFixed(1)} ${(centerY-arcRise).toFixed(1)} Q${centerX} ${(centerY+arcRadius*.55).toFixed(1)} ${(centerX+arcRadius).toFixed(1)} ${(centerY-arcRise).toFixed(1)}`);
+
             const angleLabel = document.getElementById('devGeometryAngleLabel');
-            if (angleLabel) { angleLabel.textContent = `${safeAngle.toFixed(0)}°`; angleLabel.setAttribute('x', String(300)); angleLabel.setAttribute('y', String(82)); }
+            if (angleLabel) { angleLabel.textContent = `${safeAngle.toFixed(0)}°`; angleLabel.setAttribute('x', '296'); angleLabel.setAttribute('y', '204'); }
             const thicknessLabel = document.getElementById('devGeometryThicknessLabel');
-            if (thicknessLabel) thicknessLabel.textContent = `s = ${displayLength(thickness, 2)}`;
+            if (thicknessLabel) thicknessLabel.textContent = `s = ${displayLength(safeS, 2)}`;
             const radiusLabel = document.getElementById('devGeometryRadiusLabel');
-            if (radiusLabel) radiusLabel.textContent = `Ri ≈ ${Number.isFinite(ri) ? displayLength(ri, 2) : '—'}`;
+            if (radiusLabel) radiusLabel.textContent = `Ri ≈ ${displayLength(safeRi, 2)}`;
             const vLabel = document.getElementById('devGeometryVLabel');
-            if (vLabel) vLabel.textContent = `V = ${Number.isFinite(v) ? displayLength(v, 1) : '—'}`;
+            if (vLabel) vLabel.textContent = `V = ${displayLength(safeV, 1)}`;
             const desc = document.getElementById('devGeometryDesc');
-            if (desc) desc.textContent = `Schema illustrativo della piega con angolo interno ${safeAngle.toFixed(0)} gradi, spessore ${displayLength(thickness, 2)}, apertura V ${displayLength(v, 1)} e raggio interno stimato ${Number.isFinite(ri) ? displayLength(ri, 2) : 'non disponibile'}.`;
+            if (desc) desc.textContent = `Sezione illustrativa della piegatura in aria: punzone, lamiera e matrice a V. Parametri visualizzati: angolo interno ${safeAngle.toFixed(0)} gradi, spessore ${displayLength(safeS, 2)}, apertura V ${displayLength(safeV, 1)} e raggio interno stimato ${displayLength(safeRi, 2)}. Il disegno è proporzionale in modo schematico e non è una simulazione in scala.`;
         }
 
         function calculateDevelopment() {
