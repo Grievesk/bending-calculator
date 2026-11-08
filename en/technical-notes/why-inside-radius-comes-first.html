@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/grievesk-bend-mark.svg"><meta name="theme-color" content="#101923">
+<title>Note 00 — Why the Inside Radius Comes Before the K-Factor | Grievesk Bend</title>
+<meta name="description" content="The Grievesk Bend method: estimate the formed inside radius in air bending, derive a consistent K-factor and calculate the flat pattern while stating assumptions and limits.">
+<link rel="canonical" href="https://grieveskbend.com/en/technical-notes/why-inside-radius-comes-first.html">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Grievesk Bend">
+<meta property="og:title" content="Note 00 — Why the Inside Radius Comes Before the K-Factor">
+<meta property="og:description" content="First the geometry the sheet actually forms; then the K-factor and flat pattern.">
+<meta property="og:url" content="https://grieveskbend.com/en/technical-notes/why-inside-radius-comes-first.html">
+<link rel="alternate" hreflang="it" href="https://grieveskbend.com/pillole/perche-raggio-interno-prima-del-fattore-k.html">
+<link rel="alternate" hreflang="en" href="https://grieveskbend.com/en/technical-notes/why-inside-radius-comes-first.html">
+<link rel="stylesheet" href="/css/site.css"><script src="https://cdn.tailwindcss.com"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9851645646686111" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Why the Inside Radius Comes Before the K-Factor","datePublished":"2026-11-08","dateModified":"2026-11-08","author":{"@type":"Organization","name":"Grievesk Bend"},"publisher":{"@type":"Organization","name":"Grievesk Bend"}}</script>
+</head>
+<body>
+<header class="gb-site-header"><div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4">
+<a href="/en/" class="gb-brand"><img src="/grievesk-bend-mark.svg" alt="" class="gb-brand-mark"><span><span class="gb-brand-name">Grievesk Bend</span><span class="gb-brand-sub">Bending, grounded in reality</span></span></a>
+<nav class="flex items-center gap-4 text-sm"><a href="/en/" class="text-white">Calculator</a><a href="/pillole/" class="text-white underline" lang="it">Italiano</a><button type="button" class="gb-theme-toggle" id="themeToggle" aria-label="Enable dark theme" title="Enable dark theme">◐</button></nav>
+</div></header>
+<main class="gb-editorial-shell">
+<section class="gb-page-hero"><span class="gb-eyebrow">Technical Note · 00 / The method</span>
+<h1>Why do we start with the formed inside radius?</h1>
+<p>Before calculating the flat pattern, we need to understand the inside radius produced by the bend. This gives us a sound starting point for deriving a K-factor that matches the bend geometry.</p>
+<div class="gb-hero-actions"><a class="gb-button-primary" href="#sequence">Follow the reasoning ↘</a><a class="gb-button-secondary" href="/en/technical-notes/">All Technical Notes ↗</a></div></section>
+<article class="gb-editorial-card"><div class="gb-editorial-main">
+<span class="gb-evidence-label">The Grievesk Bend calculation method</span>
+<p class="gb-editorial-lede">The sequence is straightforward: <strong>bending conditions → inside radius (measured or estimated) → K-factor → flat pattern.</strong> Each step depends on the one before it. If the radius is wrong, the K-factor and flat pattern can also be wrong.</p>
+<h2 id="sequence">1. A bend is not defined by the drawing alone</h2>
+<p>The drawing shows the required geometry: thickness, angle, dimensions and, when specified, the inside radius. On the press brake, the result also depends on the material, die opening, punch radius and bending method.</p>
+<p>In <strong>air bending</strong>, the sheet rests on the two shoulders of the V-die and is pushed by the punch without reaching the bottom of the die. The resulting inside radius therefore does not necessarily equal the punch-tip radius. It depends mainly on the V opening and the material's behaviour, while tooling and working conditions also matter.</p>
+<p>The first value to establish is the inside radius produced by the bend. If we can measure it on a representative test piece, we use that measurement. If it is not available, the calculator provides a <strong>model estimate</strong>: a starting point that must be checked on the actual part, not a real measurement.</p>
+<div class="gb-note-quote"><strong>How the current model handles it</strong><br>
+For air bending, the model compares two values: one calculated from die opening V and the material's Rm range, and the punch's nominal radius Rp. In short: <strong>Ri = max(V × f(Rm), Rp)</strong>. In the current model, f(Rm) can be 0.14, 0.16 or 0.20, depending on the selected tensile-strength range. This is an empirical relationship used by the calculator, not a rule for every material and tool. WingBend, coining and panel bending follow separate model paths.</div>
+<p>In the current air-bending estimate, thickness does not directly change the inside radius. It enters the next step, where the calculator derives the K-factor from the inside-radius/thickness ratio and the bending method. Together with the inside angle, these values are then used to calculate the bend allowance and flat pattern.</p>
+<h2>2. Why the radius comes before the K-factor</h2>
+<p>The <strong>K-factor</strong> tells us where the neutral axis sits through the sheet thickness. It is the distance from the inside surface to the neutral axis divided by the sheet thickness. It is not the inside radius and it is not a fixed value for every material and bend.</p>
+<p>During bending, the material on the inside is compressed while the outside is stretched. Between them is the neutral axis: the line treated as keeping the same length in the geometric model. Its position changes with the bend and working conditions. Using the same generic K-factor every time can therefore produce an inaccurate flat pattern.</p>
+<p>Our method starts with the measured or estimated inside radius. The calculator uses it together with thickness and the bending method to derive a K-factor that matches the expected bend geometry. It does not assign a generic value without considering the bend being calculated.</p>
+<h2>3. From the K-factor to the flat pattern</h2>
+<p>Once we know the inside radius, thickness and K-factor, we can calculate the arc length along the neutral axis. This is the <strong>Bend Allowance (BA)</strong>. The standard geometric relationship is:</p>
+<div class="gb-note-quote"><strong>BA = θ × (Ri + K-factor × s)</strong><br>θ is the bend angle in radians; Ri is the inside radius; s is sheet thickness. The K-factor locates the neutral axis within the thickness.</div>
+<p>BA is the length of the curved portion measured along the neutral axis. Together with the outside dimensions and angle geometry, it is used to calculate the compensation needed to obtain the flat pattern.</p>
+<h2>4. What can be known — and what must be checked</h2>
+<ul>
+<li><strong>Inputs:</strong> thickness, material/mechanical properties, die opening V, nominal punch radius, angle and bending method.</li>
+<li><strong>Central geometric value:</strong> formed inside radius, measured when available or estimated by the model.</li>
+<li><strong>Derived parameter:</strong> K-factor consistent with the neutral-axis position estimated by the model.</li>
+<li><strong>Output:</strong> bend allowance, bend deduction and flat length, according to the dimensions and geometric conventions used.</li>
+</ul>
+<p>An estimate is not a measurement. Manufacturer tables, CAM data and test bends are valuable references, but they must be interpreted in context. For a specific production setup, the most reliable value is obtained from a representative test piece, measured after bending and checked against the actual dimensions.</p>
+<p>The current model does not claim to describe every material, tool and bending method with one universal law. Empirical relationships apply within the range for which they were collected and checked; outside that range, the result should be treated as indicative, not as a production guarantee.</p>
+<h2>5. Why this approach helps on the shop floor</h2>
+<p>Changing the V opening changes the bending conditions and can change the inside radius obtained. If the radius changes, the neutral-axis position changes too, and so does the length assigned to the curved portion. Even when the drawing and outside dimensions remain the same, the flat pattern may need a correction.</p>
+<p>Keeping these steps separate makes the result easier to understand: not just “which K-factor should I use?”, but which radius do we expect from this setup, and how confident are we in that estimate?</p>
+<div class="gb-note-quote">First understand the radius produced by the bend. Then derive the K-factor. Finally calculate the flat pattern.</div>
+<h2>Technical references</h2>
+<ul>
+<li><a href="https://www.bystronic.com/usa/en-us/news/190502-rules-press-brake-tool-selection" target="_blank" rel="noopener">Bystronic — The rules of press brake tool selection</a>: explains why, in air bending, the inside radius is related to the die opening.</li>
+<li><a href="https://ansyshelp.ansys.com/public/Views/Secured/corp/v252/en/discovery/Discovery/user_manual/sheetmetal_bendallowances.html" target="_blank" rel="noopener">Ansys — Calculating Bend Allowances</a>: defines the K-factor and neutral axis, and discusses the limits of generic values compared with the actual process.</li>
+</ul>
+<div class="gb-ad-slot mt-8">Advertising space — technical content remains independent of any advertising.</div>
+<p class="text-sm mt-8"><a class="gb-text-link" href="/en/technical-notes/">← Back to Technical Notes</a> <span class="mx-2">·</span><a class="gb-text-link" href="/en/#calcolatore">Open calculator ↗</a></p>
+</div></article></main>
+<footer class="gb-site-footer"><div class="max-w-7xl mx-auto px-5 py-8 flex flex-wrap justify-between gap-5 text-sm"><div><strong>Grievesk Bend</strong><p class="mt-1 max-w-xl">Bending calculations grounded in geometry and real production comparisons.</p></div><nav class="flex flex-wrap gap-4"><a href="/en/">Calculator</a><a href="/en/about.html">About</a><a href="/en/privacy.html">Privacy</a><a href="/en/terms.html">Terms</a></nav><p class="w-full text-xs text-slate-500">© 2026 Grievesk Bend</p></div></footer>
+<script>(function(){const key='gb-theme',button=document.getElementById('themeToggle');function apply(dark){document.body.classList.toggle('gb-dark',dark);if(button){button.textContent=dark?'☼':'◐';button.setAttribute('aria-label',dark?'Enable light theme':'Enable dark theme');button.title=button.getAttribute('aria-label');}}let dark=false;try{dark=localStorage.getItem(key)==='dark'}catch(_){}apply(dark);button?.addEventListener('click',()=>{dark=!document.body.classList.contains('gb-dark');apply(dark);try{localStorage.setItem(key,dark?'dark':'light')}catch(_){}});})();</script>
+</body></html>
