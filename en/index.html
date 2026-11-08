@@ -191,10 +191,10 @@
               <div><label for="devFlangeB" class="block text-xs font-bold uppercase text-slate-600 mb-1" title="Lunghezza esterna del secondo lato rettilineo.">Flangia esterna B (mm)</label><input id="devFlangeB" type="text" min="1" max="12000" step="0.1" value="50" inputmode="decimal" oninput="calculateDevelopment()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
             </div>
             <div class="gb-geometry-preview" aria-live="polite">
-              <div class="gb-geometry-heading"><strong>Geometria della piega</strong><span>Schema dinamico</span></div>
+              <div class="gb-geometry-heading"><strong>Bend geometry</strong><span>Schema dinamico</span></div>
               <svg id="devGeometryDiagram" viewBox="0 0 520 320" role="img" aria-labelledby="devGeometryTitle devGeometryDesc">
                 <title id="devGeometryTitle">Schematic cross-section of punch, sheet and die</title>
-                <desc id="devGeometryDesc">Schema illustrativo della piega in aria con utensili e parametri della configurazione.</desc>
+                <desc id="devGeometryDesc">Illustrative air-bending diagram showing the tooling and setup parameters.</desc>
                 <path id="devDieLeft" d="M54 172 H166 L232 278 H260 V310 H54 Z" fill="#aeb8bf" opacity=".72" stroke="#71818b" stroke-width="1.5"/>
                 <path id="devDieRight" d="M260 278 H288 L354 172 H466 V310 H260 Z" fill="#aeb8bf" opacity=".72" stroke="#71818b" stroke-width="1.5"/>
                 <path id="devPunch" d="M220 18 H300 V54 L270 112 Q260 128 250 112 L220 54 Z" fill="#aeb8bf" stroke="#71818b" stroke-width="1.5"/>
@@ -215,7 +215,7 @@
           <div class="lg:col-span-5 space-y-4">
             <div id="devWarning" class="hidden rounded-lg border p-3 text-sm"></div>
             <div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">V / V equivalente selezionata</p><p id="devResultV" class="text-xl font-bold font-mono">—</p><div class="grid grid-cols-2 gap-3 mt-4"><div class="bg-slate-50 rounded-lg p-3"><p class="text-xs text-slate-500 uppercase font-semibold">Inside radius Ri</p><p id="devResultRi" class="text-xl font-bold font-mono">—</p><p class="text-[11px] text-slate-500">Non modificabile</p></div><div class="bg-slate-50 rounded-lg p-3"><p class="text-xs text-slate-500 uppercase font-semibold">Minimum flange</p><p id="devResultBmin" class="text-xl font-bold font-mono">—</p><p class="text-[11px] text-slate-500">Non modificabile</p></div></div></div>
-            <div class="bg-slate-900 text-white rounded-xl p-5 sm:p-6"><p class="text-xs text-slate-400 uppercase font-bold">K-factor predittivo</p><p id="devResultK" class="text-4xl font-black font-mono text-blue-300 mt-2">—</p><p id="devKSource" class="text-xs text-slate-300 mt-2">Stima del modello, non valore certificato dal costruttore.</p></div>
+            <div class="bg-slate-900 text-white rounded-xl p-5 sm:p-6"><p class="text-xs text-slate-400 uppercase font-bold">K-factor predittivo</p><p id="devResultK" class="text-4xl font-black font-mono text-blue-300 mt-2">—</p><p id="devKSource" class="text-xs text-slate-300 mt-2">Model estimate; not a value certified by the tooling manufacturer.</p></div>
             <div class="grid grid-cols-2 gap-3"><div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">Bend Allowance</p><p id="devResultBA" class="text-xl font-bold font-mono mt-1">—</p></div><div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">Bend Deduction</p><p id="devResultBD" class="text-xl font-bold font-mono mt-1">—</p></div><div class="col-span-2 bg-emerald-50 border border-emerald-200 rounded-xl p-4"><p class="text-xs text-emerald-800 uppercase font-semibold">Flat pattern piano teorico</p><p id="devResultFlat" class="text-3xl font-black font-mono text-emerald-950 mt-1">—</p></div></div>
             <p id="devModelNote" class="text-xs text-slate-600 leading-relaxed">Parametri derivati dal modello; verificare le tabelle dell’utensile installato.</p><button type="button" onclick="copyShareLink('development')" class="w-full bg-blue-700 hover:bg-blue-600 text-white font-bold px-4 py-3 rounded-lg text-sm">Share setup</button>
           </div>
@@ -235,14 +235,14 @@
         
 <section class="gb-value-strip" aria-label="I principi di Grievesk Bend">
   <div class="gb-value-item"><span class="gb-value-number">01</span><div><strong>Shop-floor experience</strong><p>Over 25 years of experience in bending, tooling and CAD/CAM.</p></div></div>
-  <div class="gb-value-item"><span class="gb-value-number">02</span><div><strong>Radius first, then K-factor</strong><p>Partiamo dalla geometria formata, non da un valore isolato.</p></div></div>
+  <div class="gb-value-item"><span class="gb-value-number">02</span><div><strong>Radius first, then K-factor</strong><p>Start with the geometry produced by the bend, not an isolated value.</p></div></div>
   <div class="gb-value-item"><span class="gb-value-number">03</span><div><strong>Transparent limits</strong><p>Misure, dati importati e stime restano distinti.</p></div></div>
 </section>
 <section id="featured-case" class="gb-section" aria-labelledby="featured-case-title">
-  <div class="gb-section-head"><div><span class="gb-section-kicker">Diario di officina · Caso 01</span><h2 class="gb-section-title" id="featured-case-title">Un problema di accoppiamento. Una domanda migliore.</h2><p class="gb-section-intro">A component does not fit as expected. The drawing specifies R0.8; the punch is R0.5. The photo documents the issue, but the actual formed radius still needs to be measured.</p></div><a class="gb-text-link" href="/en/technical-notes/">Explore all cases ↗</a></div>
+  <div class="gb-section-head"><div><span class="gb-section-kicker">Diario di officina · Caso 01</span><h2 class="gb-section-title" id="featured-case-title">A fit problem. A better question.</h2><p class="gb-section-intro">A component does not fit as expected. The drawing specifies R0.8; the punch is R0.5. The photo documents the issue, but the actual formed radius still needs to be measured.</p></div><a class="gb-text-link" href="/en/technical-notes/">Explore all cases ↗</a></div>
   <div class="gb-case-feature"><div class="gb-case-visual"><svg viewBox="0 0 560 390" role="img" aria-labelledby="fitTitle fitDesc" style="display:block;width:100%;height:auto;max-width:620px;margin-inline:auto">
 <title id="fitTitle">Profilo piegato e tranciato</title>
-<desc id="fitDesc">Un profilo piegato a L e un tranciato quadrato raccordato, disposti in tangenza a 45 gradi.</desc>
+<desc id="fitDesc">An L-shaped bent profile and a rounded square blank, positioned tangent at 45 degrees.</desc>
 <defs>
 <linearGradient id="profileGradIt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e7edf2"/><stop offset="1" stop-color="#aab9c6"/></linearGradient>
 <linearGradient id="squareGradIt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9f5ee"/><stop offset="1" stop-color="#6bc9bf"/></linearGradient>
@@ -353,7 +353,7 @@
 
     <!-- Shared calculation engine and Italian interface -->
     <script src="/js/engine.js" defer></script>
-    <script src="/js/app.js" defer></script>
+    <script src="/en/app.js" defer></script>
 <div id="mobileResultBar" class="gb-mobile-result-bar" aria-live="polite" aria-atomic="true" data-mode="development" hidden>
   <div><span id="mobileResultLabel">Flat pattern piano</span><strong id="mobileResultValue">—</strong></div>
   <a id="mobileResultLink" href="#developmentResultCard">Go to result ↑</a>
