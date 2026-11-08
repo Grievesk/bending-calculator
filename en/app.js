@@ -213,15 +213,21 @@
             const v = Number(document.getElementById('devV').value);
             const rp = readNumericField('devRp');
             const angle = readNumericField('devAngle');
+            const dieAngle = readNumericField('devDieAngle');
             const a = readNumericField('devFlangeA');
             const b = readNumericField('devFlangeB');
             const warning = document.getElementById('devWarning');
-            if (![s, rm, v, rp, angle, a, b].every(Number.isFinite) || s <= 0 || rm <= 0 || v <= 0 || rp <= 0 || angle <= 0 || angle >= 180 || a <= 0 || b <= 0) {
+            if (![s, rm, v, rp, angle, dieAngle, a, b].every(Number.isFinite) || s <= 0 || rm <= 0 || v <= 0 || rp <= 0 || angle <= 0 || angle >= 180 || dieAngle <= 0 || dieAngle >= 180 || a <= 0 || b <= 0) {
                 warning.textContent = 'Enter numeric values to calculate the flat pattern.';
                 warning.className = 'rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900';
                 return;
             }
-            const result = GrieveskBendEngine.calculateDevelopment({ thickness: s, tensileStrength: rm, method, v, punchRadius: rp, angle, flangeA: a, flangeB: b });
+            const result = GrieveskBendEngine.calculateDevelopment({ thickness: s, tensileStrength: rm, method, v, punchRadius: rp, angle, dieAngle, flangeA: a, flangeB: b });
+            if (!result.valid) {
+                warning.textContent = 'This tool and geometry combination is outside the model limits. Check Rp, V and the bend/die angles.';
+                warning.className = 'rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900';
+                return;
+            }
             const { innerRadius: ri, minFlange: bmin, radiusSource: riSource, k, bendAllowance: ba, bendDeduction: bd, flatLength: flat } = result;
 
             document.getElementById('devResultV').textContent = displayLength(v, 1);
@@ -240,7 +246,7 @@
         function copyShareLink(whichTab = null) {
             const activeTab = whichTab || (!document.getElementById('tab-development').classList.contains('hidden') ? 'development' : !document.getElementById('tab-matrix').classList.contains('hidden') ? 'matrix' : 'sample');
             const params = new URLSearchParams({ tab: activeTab, units: currentUnit() });
-            const map = activeTab === 'development' ? {material:'devMaterial',rm:'devRm',s:'devThickness',method:'devMethod',v:'devV',rp:'devRp',angle:'devAngle',a:'devFlangeA',b:'devFlangeB'} : {material:'skMaterial',rm:'skRm',s:'skThickness',method:'skMethod',v:'skV',rp:'skRpReference',angle:'skAngle',ri:'skRi',flat:'skFlat',a:'skFlangeA',b:'skFlangeB'};
+            const map = activeTab === 'development' ? {material:'devMaterial',rm:'devRm',s:'devThickness',method:'devMethod',v:'devV',rp:'devRp',angle:'devAngle',beta:'devDieAngle',a:'devFlangeA',b:'devFlangeB'} : {material:'skMaterial',rm:'skRm',s:'skThickness',method:'skMethod',v:'skV',rp:'skRpReference',angle:'skAngle',ri:'skRi',flat:'skFlat',a:'skFlangeA',b:'skFlangeB'};
             if (activeTab === 'matrix') params.set('material', document.getElementById('tableMaterial').value);
             else Object.entries(map).forEach(([key,id]) => params.set(key, document.getElementById(id).value));
             const shareUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
@@ -253,7 +259,7 @@
             const set = (key, id) => { if (p.has(key)) document.getElementById(id).value = p.get(key); };
             const tab = p.get('tab') || 'sample';
             if (tab === 'development') {
-                const map = {material:'devMaterial',rm:'devRm',s:'devThickness',method:'devMethod',v:'devV',rp:'devRp',angle:'devAngle',a:'devFlangeA',b:'devFlangeB'};
+                const map = {material:'devMaterial',rm:'devRm',s:'devThickness',method:'devMethod',v:'devV',rp:'devRp',angle:'devAngle',beta:'devDieAngle',a:'devFlangeA',b:'devFlangeB'};
                 Object.entries(map).forEach(([key,id]) => set(key,id));
                 refreshDevelopmentModel(false);
             } else if (tab === 'matrix') { set('material','tableMaterial'); renderMatrixTable(); }
@@ -318,6 +324,12 @@
             if (unitSelect) unitSelect.value = activeUnit;
             updateSampleVOptions();
             refreshDevelopmentModel(true);
+            if (!params.has('v')) {
+                document.getElementById('skV').value = '8';
+                document.getElementById('devV').value = '8';
+                calculateSampleK();
+                calculateDevelopment();
+            }
             loadFromUrlParams();
             renderMatrixTable();
             if (params.get("units") === "in" && !params.has("s")) changeUnitSystem("in");
