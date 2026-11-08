@@ -389,6 +389,55 @@
             }
             switchTab(tab);
         }
+        function renderMatrixTable() {
+            const rm = parseFloat(document.getElementById('tableMaterial').value) || 420;
+            const thicknesses = [0.8, 1.0, 1.2, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0];
+            const dies = [6, 8, 10, 12, 16, 20, 24, 32, 40, 50, 63, 80];
+
+            let vFactor = rm >= 650 ? 0.20 : (rm <= 280 ? 0.14 : 0.16);
+
+            let html = `<colgroup><col class="matrix-thickness-col">`;
+            dies.forEach(() => { html += `<col class="matrix-value-col">`; });
+            html += `</colgroup><thead><tr class="bg-slate-900 text-white">
+                <th scope="col" class="matrix-corner-cell p-2 border border-slate-700 sticky left-0 bg-slate-900">s / V</th>`;
+            dies.forEach(v => {
+                const vLabel = currentUnit() === 'in' ? (v / INCH_TO_MM).toFixed(3) + ' in' : v + ' mm';
+                html += `<th scope="col" class="matrix-v-header p-2 border border-slate-700 font-mono">V = ${vLabel}</th>`;
+            });
+            html += `</tr></thead><tbody>`;
+
+            thicknesses.forEach(s => {
+                html += `<tr onclick="this.classList.toggle('ring-2'); this.classList.toggle('ring-blue-600')" class="cursor-pointer hover:bg-blue-50/40 transition">
+                    <th scope="row" class="matrix-thickness-cell p-2 border border-slate-300 font-bold font-mono bg-slate-100 sticky left-0">${currentUnit() === 'in' ? (s / INCH_TO_MM).toFixed(3) : s.toFixed(1)} ${currentUnit() === 'in' ? 'in' : 'mm'}</th>`;
+
+                dies.forEach(v => {
+                    const cell = GrieveskBendEngine.matrixCell({ thickness: s, v, tensileStrength: rm });
+                    if (!cell) {
+                        html += `<td class="p-2 border border-slate-200 bg-slate-50 text-slate-300">—</td>`;
+                    } else {
+                        const cellBg = cell.optimal ? "bg-emerald-50/90 border-emerald-300" : "bg-white border-slate-200";
+                        html += `<td class="p-2 border ${cellBg}">
+                            <div class="font-bold font-mono text-slate-900">${cell.forceTonsPerMetre.toFixed(1)} t/m</div>
+                            <div class="text-[10px] text-slate-500 font-mono">ri:${currentUnit() === 'in' ? (cell.innerRadius / INCH_TO_MM).toFixed(3) : cell.innerRadius.toFixed(1)} | b:${currentUnit() === 'in' ? (cell.minFlange / INCH_TO_MM).toFixed(3) : cell.minFlange.toFixed(1)} ${currentUnit() === 'in' ? 'in' : 'mm'}</div>
+                        </td>`;
+                    }
+                });
+                html += `</tr>`;
+            });
+
+            html += `</tbody>`;
+            document.getElementById('interactiveMatrix').innerHTML = html;
+            // Reset the internal scroller after rebuilding the matrix: otherwise iOS Safari
+            // can retain an old vertical offset and reopen the table halfway down, hiding V headers.
+            const matrixScroller = document.querySelector('#tab-matrix .matrix-scroll-wrap');
+            if (matrixScroller) {
+                matrixScroller.scrollTop = 0;
+                matrixScroller.scrollLeft = 0;
+            }
+            updateMobileResultBar();
+        }
+
+        
         window.addEventListener('DOMContentLoaded', () => {
             try { toggleTheme(localStorage.getItem('gb-theme') === 'dark'); } catch (_) { toggleTheme(false); }
             // Select the current value on focus so typing replaces it instead of appending digits.
