@@ -39,7 +39,7 @@ const differentDieAngle = engine.calculateDevelopment({
   punchRadius: 1, angle: 90, dieAngle: 85, flangeA: 50, flangeB: 50
 });
 const referenceDieAngle = engine.calculateDevelopment({
-  thickness: 1, tensileStrength: 420, method: 'air', dieOpening: 8,
+  thickness: 1, tensileStrength: 420, method: 'air', v: 8,
   punchRadius: 1, angle: 90, dieAngle: 30, flangeA: 50, flangeB: 50
 });
 assert.ok(differentDieAngle.innerRadius < referenceDieAngle.innerRadius,
