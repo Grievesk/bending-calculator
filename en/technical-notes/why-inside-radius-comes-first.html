@@ -36,12 +36,12 @@
 <div class="gb-note-quote"><strong>How the current model handles it</strong><br>
 For air bending, the model compares two values: one calculated from die opening V and the material's Rm range, and the punch's nominal radius Rp. In short: <strong>Ri = max(V × f(Rm), Rp)</strong>. In the current model, f(Rm) can be 0.14, 0.16 or 0.20, depending on the selected tensile-strength range. This is an empirical relationship used by the calculator, not a rule for every material and tool. WingBend, coining and panel bending follow separate model paths.</div>
 <p>In the current air-bending estimate, thickness does not directly change the inside radius. It enters the next step, where the calculator derives the K-factor from the inside-radius/thickness ratio and the bending method. Together with the inside angle, these values are then used to calculate the bend allowance and flat pattern.</p>
-<h2>2. Why the radius comes before K</h2>
+<h2>2. Why the radius comes before the K-factor</h2>
 <p>The <strong>K-factor</strong> tells us where the neutral axis sits through the sheet thickness. It is the distance from the inside surface to the neutral axis divided by the sheet thickness. It is not the inside radius and it is not a fixed value for every material and bend.</p>
 <p>During bending, the material on the inside is compressed while the outside is stretched. Between them is the neutral axis: the line treated as keeping the same length in the geometric model. Its position changes with the bend and working conditions. Using the same generic K-factor every time can therefore produce an inaccurate flat pattern.</p>
 <p>Our method starts with the measured or estimated inside radius. The calculator uses it together with thickness and the bending method to derive a K-factor that matches the expected bend geometry. It does not assign a generic value without considering the bend being calculated.</p>
-<h2>3. From K to the flat pattern</h2>
-<p>Once we know the inside radius, thickness and K-factor, we can calculate the arc length along the neutral axis. This is called the <strong>Bend Allowance (BA)</strong>. The standard geometric relationship is:</p>
+<h2>3. From the K-factor to the flat pattern</h2>
+<p>Once we know the inside radius, thickness and K-factor, we can calculate the arc length along the neutral axis. This is the <strong>Bend Allowance (BA)</strong>. The standard geometric relationship is:</p>
 <div class="gb-note-quote"><strong>BA = θ × (Ri + K-factor × s)</strong><br>θ is the bend angle in radians; Ri is the inside radius; s is sheet thickness. The K-factor locates the neutral axis within the thickness.</div>
 <p>BA is the length of the curved portion measured along the neutral axis. Together with the outside dimensions and angle geometry, it is used to calculate the compensation needed to obtain the flat pattern.</p>
 <h2>4. What can be known — and what must be checked</h2>
