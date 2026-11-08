@@ -5,7 +5,7 @@ const engine = globalThis.GrieveskBendEngine;
 assert.ok(engine, 'shared engine must load');
 
 const sample = engine.estimateInnerRadiusExperimental({
-  thickness: 1, tensileStrength: 420, v: 8,
+  thickness: 1, tensileStrength: 420, dieOpening: 8,
   punchRadius: 1, angle: 90, dieAngle: 30
 });
 assert.equal(sample.valid, true);
@@ -13,7 +13,7 @@ assert.ok(sample.innerRadius >= 1 && sample.innerRadius <= 4);
 assert.equal(sample.model, 'experimental-ri-v1');
 
 const obtuse = engine.estimateInnerRadiusExperimental({
-  thickness: 1, tensileStrength: 420, v: 8,
+  thickness: 1, tensileStrength: 420, dieOpening: 8,
   punchRadius: 1, angle: 120, dieAngle: 30
 });
 assert.equal(obtuse.valid, true);
@@ -35,7 +35,7 @@ assert.ok(Math.abs(integrated.innerRadius - sample.innerRadius) > 0.1,
   'the development calculation should now use the experimental Ri model');
 
 const differentDieAngle = engine.calculateDevelopment({
-  thickness: 1, tensileStrength: 420, method: 'air', dieOpening: 8,
+  thickness: 1, tensileStrength: 420, method: 'air', v: 8,
   punchRadius: 1, angle: 90, dieAngle: 85, flangeA: 50, flangeB: 50
 });
 const referenceDieAngle = engine.calculateDevelopment({
