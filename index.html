@@ -192,18 +192,22 @@
             </div>
             <div class="gb-geometry-preview" aria-live="polite">
               <div class="gb-geometry-heading"><strong>Geometria della piega</strong><span>Schema dinamico</span></div>
-              <svg id="devGeometryDiagram" viewBox="0 0 520 220" role="img" aria-labelledby="devGeometryTitle devGeometryDesc">
-                <title id="devGeometryTitle">Schema della piega</title>
-                <desc id="devGeometryDesc">Rappresentazione schematica della lamiera, dell'angolo interno e del raggio di piega.</desc>
-                <path id="devGeometrySheet" d="M85 35 L260 35 L260 175" fill="none" stroke="#178f89" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-                <path id="devGeometryRadius" d="M230 35 Q260 35 260 65" fill="none" stroke="#e5a35c" stroke-width="3" stroke-dasharray="5 4"/>
-                <path d="M260 35 L260 175" stroke="#178f89" stroke-width="12" stroke-linecap="round"/>
-                <path id="devGeometryAngle" d="M220 35 A40 40 0 0 1 260 75" fill="none" stroke="#64748b" stroke-width="1.5"/>
-                <text id="devGeometryAngleLabel" x="292" y="88" font-size="13" fill="currentColor">90°</text>
-                <text x="84" y="22" font-size="12" fill="currentColor">Lamiera</text>
-                <text id="devGeometryThicknessLabel" x="95" y="198" font-size="12" fill="currentColor">s = 2 mm</text>
-                <text id="devGeometryRadiusLabel" x="300" y="125" font-size="12" fill="currentColor">Ri ≈ —</text>
-                <text id="devGeometryVLabel" x="300" y="145" font-size="12" fill="currentColor">V = —</text>
+              <svg id="devGeometryDiagram" viewBox="0 0 520 320" role="img" aria-labelledby="devGeometryTitle devGeometryDesc">
+                <title id="devGeometryTitle">Sezione schematica di punzone, lamiera e matrice</title>
+                <desc id="devGeometryDesc">Schema illustrativo della piega in aria con utensili e parametri della configurazione.</desc>
+                <path id="devDieLeft" d="M54 172 H166 L232 278 H260 V310 H54 Z" fill="#aeb8bf" opacity=".72" stroke="#71818b" stroke-width="1.5"/>
+                <path id="devDieRight" d="M260 278 H288 L354 172 H466 V310 H260 Z" fill="#aeb8bf" opacity=".72" stroke="#71818b" stroke-width="1.5"/>
+                <path id="devPunch" d="M220 18 H300 V54 L270 112 Q260 128 250 112 L220 54 Z" fill="#aeb8bf" stroke="#71818b" stroke-width="1.5"/>
+                <path id="devGeometrySheet" d="M100 126 L230 165 Q260 180 290 165 L420 126" fill="none" stroke="#328f88" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path id="devGeometryRadius" d="M238 160 Q260 178 282 160" fill="none" stroke="#e5a15b" stroke-width="2.5" stroke-dasharray="4 3"/>
+                <path id="devGeometryAngle" d="M230 150 A30 30 0 0 0 290 150" fill="none" stroke="#f0aa64" stroke-width="2"/>
+                <text id="devGeometryAngleLabel" x="300" y="190" font-size="13" font-weight="700" fill="currentColor">90°</text>
+                <text x="22" y="118" font-size="12" fill="currentColor">Lamiera</text>
+                <text x="335" y="34" font-size="12" fill="currentColor">Punzone</text>
+                <text x="372" y="202" font-size="12" fill="currentColor">Matrice V</text>
+                <text id="devGeometryThicknessLabel" x="24" y="292" font-size="12" fill="currentColor">s = 2 mm</text>
+                <text id="devGeometryRadiusLabel" x="330" y="236" font-size="12" fill="currentColor">Ri ≈ —</text>
+                <text id="devGeometryVLabel" x="330" y="254" font-size="12" fill="currentColor">V = —</text>
               </svg>
               <p>Schema illustrativo non in scala. L'angolo rappresenta il valore interno impostato.</p>
             </div>
