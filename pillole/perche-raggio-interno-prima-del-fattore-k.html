@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/grievesk-bend-mark.svg"><meta name="theme-color" content="#101923">
+<title>Pillola 00 — Perché il raggio interno viene prima del fattore K | Grievesk Bend</title>
+<meta name="description" content="Il metodo Grievesk Bend: stimare il raggio interno formato in piegatura in aria, ricavare un fattore K coerente e calcolare lo sviluppo piano dichiarando ipotesi e limiti.">
+<link rel="canonical" href="https://grieveskbend.com/pillole/perche-raggio-interno-prima-del-fattore-k.html">
+<meta property="og:type" content="article"><meta property="og:site_name" content="Grievesk Bend">
+<meta property="og:title" content="Pillola 00 — Perché il raggio interno viene prima del fattore K">
+<meta property="og:description" content="Prima la geometria che la lamiera assume davvero; poi il fattore K e lo sviluppo piano.">
+<meta property="og:url" content="https://grieveskbend.com/pillole/perche-raggio-interno-prima-del-fattore-k.html">
+<link rel="alternate" hreflang="it" href="https://grieveskbend.com/pillole/perche-raggio-interno-prima-del-fattore-k.html">
+<link rel="stylesheet" href="/css/site.css"><script src="https://cdn.tailwindcss.com"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9851645646686111" crossorigin="anonymous"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Perché il raggio interno viene prima del fattore K","datePublished":"2026-11-08","dateModified":"2026-11-08","author":{"@type":"Organization","name":"Grievesk Bend"},"publisher":{"@type":"Organization","name":"Grievesk Bend"}}</script>
+</head>
+<body>
+<header class="gb-site-header"><div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4">
+<a href="/" class="gb-brand"><img src="/grievesk-bend-mark.svg" alt="" class="gb-brand-mark"><span><span class="gb-brand-name">Grievesk Bend</span><span class="gb-brand-sub">Piegatura, basata sulla realtà</span></span></a>
+<nav class="flex items-center gap-4 text-sm"><a href="/" class="text-white">Calcolatore</a><a href="/en/technical-notes/" class="text-white underline" lang="en">English</a><button type="button" class="gb-theme-toggle" id="themeToggle" aria-label="Attiva tema scuro" title="Attiva tema scuro">◐</button></nav>
+</div></header>
+<main class="gb-editorial-shell">
+<section class="gb-page-hero"><span class="gb-eyebrow">Pillola tecnica · 00 / Il metodo</span>
+<h1>Perché partiamo dal raggio interno reale?</h1>
+<p>Perché prima di calcolare quanto materiale serve nello sviluppo dobbiamo capire quale geometria assume la lamiera quando viene piegata. Il fattore K non dovrebbe essere un numero scelto a prescindere: deve essere coerente con quella geometria.</p>
+<div class="gb-hero-actions"><a class="gb-button-primary" href="#sequenza">Segui il ragionamento ↘</a><a class="gb-button-secondary" href="/pillole/">Tutte le Pillole ↗</a></div></section>
+<article class="gb-editorial-card"><div class="gb-editorial-main">
+<span class="gb-evidence-label">Il metodo di calcolo Grievesk Bend</span>
+<p class="gb-editorial-lede">La sequenza è intenzionale: <strong>condizioni di piega → raggio interno formato (o stimato) → fattore K → sviluppo piano.</strong> Non è una scelta estetica del software. È un modo per non confondere la geometria reale del processo con un coefficiente inserito per convenzione.</p>
+<h2 id="sequenza">1. La piega non è definita dal solo disegno</h2>
+<p>Il disegno tecnico descrive la geometria nominale richiesta: spessore, angolo, quote e, quando specificato, raggio interno. Ma in macchina la lamiera viene deformata da una combinazione di condizioni: materiale e sue caratteristiche, spessore effettivo, apertura e geometria della matrice, raggio del punzone, metodo di piegatura e regolazione del processo.</p>
+<p>Nella <strong>piegatura in aria</strong>, la lamiera appoggia sui due spallamenti della matrice e viene spinta dal punzone senza essere completamente pressata sul fondo della cava. Per questo il raggio interno che si forma non coincide automaticamente con il raggio nominale della punta del punzone. L'apertura V e il comportamento del materiale hanno un ruolo importante; il punzone e le altre condizioni restano parte del quadro.</p>
+<p>Quindi il primo dato da determinare è il raggio interno che la piega assumerà dopo la formatura. Se è stato misurato su un campione rappresentativo, useremo la misura. Se non è disponibile, il calcolatore può fornire una <strong>stima del modello</strong>, esplicitando da quali parametri dipende e ricordando che va verificata sul pezzo.</p>
+<h2>2. Perché il raggio viene prima di K</h2>
+<p>Il fattore K descrive la posizione dell'asse neutro all'interno dello spessore. È il rapporto tra la distanza della fibra neutra dalla superficie interna e lo spessore della lamiera: non è il raggio, e non è una costante universale del materiale.</p>
+<p>Durante la piega, il lato interno è compresso e quello esterno è teso. Tra le due zone si trova l'asse neutro, cioè la fibra che nella rappresentazione geometrica mantiene la propria lunghezza. La sua posizione cambia con la severità della piega e con il processo: per questo un K generico può non descrivere correttamente una specifica combinazione di materiale, spessore, utensili e metodo.</p>
+<p>Nel nostro approccio il raggio interno stimato o misurato fornisce il riferimento geometrico per ricavare un K coerente con la piega. In termini di modello, il K viene rapportato allo spessore e alla posizione dell'asse neutro; non viene copiato da una tabella generica e non viene dedotto dal solo raggio nominale del punzone.</p>
+<h2>3. Da K allo sviluppo piano</h2>
+<p>Una volta definiti raggio interno, spessore e fattore K, possiamo calcolare la lunghezza dell'arco sull'asse neutro, cioè il <strong>fattore di piega (Bend Allowance)</strong>. Nella formulazione geometrica standard:</p>
+<div class="gb-note-quote"><strong>BA = θ × (Ri + K × s)</strong><br>θ è l'angolo di piega espresso in radianti; Ri è il raggio interno; s è lo spessore; K individua la posizione dell'asse neutro.</div>
+<p>La BA rappresenta la lunghezza della porzione curva misurata lungo l'asse neutro. Da questa, insieme alle quote esterne e alla geometria dell'angolo, si ricava la compensazione necessaria per arrivare allo sviluppo piano. Nel calcolatore il risultato finale è quindi legato alla geometria della piega e alle ipotesi adottate per descriverla.</p>
+<h2>4. Che cosa possiamo sapere e che cosa dobbiamo verificare</h2>
+<ul>
+<li><strong>Dati di ingresso:</strong> spessore, materiale/caratteristiche meccaniche, apertura V, raggio nominale del punzone, angolo e metodo di piegatura.</li>
+<li><strong>Dato geometrico centrale:</strong> raggio interno formato, misurato se disponibile oppure stimato dal modello.</li>
+<li><strong>Parametro derivato:</strong> fattore K coerente con la posizione dell'asse neutro prevista dal modello.</li>
+<li><strong>Risultato:</strong> bend allowance, bend deduction e sviluppo piano, secondo le quote e le convenzioni geometriche utilizzate.</li>
+</ul>
+<p>Una stima non è una misura. Le tabelle dei costruttori, i dati CAM e le prove di piega possono fornire riferimenti preziosi, ma vanno letti nel loro contesto. Il valore più affidabile per una specifica produzione resta quello verificato su un campione rappresentativo, misurato dopo la piega e confrontato con le quote effettive.</p>
+<p>Il modello attuale non pretende di descrivere ogni materiale, ogni utensile e ogni metodo con una legge universale. Le relazioni empiriche sono valide nel campo per cui sono state raccolte e verificate; fuori da quel campo il risultato deve essere considerato indicativo, non una garanzia di produzione.</p>
+<h2>5. Perché questo approccio è utile in officina</h2>
+<p>Se si modifica l'apertura V, cambia la condizione di formatura e può cambiare il raggio interno ottenuto. Se cambia il raggio, cambia la posizione dell'asse neutro e quindi cambia la lunghezza attribuita alla zona curva. Anche quando il disegno e le quote esterne restano uguali, lo sviluppo può richiedere una correzione.</p>
+<p>Separare questi passaggi permette di capire da dove arriva il risultato: non solo “quale K usare”, ma quale raggio ci aspettiamo di ottenere con quella configurazione e quanto siamo sicuri della stima.</p>
+<div class="gb-note-quote">Prima la piega che si forma davvero. Poi il fattore K che la descrive. Infine lo sviluppo che ne consegue.</div>
+<div class="gb-ad-slot mt-8">Spazio pubblicitario — contenuto tecnico indipendente dagli eventuali annunci.</div>
+<p class="text-sm mt-8"><a class="gb-text-link" href="/pillole/">← Torna alle Pillole tecniche</a> <span class="mx-2">·</span><a class="gb-text-link" href="/#calcolatore">Apri il calcolatore ↗</a></p>
+</div></article></main>
+<footer class="gb-site-footer"><div class="max-w-7xl mx-auto px-5 py-8 flex flex-wrap justify-between gap-5 text-sm"><div><strong>Grievesk Bend</strong><p class="mt-1 max-w-xl">Calcoli di piegatura basati sulla geometria e sul confronto con la produzione reale.</p></div><nav class="flex flex-wrap gap-4"><a href="/">Calcolatore</a><a href="/about.html">Il progetto</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Termini</a></nav><p class="w-full text-xs text-slate-500">© 2026 Grievesk Bend</p></div></footer>
+<script>(function(){const key='gb-theme',button=document.getElementById('themeToggle');function apply(dark){document.body.classList.toggle('gb-dark',dark);if(button){button.textContent=dark?'☼':'◐';button.setAttribute('aria-label',dark?'Attiva tema chiaro':'Attiva tema scuro');button.title=button.getAttribute('aria-label');}}let dark=false;try{dark=localStorage.getItem(key)==='dark'}catch(_){}apply(dark);button?.addEventListener('click',()=>{dark=!document.body.classList.contains('gb-dark');apply(dark);try{localStorage.setItem(key,dark?'dark':'light')}catch(_){}});})();</script>
+</body></html>
