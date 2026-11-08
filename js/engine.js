@@ -83,16 +83,24 @@
     };
   }
 
-  function calculateDevelopment({ thickness: s, tensileStrength: rm, method, v, punchRadius: rp, angle, flangeA: a, flangeB: b }) {
-    if (![s, rm, v, rp, angle, a, b].every(Number.isFinite) || s <= 0 || rm <= 0 || v <= 0 || rp <= 0 || angle <= 0 || angle >= 180 || a <= 0 || b <= 0) {
+  function calculateDevelopment({ thickness: s, tensileStrength: rm, method, v, punchRadius: rp, angle, dieAngle = 30, dieEntryRadius, flangeA: a, flangeB: b }) {
+    if (![s, rm, v, rp, angle, dieAngle, a, b].every(Number.isFinite) ||
+        s <= 0 || rm <= 0 || v <= 0 || rp <= 0 || angle <= 0 || angle >= 180 ||
+        dieAngle <= 0 || dieAngle >= 180 || a <= 0 || b <= 0 ||
+        (dieEntryRadius !== undefined && (!Number.isFinite(dieEntryRadius) || dieEntryRadius < 0))) {
       return { valid: false, reason: 'invalid-input' };
     }
-    let ri, minFlange, radiusSource;
+    let ri, minFlange, radiusSource, radiusModel = null, effectiveV = v;
     if (method === 'air') {
-      const factor = rm >= 650 ? 0.20 : rm <= 280 ? 0.14 : 0.16;
-      ri = Math.max(v * factor, rp);
+      radiusModel = estimateInnerRadiusExperimental({
+        thickness: s, tensileStrength: rm, dieOpening: v, punchRadius: rp,
+        angle, dieAngle, dieEntryRadius
+      });
+      if (!radiusModel.valid) return radiusModel;
+      ri = radiusModel.innerRadius;
+      effectiveV = radiusModel.effectiveV;
       minFlange = 0.7 * v;
-      radiusSource = 'empirical-v-material';
+      radiusSource = 'experimental-ri-v1';
     } else if (method === 'wing') {
       ri = rp; minFlange = 0.45 * v; radiusSource = 'punch-guided';
     } else if (method === 'coining') {
@@ -100,12 +108,18 @@
     } else {
       ri = Math.max(rp, 0.8 * s); minFlange = 2.5 * s; radiusSource = 'panel-estimate';
     }
+    // K remains a provisional estimate. Ri prediction and K calibration are separate
+    // tasks until measured flat-pattern / bend-allowance data are available.
     const k = estimatedKFromGeometry(ri, s, method);
     const theta = (180 - angle) * Math.PI / 180;
     const ba = theta * (ri + k * s);
     const ossb = Math.tan(theta / 2) * (ri + s);
     const bd = 2 * ossb - ba;
-    return { valid: true, v, innerRadius: ri, minFlange, k, bendAllowance: ba, bendDeduction: bd, flatLength: a + b - bd, radiusSource, theta };
+    return {
+      valid: true, v, effectiveV, innerRadius: ri, minFlange, k,
+      bendAllowance: ba, bendDeduction: bd, flatLength: a + b - bd,
+      radiusSource, radiusModel, kSource: 'provisional-ri-ratio-estimate', theta
+    };
   }
 
   function matrixCell({ thickness: s, v, tensileStrength: rm }) {
