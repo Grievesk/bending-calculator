@@ -438,6 +438,10 @@
         }
 
         
+        window.addEventListener('scroll', () => {
+            if (window.matchMedia('(max-width: 640px)').matches) updateMobileResultBar();
+        }, { passive: true });
+
         window.addEventListener('DOMContentLoaded', () => {
             try { toggleTheme(localStorage.getItem('gb-theme') === 'dark'); } catch (_) { toggleTheme(false); }
             // Select the current value on focus so typing replaces it instead of appending digits.
