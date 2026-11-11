@@ -322,7 +322,7 @@
             const vLabel = document.getElementById('devGeometryVLabel');
             if (vLabel) { vLabel.textContent = `V = ${displayLength(safeV, 1)}`; vLabel.setAttribute('x', String(Math.min(365, centerX + halfOpening + 10))); }
             const desc = document.getElementById('devGeometryDesc');
-            if (desc) desc.textContent = `Sezione illustrativa della piegatura in aria: apertura matrice V ${displayLength(safeV, 1)}, larghezza esterna schematica matrice 2V, spessore ${displayLength(safeS, 2)}, raggio punta punzone Rp ${displayLength(safeRp, 2)}, raggio interno ${displayLength(safeRi, 2)} e angolo interno ${safeAngle.toFixed(0)} gradi. Le dimensioni seguono una scala grafica comune, con limiti di leggibilità; il disegno non è una simulazione fisica né una verifica utensile.`;
+            if (desc) desc.textContent = `Illustrative air-bending cross-section: V-die opening V ${displayLength(safeV, 1)}, schematic die outer width 2V, sheet thickness ${displayLength(safeS, 2)}, punch-tip radius Rp ${displayLength(safeRp, 2)}, inside radius ${displayLength(safeRi, 2)} and inside angle ${safeAngle.toFixed(0)} degrees. All dimensions use a common graphic scale with readability limits; the drawing is not a physical simulation or a tooling verification.`;
         }
 
         function calculateDevelopment() {

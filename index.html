@@ -21,28 +21,32 @@
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
-      "mainEntity": [{
-        "@type": "Question",
-        "name": "Perché lo sviluppo lamiera calcolato dal CAD è diverso da quello reale in officina?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "I software CAD utilizzano spesso un raggio interno fisso di default (es. 1 mm) e un Fattore K statico. Nella piegatura in aria, invece, il raggio interno reale dipende direttamente dall'apertura della matrice V (circa V/6 per l'acciaio al carbonio) e dall'elasticità del materiale. Se il raggio nel CAD non coincide con il raggio generato dalla cava V scelta in macchina, il ritiro di piega (Bend Deduction) risulterà errato e l'errore si moltiplicherà per ogni piega del pezzo."
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Quando si verifica l'effetto \"spigolatura\" con un punzone troppo acuto?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Quando il raggio del punzone (Rp) è inferiore a circa il 63% dello spessore della lamiera (Rp < 0.63 × s), la punta tende a incidere e solcare la fibra interna del metallo anziché accompagnarla in flessione, alterando il Fattore K e aumentando il rischio di cricche sull'esterno piega."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Come influisce il senso di laminazione sulla piegatura?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Piegare perpendicolarmente alla fibra di laminazione richiede una forza leggermente superiore ma garantisce la massima resistenza alle fessurazioni, permettendo raggi più stretti. Piegando parallelamente alla vena di laminazione il ritorno elastico è inferiore, ma su acciai ad alta resistenza o alluminio serie 6000 aumenta il rischio di rottura superficiale."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual è la differenza tra Bend Allowance (BA) e Bend Deduction (BD)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "La Bend Allowance rappresenta la lunghezza effettiva dell'arco lungo l'asse neutro nella zona piegata (si somma alle lunghezze piane prima dell'inizio del raggio). La Bend Deduction (o ritiro di piega) è invece il valore totale da sottrarre alla somma delle quote esterne a spigolo vivo (L = A + B − N × BD)."
+          }
         }
-      }, {
-        "@type": "Question",
-        "name": "Come funzionano le matrici rotanti tipo WingBend o Rolla-V rispetto alle matrici tradizionali?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Nelle matrici con ali rotanti (WingBend / Rolla-V) la lamiera poggia su inserti mobili che ruotano accompagnando il movimento del punzone. Questo elimina l'attrito di strisciamento, evita segni superficiali, riduce il bordo minimo piegabile fino a 0.45xV e mantiene il raggio interno molto vicino al raggio della punta del punzone."
-        }
-      }, {
-        "@type": "Question",
-        "name": "Come si sceglie l'apertura della cava V in base allo spessore?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Per l'acciaio al carbonio (Fe360/S235) la regola standard prevede V = 6÷8 volte lo spessore per lamiere fino a 3 mm, e V = 8÷10 volte per spessori superiori. Per l'acciaio Inox si utilizza V = 8÷10 volte lo spessore per compensare l'elevata resistenza a trazione, mentre per l'alluminio si può scendere a V = 6 volte lo spessore."
-        }
-      }]
+      ]
     }
     </script>
 

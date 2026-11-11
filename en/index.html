@@ -21,28 +21,32 @@
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
-      "mainEntity": [{
-        "@type": "Question",
-        "name": "Why does the flat pattern calculated by CAD differ from the real result on the shop floor?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "CAD software often uses a fixed default inside radius (e.g. 1 mm) and a static K-factor. In air bending, the actual inside radius depends mainly on the V-die opening (about V/6 for carbon steel) and the material's behaviour. If the CAD radius does not match the radius produced by the selected V-die, the bend deduction will be wrong and the error will accumulate across the part."
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "When can a punch that is too sharp cause a scoring effect?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "When the punch radius (Rp) is less than about 63% of the sheet thickness (Rp < 0.63 × s), the tip may indent or score the inner surface instead of allowing it to bend smoothly. This can affect the K-factor and increase the risk of cracking on the outside of the bend."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does the rolling direction affect bending?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bending perpendicular to the rolling direction may require slightly more force but generally improves resistance to cracking and can allow tighter radii. Bending parallel to the rolling direction may reduce springback, but can increase the risk of surface cracking in high-strength steels or 6000-series aluminium."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between Bend Allowance (BA) and Bend Deduction (BD)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The Bend Allowance is the arc length along the neutral axis within the bend region; it is used with the straight portions to calculate the flat length. The Bend Deduction is the amount subtracted from the sum of outside dimensions measured to theoretical sharp corners (L = A + B − N × BD)."
+          }
         }
-      }, {
-        "@type": "Question",
-        "name": "How do rotating WingBend or Rolla-V dies differ from conventional dies?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "With rotating-wing dies (WingBend / Rolla-V), the sheet rests on moving inserts that rotate with the punch. This reduces sliding friction and surface marking. Minimum flange and inside radius depend on the specific die design and must be checked against its technical data."
-        }
-      }, {
-        "@type": "Question",
-        "name": "How do you choose the V-die opening based on sheet thickness?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "For carbon steel (Fe360/S235), a common starting range is V = 6–8 times thickness for sheets up to 3 mm and V = 8–10 times thickness for thicker sheets. Stainless steel often requires a wider opening, while aluminium may allow a narrower one. Always check the material, tooling manufacturer's guidance and press-brake load limits."
-        }
-      }]
+      ]
     }
     </script>
 
@@ -75,9 +79,9 @@
       <div class="gb-header-inner max-w-7xl mx-auto px-4">
         <a href="/en/" class="gb-brand" aria-label="Grievesk Bend home"><img src="/grievesk-bend-mark.svg" alt="" class="gb-brand-mark"><span><span class="gb-brand-name">Grievesk Bend</span><span class="gb-brand-sub">Bending, grounded in reality</span></span></a>
         <div class="gb-header-tools">
-          <label class="gb-unit-control">Units <select id="unitSystem" aria-label="Units di misura" onchange="changeUnitSystem(this.value)"><option value="mm">mm</option><option value="in">in (pollici)</option></select></label>
+          <label class="gb-unit-control">Units <select id="unitSystem" aria-label="Measurement units" onchange="changeUnitSystem(this.value)"><option value="mm">mm</option><option value="in">in (inches)</option></select></label>
           <a href="/" class="gb-language-link" lang="it">Italiano</a>
-          <button type="button" id="themeToggle" class="gb-theme-toggle" onclick="toggleTheme()" aria-label="Enable dark theme" title="Cambia tema">◐</button><button onclick="copyShareLink()" id="shareBtnHeader" class="gb-share-link" type="button" aria-label="Share setup">↗ <span>Share setup</span></button>
+          <button type="button" id="themeToggle" class="gb-theme-toggle" onclick="toggleTheme()" aria-label="Enable dark theme" title="Change theme">◐</button><button onclick="copyShareLink()" id="shareBtnHeader" class="gb-share-link" type="button" aria-label="Share setup">↗ <span>Share setup</span></button>
         </div>
       </div>
     </header>
@@ -127,7 +131,7 @@
 
                 <!-- Punto di riferimento: ingombro più esterno della curva, non la tangenza -->
                 <circle cx="518" cy="284" r="5" fill="#ea580c" stroke="white" stroke-width="2"/>
-                <text x="408" y="267" font-size="12" font-weight="700" fill="#c2410c">Estremo esterno</text>
+                <text x="408" y="267" font-size="12" font-weight="700" fill="#c2410c">Outer edge</text>
 
                 <!-- B: quota parallela al lato inclinato; richiami perpendicolari da bordo e ingombro esterno -->
                 <path d="M58 82 L76 40 M518 284 L536 242" fill="none" stroke="#64748b" stroke-width="1.7" stroke-dasharray="5 4"/>
@@ -141,8 +145,8 @@
 
                 <text x="14" y="66" font-size="13" fill="#475569">Free edge</text>
                 <text x="14" y="304" font-size="13" fill="#475569">Free edge</text>
-                <text x="232" y="191" font-size="13" fill="#475569">Lato rettilineo</text>
-                <text x="240" y="383" font-size="13" fill="#475569">Lato rettilineo</text>
+                <text x="232" y="191" font-size="13" fill="#475569">Straight leg</text>
+                <text x="240" y="383" font-size="13" fill="#475569">Straight leg</text>
               </svg>
               <p class="text-xs text-slate-600 leading-relaxed"><strong>Dimension convention:</strong> The A/B dimension line runs parallel to the leg; extension lines are perpendicular to it and end at the projected outer bend envelope. The formula uses OSS = (Ri + s) × tan(bend angle / 2), which equals Ri + s for a 90° bend.</p>
             </div>
@@ -180,18 +184,18 @@
           <div class="lg:col-span-7 bg-white p-5 sm:p-6 rounded-xl shadow-sm border border-slate-200 space-y-5">
             <div class="border-b pb-3"><h2 class="text-xl font-bold text-slate-900">Flat-pattern parameters</h2><p class="text-sm text-slate-600 mt-1">The V-die opening can be selected from the available sizes. Ri and minimum flange are calculated by the model and cannot be edited.</p></div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div><label for="devMaterial" class="block text-xs font-bold uppercase text-slate-600 mb-1">Material</label><select id="devMaterial" onchange="onDevelopmentMaterialChange()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-slate-50"><option value="420">Mild steel (Rm 420)</option><option value="520">S355 steel (Rm 520)</option><option value="700">Stainless steel (Rm 700)</option><option value="220">Aluminium (Rm 220)</option><option value="1100">Altoresistenziale (Rm 1100)</option><option value="custom">Custom</option></select></div>
-              <div><label for="devRm" class="block text-xs font-bold uppercase text-slate-600 mb-1" title="Resistenza a trazione nominale del materiale, in N/mm².">Material Rm (N/mm²)</label><input id="devRm" type="text" min="50" max="2500" step="10" value="420" inputmode="decimal" oninput="refreshDevelopmentModel()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
-              <div><label for="devThickness" class="block text-xs font-bold uppercase text-slate-600 mb-1" title="Spessore nominale della lamiera s.">Thickness s (mm)</label><input id="devThickness" type="text" min="0.3" max="30" step="0.1" value="2" inputmode="decimal" oninput="onDevelopmentThicknessChange()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="devMaterial" class="block text-xs font-bold uppercase text-slate-600 mb-1">Material</label><select id="devMaterial" onchange="onDevelopmentMaterialChange()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-slate-50"><option value="420">Mild steel (Rm 420)</option><option value="520">S355 steel (Rm 520)</option><option value="700">Stainless steel (Rm 700)</option><option value="220">Aluminium (Rm 220)</option><option value="1100">High-strength steel (Rm 1100)</option><option value="custom">Custom</option></select></div>
+              <div><label for="devRm" class="block text-xs font-bold uppercase text-slate-600 mb-1" title="Nominal tensile strength of the material, in N/mm².">Material Rm (N/mm²)</label><input id="devRm" type="text" min="50" max="2500" step="10" value="420" inputmode="decimal" oninput="refreshDevelopmentModel()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="devThickness" class="block text-xs font-bold uppercase text-slate-600 mb-1" title="Nominal sheet thickness s.">Thickness s (mm)</label><input id="devThickness" type="text" min="0.3" max="30" step="0.1" value="2" inputmode="decimal" oninput="onDevelopmentThicknessChange()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
               <div><label for="devMethod" class="block text-xs font-bold uppercase text-slate-600 mb-1">Bending method</label><select id="devMethod" onchange="onDevelopmentMethodChange()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-slate-50"><option value="air">Air bending</option><option value="wing">Tangential / WingBend</option><option value="coining">Bottoming / coining</option><option value="panel">Panel bender / wiping</option></select></div>
-              <div class="sm:col-span-2"><label for="devV" class="block text-xs font-bold uppercase text-slate-600 mb-1" id="devVLabel" title="Apertura della matrice o V equivalente selezionata.">Cava V suggerita (selezionabile)</label><select id="devV" onchange="calculateDevelopment()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-white"></select><p id="devVHelp" class="text-[11px] text-slate-500 mt-1">The suggested size follows a practical guideline and can be changed among the available sizes.</p></div>
-              <div><label for="devRp" class="block text-xs font-bold uppercase text-slate-600 mb-1" title="Raggio della punta del punzone.">Punch-tip radius Rp (mm)</label><input id="devRp" type="text" min="0.2" max="50" step="0.1" value="1" inputmode="decimal" oninput="calculateDevelopment()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
-              <div><label for="devAngle" class="block text-xs font-bold uppercase text-slate-600 mb-1" title="Inside angle finale della piega, espresso in gradi.">Inside angle (°)</label><input id="devAngle" type="text" min="10" max="175" step="1" value="90" inputmode="decimal" oninput="calculateDevelopment()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
-              <div><label for="devFlangeA" class="block text-xs font-bold uppercase text-slate-600 mb-1" title="Lunghezza esterna del primo lato rettilineo.">Flangia esterna A (mm)</label><input id="devFlangeA" type="text" min="1" max="12000" step="0.1" value="50" inputmode="decimal" oninput="calculateDevelopment()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
-              <div><label for="devFlangeB" class="block text-xs font-bold uppercase text-slate-600 mb-1" title="Lunghezza esterna del secondo lato rettilineo.">Flangia esterna B (mm)</label><input id="devFlangeB" type="text" min="1" max="12000" step="0.1" value="50" inputmode="decimal" oninput="calculateDevelopment()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div class="sm:col-span-2"><label for="devV" class="block text-xs font-bold uppercase text-slate-600 mb-1" id="devVLabel" title="Selected die opening or equivalent V value.">Suggested V-die opening (selectable)</label><select id="devV" onchange="calculateDevelopment()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-white"></select><p id="devVHelp" class="text-[11px] text-slate-500 mt-1">The suggested size follows a practical guideline and can be changed among the available sizes.</p></div>
+              <div><label for="devRp" class="block text-xs font-bold uppercase text-slate-600 mb-1" title="Punch-tip radius.">Punch-tip radius Rp (mm)</label><input id="devRp" type="text" min="0.2" max="50" step="0.1" value="1" inputmode="decimal" oninput="calculateDevelopment()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="devAngle" class="block text-xs font-bold uppercase text-slate-600 mb-1" title="Final inside bend angle, in degrees.">Inside angle (°)</label><input id="devAngle" type="text" min="10" max="175" step="1" value="90" inputmode="decimal" oninput="calculateDevelopment()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="devFlangeA" class="block text-xs font-bold uppercase text-slate-600 mb-1" title="Outside length of the first straight leg.">Outside flange A (mm)</label><input id="devFlangeA" type="text" min="1" max="12000" step="0.1" value="50" inputmode="decimal" oninput="calculateDevelopment()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
+              <div><label for="devFlangeB" class="block text-xs font-bold uppercase text-slate-600 mb-1" title="Outside length of the second straight leg.">Outside flange B (mm)</label><input id="devFlangeB" type="text" min="1" max="12000" step="0.1" value="50" inputmode="decimal" oninput="calculateDevelopment()" class="w-full rounded-lg border border-slate-300 p-2.5 text-sm font-mono"></div>
             </div>
             <div class="gb-geometry-preview" aria-live="polite">
-              <div class="gb-geometry-heading"><strong>Bend geometry</strong><span>Schema dinamico</span></div>
+              <div class="gb-geometry-heading"><strong>Bend geometry</strong><span>Live schematic</span></div>
               <svg id="devGeometryDiagram" viewBox="0 0 520 320" role="img" aria-labelledby="devGeometryTitle devGeometryDesc">
                 <title id="devGeometryTitle">Schematic cross-section of punch, sheet and die</title>
                 <desc id="devGeometryDesc">Illustrative air-bending diagram showing the tooling and setup parameters.</desc>
@@ -214,17 +218,17 @@
           </div>
           <div class="lg:col-span-5 space-y-4">
             <div id="devWarning" class="hidden rounded-lg border p-3 text-sm"></div>
-            <div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">V / V equivalente selezionata</p><p id="devResultV" class="text-xl font-bold font-mono">—</p><div class="grid grid-cols-2 gap-3 mt-4"><div class="bg-slate-50 rounded-lg p-3"><p class="text-xs text-slate-500 uppercase font-semibold">Inside radius Ri</p><p id="devResultRi" class="text-xl font-bold font-mono">—</p><p class="text-[11px] text-slate-500">Non modificabile</p></div><div class="bg-slate-50 rounded-lg p-3"><p class="text-xs text-slate-500 uppercase font-semibold">Minimum flange</p><p id="devResultBmin" class="text-xl font-bold font-mono">—</p><p class="text-[11px] text-slate-500">Non modificabile</p></div></div></div>
-            <div class="bg-slate-900 text-white rounded-xl p-5 sm:p-6"><p class="text-xs text-slate-400 uppercase font-bold">K-factor predittivo</p><p id="devResultK" class="text-4xl font-black font-mono text-blue-300 mt-2">—</p><p id="devKSource" class="text-xs text-slate-300 mt-2">Model estimate; not a value certified by the tooling manufacturer.</p></div>
-            <div class="grid grid-cols-2 gap-3"><div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">Bend Allowance</p><p id="devResultBA" class="text-xl font-bold font-mono mt-1">—</p></div><div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">Bend Deduction</p><p id="devResultBD" class="text-xl font-bold font-mono mt-1">—</p></div><div class="col-span-2 bg-emerald-50 border border-emerald-200 rounded-xl p-4"><p class="text-xs text-emerald-800 uppercase font-semibold">Flat pattern piano teorico</p><p id="devResultFlat" class="text-3xl font-black font-mono text-emerald-950 mt-1">—</p></div></div>
-            <p id="devModelNote" class="text-xs text-slate-600 leading-relaxed">Parametri derivati dal modello; verificare le tabelle dell’utensile installato.</p><button type="button" onclick="copyShareLink('development')" class="w-full bg-blue-700 hover:bg-blue-600 text-white font-bold px-4 py-3 rounded-lg text-sm">Share setup</button>
+            <div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">Selected V / equivalent V opening</p><p id="devResultV" class="text-xl font-bold font-mono">—</p><div class="grid grid-cols-2 gap-3 mt-4"><div class="bg-slate-50 rounded-lg p-3"><p class="text-xs text-slate-500 uppercase font-semibold">Inside radius Ri</p><p id="devResultRi" class="text-xl font-bold font-mono">—</p><p class="text-[11px] text-slate-500">Not editable</p></div><div class="bg-slate-50 rounded-lg p-3"><p class="text-xs text-slate-500 uppercase font-semibold">Minimum flange</p><p id="devResultBmin" class="text-xl font-bold font-mono">—</p><p class="text-[11px] text-slate-500">Not editable</p></div></div></div>
+            <div class="bg-slate-900 text-white rounded-xl p-5 sm:p-6"><p class="text-xs text-slate-400 uppercase font-bold">Model-estimated K-factor</p><p id="devResultK" class="text-4xl font-black font-mono text-blue-300 mt-2">—</p><p id="devKSource" class="text-xs text-slate-300 mt-2">Model estimate; not a value certified by the tooling manufacturer.</p></div>
+            <div class="grid grid-cols-2 gap-3"><div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">Bend Allowance</p><p id="devResultBA" class="text-xl font-bold font-mono mt-1">—</p></div><div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-xs text-slate-500 uppercase font-semibold">Bend Deduction</p><p id="devResultBD" class="text-xl font-bold font-mono mt-1">—</p></div><div class="col-span-2 bg-emerald-50 border border-emerald-200 rounded-xl p-4"><p class="text-xs text-emerald-800 uppercase font-semibold">Theoretical flat pattern</p><p id="devResultFlat" class="text-3xl font-black font-mono text-emerald-950 mt-1">—</p></div></div>
+            <p id="devModelNote" class="text-xs text-slate-600 leading-relaxed">Parameters derived from the model; check the specifications for the installed tooling.</p><button type="button" onclick="copyShareLink('development')" class="w-full bg-blue-700 hover:bg-blue-600 text-white font-bold px-4 py-3 rounded-lg text-sm">Share setup</button>
           </div>
         </section>
 
         <section id="tab-matrix" role="tabpanel" class="hidden bg-white p-5 sm:p-6 rounded-xl shadow-sm border border-slate-200 space-y-5">
           <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4"><div><h2 class="text-xl font-bold text-slate-900">Quick S / V / F table</h2><p class="text-xs text-slate-500 mt-1">Indicative reference for air bending. Always check the specific tooling manufacturer's table and the permitted tool load.</p></div><div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full md:w-auto"><label for="tableMaterial" class="text-xs font-bold uppercase text-slate-600">Table material</label><select id="tableMaterial" onchange="renderMatrixTable()" class="rounded-lg border border-slate-300 p-2 text-sm bg-slate-50 font-semibold"><option value="420">Mild steel (Rm 420)</option><option value="700">Stainless steel (Rm 700)</option><option value="220">Aluminium (Rm 220)</option></select></div></div>
           <p class="gb-matrix-scroll-hint">Scroll horizontally to view all V columns: every thickness row, up to 10 mm, remains visible on the page.</p><div class="matrix-scroll-wrap"><table class="w-full text-center text-xs border-collapse" id="interactiveMatrix"><!-- Generata dinamicamente via JavaScript --></table></div>
-          <div class="flex flex-wrap gap-3 text-xs text-slate-600 pt-2"><span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 bg-emerald-100 border border-emerald-400 rounded"></span> Rapporto V/s nella fascia pratica suggerita</span><span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 bg-slate-50 border border-slate-200 rounded"></span> Value to verify against the tooling table</span></div>
+          <div class="flex flex-wrap gap-3 text-xs text-slate-600 pt-2"><span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 bg-emerald-100 border border-emerald-400 rounded"></span> V/s ratio within the suggested practical range</span><span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 bg-slate-50 border border-slate-200 rounded"></span> Value to verify against the tooling table</span></div>
         </section>
         <!-- Spazio Banner AdSense In-Content -->
         <div class="bg-slate-200/70 border border-dashed border-slate-300 rounded text-center py-4 text-xs text-slate-500">
@@ -233,15 +237,15 @@
 
         <!-- SEZIONE GUIDA TECNICA E FORMULE -->
         
-<section class="gb-value-strip" aria-label="I principi di Grievesk Bend">
+<section class="gb-value-strip" aria-label="The principles of Grievesk Bend">
   <div class="gb-value-item"><span class="gb-value-number">01</span><div><strong>Shop-floor experience</strong><p>Over 25 years of experience in bending, tooling and CAD/CAM.</p></div></div>
   <div class="gb-value-item"><span class="gb-value-number">02</span><div><strong>Radius first, then K-factor</strong><p>Start with the geometry produced by the bend, not an isolated value.</p></div></div>
-  <div class="gb-value-item"><span class="gb-value-number">03</span><div><strong>Transparent limits</strong><p>Misure, dati importati e stime restano distinti.</p></div></div>
+  <div class="gb-value-item"><span class="gb-value-number">03</span><div><strong>Transparent limits</strong><p>Measurements, imported data and estimates are kept separate.</p></div></div>
 </section>
 <section id="featured-case" class="gb-section" aria-labelledby="featured-case-title">
-  <div class="gb-section-head"><div><span class="gb-section-kicker">Diario di officina · Caso 01</span><h2 class="gb-section-title" id="featured-case-title">A fit problem. A better question.</h2><p class="gb-section-intro">A component does not fit as expected. The drawing specifies R0.8; the punch is R0.5. The photo documents the issue, but the actual formed radius still needs to be measured.</p></div><a class="gb-text-link" href="/en/technical-notes/">Explore all cases ↗</a></div>
+  <div class="gb-section-head"><div><span class="gb-section-kicker">Shop-floor log · Case 01</span><h2 class="gb-section-title" id="featured-case-title">A fit problem. A better question.</h2><p class="gb-section-intro">A component does not fit as expected. The drawing specifies R0.8; the punch is R0.5. The photo documents the issue, but the actual formed radius still needs to be measured.</p></div><a class="gb-text-link" href="/en/technical-notes/">Explore all cases ↗</a></div>
   <div class="gb-case-feature"><div class="gb-case-visual"><svg viewBox="0 0 560 390" role="img" aria-labelledby="fitTitle fitDesc" style="display:block;width:100%;height:auto;max-width:620px;margin-inline:auto">
-<title id="fitTitle">Profilo piegato e tranciato</title>
+<title id="fitTitle">Bent profile and blanked part</title>
 <desc id="fitDesc">An L-shaped bent profile and a rounded square blank, positioned tangent at 45 degrees.</desc>
 <defs>
 <linearGradient id="profileGradIt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e7edf2"/><stop offset="1" stop-color="#aab9c6"/></linearGradient>
@@ -252,10 +256,10 @@
 <path d="M70 65 H100 V150 A90 90 0 0 0 190 240 H500 V270 H190 A120 120 0 0 1 70 150 Z" fill="url(#profileGradIt)" stroke="#607587" stroke-width="3" stroke-linejoin="round"/>
 <!-- Rounded square blank, four equal corner radii; lower-left corner tangent at 45 degrees -->
 <path d="M158.18 76.82 H218.18 A45 45 0 0 1 263.18 121.82 V181.82 A45 45 0 0 1 218.18 226.82 H158.18 A45 45 0 0 1 113.18 181.82 V121.82 A45 45 0 0 1 158.18 76.82 Z" fill="url(#squareGradIt)" stroke="#087f83" stroke-width="3"/>
-<text x="355" y="305" text-anchor="middle" fill="#526779" font-size="15" font-weight="800" letter-spacing="1.2">PROFILO PIEGATO</text>
-<text x="188" y="158" text-anchor="middle" fill="#087f83" font-size="15" font-weight="800" letter-spacing="1.2">TRANCIATO</text>
+<text x="355" y="305" text-anchor="middle" fill="#526779" font-size="15" font-weight="800" letter-spacing="1.2">BENT PROFILE</text>
+<text x="188" y="158" text-anchor="middle" fill="#087f83" font-size="15" font-weight="800" letter-spacing="1.2">BLANKED PART</text>
 </svg></div>
-    <div class="gb-case-content"><span class="gb-evidence-label">Osservazione reale di produzione</span><h3>When the actual radius changes the fit</h3><p>Air bending · 2 mm pickled mild steel · 30° V10 die · R0.5 punch · 90° and 120° inside angles.</p><div class="gb-meta-row"><span class="gb-meta-chip">Drawing radius R0.8</span><span class="gb-meta-chip">Actual radius not yet measured</span><span class="gb-meta-chip">Problema documentato in foto</span></div><a class="gb-button-primary" href="/en/technical-notes/raggio-reale-vs-cad.html">Read the case <span aria-hidden="true">↗</span></a></div>
+    <div class="gb-case-content"><span class="gb-evidence-label">Real production observation</span><h3>When the actual radius changes the fit</h3><p>Air bending · 2 mm pickled mild steel · 30° V10 die · R0.5 punch · 90° and 120° inside angles.</p><div class="gb-meta-row"><span class="gb-meta-chip">Drawing radius R0.8</span><span class="gb-meta-chip">Actual radius not yet measured</span><span class="gb-meta-chip">Issue documented in the photograph</span></div><a class="gb-button-primary" href="/en/technical-notes/real-radius-and-fit.html">Read the case <span aria-hidden="true">↗</span></a></div>
   </div>
 </section>
 
@@ -293,29 +297,29 @@
                 <div>
                     <h5 class="text-white font-bold uppercase mb-2">Grievesk Bend</h5>
                     <p class="leading-relaxed">
-                        Progetto sviluppato da <strong>Grievesk</strong> based on over 25 years of direct experience in sheet-metal bending, press-brake tooling management and industrial CAD/CAM.
+                        A project developed by <strong>Grievesk</strong>, drawing on over 25 years of direct experience in sheet-metal bending, press-brake tooling management and industrial CAD/CAM.
                     </p>
                 </div>
                 <div>
-                    <h5 class="text-white font-bold uppercase mb-2">Disclaimer Tecnico</h5>
+                    <h5 class="text-white font-bold uppercase mb-2">Technical Disclaimer</h5>
                     <p class="leading-relaxed">
                         Calculated values come from empirical and standardised physical models. Sheet-thickness tolerances, rolling direction, tool wear and die-shoulder geometry can cause variations. Always run a test bend before starting serial production.
                     </p>
                 </div>
                 <div>
-                    <h5 class="text-white font-bold uppercase mb-2">Informazioni Legali &amp; Contatti</h5>
+                    <h5 class="text-white font-bold uppercase mb-2">Legal Information &amp; Contact</h5>
                     <ul class="space-y-1.5">
                         <li><a href="/en/about.html" class="hover:text-white underline">About / The Project</a></li>
-                        <li><a href="/en/technical-notes/" class="hover:text-white underline">Pillole tecniche</a></li>
+                        <li><a href="/en/technical-notes/" class="hover:text-white underline">Technical Notes</a></li>
                         <li><a href="/en/privacy.html" class="hover:text-white underline">Privacy &amp; Cookie Policy</a></li>
-                        <li><a href="/en/terms.html" class="hover:text-white underline">Termini di Utilizzo</a></li>
-                        <li class="pt-1">Contatto diretto: <a id="protectedEmail" href="#" class="text-blue-400 hover:underline font-mono">Caricamento contatto...</a></li>
+                        <li><a href="/en/terms.html" class="hover:text-white underline">Terms of Use</a></li>
+                        <li class="pt-1">Direct contact: <a id="protectedEmail" href="#" class="text-blue-400 hover:underline font-mono">Loading contact...</a></li>
                         <li>GitHub: <a href="https://github.com/Grievesk" target="_blank" rel="noopener" class="text-slate-300 hover:text-white underline">github.com/Grievesk</a></li>
                     </ul>
                 </div>
             </div>
             <div class="border-t border-slate-800 pt-4 text-center">
-                &copy; 2026 Grievesk Bend. Tutti i diritti riservati.
+                &copy; 2026 Grievesk Bend. All rights reserved.
             </div>
         </div>
     </footer>
@@ -324,7 +328,7 @@
     <script src="/js/engine.js" defer></script>
     <script src="/en/app.js" defer></script>
 <div id="mobileResultBar" class="gb-mobile-result-bar" aria-live="polite" aria-atomic="true" data-mode="development" hidden>
-  <div><span id="mobileResultLabel">Flat pattern piano</span><strong id="mobileResultValue">—</strong></div>
+  <div><span id="mobileResultLabel">Flat pattern</span><strong id="mobileResultValue">—</strong></div>
   <a id="mobileResultLink" href="#developmentResultCard">Go to result ↑</a>
 </div>
 </body>
