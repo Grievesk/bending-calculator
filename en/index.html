@@ -21,28 +21,32 @@
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
-      "mainEntity": [{
-        "@type": "Question",
-        "name": "Why does the flat pattern calculated by CAD differ from the real result on the shop floor?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "CAD software often uses a fixed default inside radius (e.g. 1 mm) and a static K-factor. In air bending, the actual inside radius depends mainly on the V-die opening (about V/6 for carbon steel) and the material's behaviour. If the CAD radius does not match the radius produced by the selected V-die, the bend deduction will be wrong and the error will accumulate across the part."
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "When can a punch that is too sharp cause a scoring effect?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "When the punch radius (Rp) is less than about 63% of the sheet thickness (Rp < 0.63 × s), the tip may indent or score the inner surface instead of allowing it to bend smoothly. This can affect the K-factor and increase the risk of cracking on the outside of the bend."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does the rolling direction affect bending?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bending perpendicular to the rolling direction may require slightly more force but generally improves resistance to cracking and can allow tighter radii. Bending parallel to the rolling direction may reduce springback, but can increase the risk of surface cracking in high-strength steels or 6000-series aluminium."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between Bend Allowance (BA) and Bend Deduction (BD)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The Bend Allowance is the arc length along the neutral axis within the bend region; it is used with the straight portions to calculate the flat length. The Bend Deduction is the amount subtracted from the sum of outside dimensions measured to theoretical sharp corners (L = A + B − N × BD)."
+          }
         }
-      }, {
-        "@type": "Question",
-        "name": "How do rotating WingBend or Rolla-V dies differ from conventional dies?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "With rotating-wing dies (WingBend / Rolla-V), the sheet rests on moving inserts that rotate with the punch. This reduces sliding friction and surface marking. Minimum flange and inside radius depend on the specific die design and must be checked against its technical data."
-        }
-      }, {
-        "@type": "Question",
-        "name": "How do you choose the V-die opening based on sheet thickness?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "For carbon steel (Fe360/S235), a common starting range is V = 6–8 times thickness for sheets up to 3 mm and V = 8–10 times thickness for thicker sheets. Stainless steel often requires a wider opening, while aluminium may allow a narrower one. Always check the material, tooling manufacturer's guidance and press-brake load limits."
-        }
-      }]
+      ]
     }
     </script>
 
